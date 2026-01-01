@@ -14,7 +14,96 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          full_name: string | null
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      reading_history: {
+        Row: {
+          article_authors: string | null
+          article_id: string
+          article_image: string | null
+          article_title: string
+          id: string
+          read_at: string
+          read_duration_seconds: number | null
+          user_id: string
+        }
+        Insert: {
+          article_authors?: string | null
+          article_id: string
+          article_image?: string | null
+          article_title: string
+          id?: string
+          read_at?: string
+          read_duration_seconds?: number | null
+          user_id: string
+        }
+        Update: {
+          article_authors?: string | null
+          article_id?: string
+          article_image?: string | null
+          article_title?: string
+          id?: string
+          read_at?: string
+          read_duration_seconds?: number | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      saved_articles: {
+        Row: {
+          article_authors: string | null
+          article_id: string
+          article_image: string | null
+          article_title: string
+          id: string
+          saved_at: string
+          user_id: string
+        }
+        Insert: {
+          article_authors?: string | null
+          article_id: string
+          article_image?: string | null
+          article_title: string
+          id?: string
+          saved_at?: string
+          user_id: string
+        }
+        Update: {
+          article_authors?: string | null
+          article_id?: string
+          article_image?: string | null
+          article_title?: string
+          id?: string
+          saved_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
