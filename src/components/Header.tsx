@@ -1,6 +1,15 @@
 import { useState } from "react";
-import { Menu, X, Search, User } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { Menu, X, Search, User, LogOut, Bookmark } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/hooks/useAuth";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const navItems = [
   { label: "Current Issue", href: "#current-issue" },
@@ -11,13 +20,20 @@ const navItems = [
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { user, signOut, loading } = useAuth();
+  const navigate = useNavigate();
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate("/");
+  };
 
   return (
     <header className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
-          <a href="/" className="flex items-center gap-3">
+          <Link to="/" className="flex items-center gap-3">
             <div className="h-10 w-10 rounded-full bg-primary flex items-center justify-center">
               <span className="font-serif text-primary-foreground font-bold text-lg">J</span>
             </div>
@@ -26,7 +42,7 @@ export function Header() {
                 Journal of Plastic &<br className="hidden lg:block" /> Reconstructive Surgery
               </h1>
             </div>
-          </a>
+          </Link>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-8">
@@ -46,12 +62,36 @@ export function Header() {
             <Button variant="ghost" size="icon" className="text-muted-foreground">
               <Search className="h-5 w-5" />
             </Button>
-            <Button variant="ghost" size="icon" className="text-muted-foreground hidden sm:flex">
-              <User className="h-5 w-5" />
-            </Button>
-            <Button variant="accent" size="sm" className="hidden sm:flex">
-              Subscribe
-            </Button>
+            
+            {!loading && (
+              <>
+                {user ? (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="icon" className="text-muted-foreground">
+                        <User className="h-5 w-5" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-48">
+                      <DropdownMenuItem onClick={() => navigate("/dashboard")} className="cursor-pointer">
+                        <Bookmark className="mr-2 h-4 w-4" />
+                        My Library
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer text-destructive">
+                        <LogOut className="mr-2 h-4 w-4" />
+                        Sign Out
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                ) : (
+                  <Button variant="accent" size="sm" onClick={() => navigate("/auth")} className="hidden sm:flex">
+                    Sign In
+                  </Button>
+                )}
+              </>
+            )}
+            
             <Button
               variant="ghost"
               size="icon"
@@ -77,9 +117,22 @@ export function Header() {
                   {item.label}
                 </a>
               ))}
-              <Button variant="accent" size="sm" className="w-fit">
-                Subscribe
-              </Button>
+              {user ? (
+                <>
+                  <Button variant="ghost" size="sm" className="w-fit justify-start" onClick={() => { navigate("/dashboard"); setMobileMenuOpen(false); }}>
+                    <Bookmark className="mr-2 h-4 w-4" />
+                    My Library
+                  </Button>
+                  <Button variant="ghost" size="sm" className="w-fit justify-start text-destructive" onClick={handleSignOut}>
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Sign Out
+                  </Button>
+                </>
+              ) : (
+                <Button variant="accent" size="sm" className="w-fit" onClick={() => { navigate("/auth"); setMobileMenuOpen(false); }}>
+                  Sign In
+                </Button>
+              )}
             </div>
           </nav>
         )}
