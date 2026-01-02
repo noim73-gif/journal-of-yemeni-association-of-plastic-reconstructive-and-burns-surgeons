@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Menu, X, Search, User, LogOut, Bookmark } from "lucide-react";
+import { Menu, X, Search, User, LogOut, Bookmark, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
+import { useAdmin } from "@/hooks/useAdmin";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,6 +22,7 @@ const navItems = [
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { user, signOut, loading } = useAuth();
+  const { isAdmin } = useAdmin();
   const navigate = useNavigate();
 
   const handleSignOut = async () => {
@@ -77,6 +79,15 @@ export function Header() {
                         <Bookmark className="mr-2 h-4 w-4" />
                         My Library
                       </DropdownMenuItem>
+                      {isAdmin && (
+                        <>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem onClick={() => navigate("/admin")} className="cursor-pointer">
+                            <Settings className="mr-2 h-4 w-4" />
+                            Admin Dashboard
+                          </DropdownMenuItem>
+                        </>
+                      )}
                       <DropdownMenuSeparator />
                       <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer text-destructive">
                         <LogOut className="mr-2 h-4 w-4" />
