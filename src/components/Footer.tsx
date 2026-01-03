@@ -61,7 +61,7 @@ export function Footer() {
               </li>
               <li className="flex items-start gap-2">
                 <MapPin className="h-4 w-4 mt-0.5 flex-shrink-0" />
-                <span>Arlington Heights, IL 60005</span>
+                <span>Yemeni - Sana"a</span>
               </li>
             </ul>
           </div>
