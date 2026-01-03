@@ -13,8 +13,7 @@ export function Hero() {
             </span>
           </div>
           
-          <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold text-primary-foreground mb-6 leading-tight">The Yemeni Journal of
-
+          <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold text-primary-foreground mb-6 leading-tight">The Yemeni Journal 
 Plastic Surgery<span className="block text-accent">Plastic Surgery</span>
           </h1>
           

@@ -42,7 +42,7 @@ export function Header() {
               <span className="font-serif text-primary-foreground font-bold text-lg">YJ</span>
             </div>
             <div className="hidden sm:block">
-              <h1 className="font-serif text-lg font-semibold text-foreground leading-tight">YJPRBS<br className="hidden lg:block" /> Reconstructive Surgery
+              <h1 className="font-serif text-lg font-semibold text-foreground leading-tight">YJPRBS <br className="hidden lg:block" /> Reconstructive Surgery
               </h1>
             </div>
           </Link>
