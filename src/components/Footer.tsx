@@ -1,8 +1,6 @@
 import { Mail, Phone, MapPin, Twitter, Linkedin, Youtube } from "lucide-react";
-
 export function Footer() {
-  return (
-    <footer id="about" className="bg-primary text-primary-foreground">
+  return <footer id="about" className="bg-primary text-primary-foreground">
       <div className="container mx-auto px-4 py-12 md:py-16">
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-10">
           {/* Brand */}
@@ -11,12 +9,9 @@ export function Footer() {
               <div className="h-10 w-10 rounded-full bg-primary-foreground/20 flex items-center justify-center">
                 <span className="font-serif font-bold text-lg">J</span>
               </div>
-              <span className="font-serif font-semibold">JPRS</span>
+              <span className="font-serif font-semibold">YJPRS</span>
             </div>
-            <p className="text-primary-foreground/70 text-sm mb-6">
-              The official journal of the American Society of Plastic Surgeons, 
-              advancing the science and art of plastic surgery since 1946.
-            </p>
+            <p className="text-primary-foreground/70 text-sm mb-6">The official journal of the Yemeni Association of Plastic, Reconstructive and Burn Surgeons, advancing the science and art of plastic surgery since 2011.</p>
             <div className="flex gap-4">
               <a href="#" className="text-primary-foreground/60 hover:text-accent transition-colors">
                 <Twitter className="h-5 w-5" />
@@ -81,6 +76,5 @@ export function Footer() {
           </div>
         </div>
       </div>
-    </footer>
-  );
+    </footer>;
 }
