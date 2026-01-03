@@ -13,7 +13,7 @@ export function Hero() {
           
           <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold text-primary-foreground mb-6 leading-tight">Yemeni Journal of Plastic, Reconstructive and Burn Surgery
 
-          <span className="block text-accent">YJPRBS</span>
+          <span className="block text-accent text-center font-thin">YJPRBS</span>
           </h1>
           
           <p className="text-lg md:text-xl text-primary-foreground/80 mb-8 max-w-2xl leading-relaxed">The official Journal of Yemeni Association of Plastic, Reconstructive and burn Surgeons .</p>
