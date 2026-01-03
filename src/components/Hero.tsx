@@ -11,7 +11,7 @@ export function Hero() {
             <span className="bg-accent/20 text-accent-foreground px-4 py-1.5 rounded-full text-sm font-medium">  January 2026</span>
           </div>
           
-          <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold text-primary-foreground mb-6 leading-tight">The Yemeni Journal of 
+          <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold text-primary-foreground mb-6 leading-tight">The Yemeni Journal of
 Plastic, Reconstructive and Burn Surgery<span className="block text-accent">Plastic Surgery</span>
           </h1>
           
