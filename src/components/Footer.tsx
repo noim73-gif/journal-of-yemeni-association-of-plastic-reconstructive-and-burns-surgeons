@@ -12,7 +12,7 @@ export function Footer() {
               <span className="font-serif font-semibold">YJPRS</span>
             </div>
             <p className="text-primary-foreground/70 text-sm mb-6">The official journal of the Yemeni Association of Plastic, Reconstructive and Burn Surgeons, advancing the science and art of plastic surgery since 2011.
-https://www.yafprs.org/</p>
+ https://www.yafprs.org/</p>
             <div className="flex gap-4">
               <a href="#" className="text-primary-foreground/60 hover:text-accent transition-colors">
                 <Twitter className="h-5 w-5" />
