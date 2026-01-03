@@ -5,6 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Article, ArticleInput } from "@/hooks/useArticles";
+import { ImageUpload } from "./ImageUpload";
 import { X } from "lucide-react";
 
 interface ArticleFormProps {
@@ -117,12 +118,10 @@ export function ArticleForm({ article, onSubmit, onCancel, isSubmitting }: Artic
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="image_url">Image URL</Label>
-            <Input
-              id="image_url"
-              value={formData.image_url}
-              onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-              placeholder="https://..."
+            <Label>Cover Image</Label>
+            <ImageUpload
+              value={formData.image_url || ""}
+              onChange={(url) => setFormData({ ...formData, image_url: url })}
             />
           </div>
 
