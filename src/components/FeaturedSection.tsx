@@ -1,7 +1,11 @@
 import { FeaturedArticle } from "./FeaturedArticle";
+import { usePublishedArticles } from "@/hooks/useArticles";
+import { Skeleton } from "@/components/ui/skeleton";
 
-const featuredArticles = [
+// Fallback articles for when database is empty
+const fallbackArticles = [
   {
+    id: "fallback-1",
     category: "Original Research",
     title: "Long-Term Outcomes of Autologous Fat Grafting in Facial Rejuvenation: A 10-Year Follow-Up Study",
     authors: "Chen, M.D., Williams, Ph.D., & Anderson, M.D.",
@@ -10,6 +14,7 @@ const featuredArticles = [
     isMain: true,
   },
   {
+    id: "fallback-2",
     category: "Systematic Review",
     title: "Microsurgical Breast Reconstruction: A Meta-Analysis of DIEP vs. Free TRAM Flaps",
     authors: "Rodriguez, M.D. et al.",
@@ -17,6 +22,7 @@ const featuredArticles = [
     imageUrl: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=600&q=80",
   },
   {
+    id: "fallback-3",
     category: "Clinical Trial",
     title: "Novel Biodegradable Scaffold for Auricular Reconstruction in Microtia",
     authors: "Park, M.D., Kim, Ph.D.",
@@ -24,6 +30,7 @@ const featuredArticles = [
     imageUrl: "https://images.unsplash.com/photo-1582719471384-894fbb16e074?w=600&q=80",
   },
   {
+    id: "fallback-4",
     category: "Technique",
     title: "Precision Rhinoplasty: AI-Assisted Surgical Planning and Outcomes",
     authors: "Martinez, M.D., Lee, M.D.",
@@ -33,7 +40,43 @@ const featuredArticles = [
 ];
 
 export function FeaturedSection() {
-  const [mainArticle, ...otherArticles] = featuredArticles;
+  const { articles, loading } = usePublishedArticles();
+
+  // Get featured articles from database, or use fallbacks
+  const featuredFromDb = articles.filter(a => a.is_featured || a.is_main_featured);
+  const displayArticles = featuredFromDb.length > 0 
+    ? featuredFromDb.map(article => ({
+        id: article.id,
+        category: article.category || "Research",
+        title: article.title,
+        authors: article.authors || "",
+        abstract: article.abstract || "",
+        imageUrl: article.image_url || "https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=800&q=80",
+        isMain: article.is_main_featured,
+      }))
+    : fallbackArticles;
+
+  const mainArticle = displayArticles.find(a => a.isMain) || displayArticles[0];
+  const otherArticles = displayArticles.filter(a => a.id !== mainArticle.id).slice(0, 3);
+
+  if (loading) {
+    return (
+      <section id="articles" className="py-16 md:py-24 bg-muted/30">
+        <div className="container mx-auto px-4">
+          <div className="mb-10">
+            <Skeleton className="h-10 w-64 mb-2" />
+            <Skeleton className="h-5 w-96" />
+          </div>
+          <Skeleton className="h-80 w-full rounded-xl mb-6" />
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <Skeleton className="h-64 rounded-xl" />
+            <Skeleton className="h-64 rounded-xl" />
+            <Skeleton className="h-64 rounded-xl" />
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section id="articles" className="py-16 md:py-24 bg-muted/30">
@@ -54,14 +97,16 @@ export function FeaturedSection() {
 
         <div className="grid gap-6 lg:gap-8">
           {/* Main featured article */}
-          <FeaturedArticle {...mainArticle} />
+          <FeaturedArticle {...mainArticle} isMain />
 
           {/* Other articles grid */}
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {otherArticles.map((article, index) => (
-              <FeaturedArticle key={index} {...article} />
-            ))}
-          </div>
+          {otherArticles.length > 0 && (
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {otherArticles.map((article) => (
+                <FeaturedArticle key={article.id} {...article} isMain={false} />
+              ))}
+            </div>
+          )}
         </div>
 
         <a href="#" className="mt-8 block md:hidden text-center text-primary font-medium hover:underline">
