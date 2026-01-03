@@ -11,7 +11,9 @@ export function Hero() {
             <span className="bg-accent/20 text-accent-foreground px-4 py-1.5 rounded-full text-sm font-medium">  January 2026</span>
           </div>
           
-          <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold text-primary-foreground mb-6 leading-tight">Plastic, Reconstructive and Burn Surgery<span className="block text-accent">Plastic Surgery</span>
+          <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold text-primary-foreground mb-6 leading-tight">Yemeni Journal of Plastic, Reconstructive and Burn Surgery
+
+          <span className="block text-accent">Plastic Surgery</span>
           </h1>
           
           <p className="text-lg md:text-xl text-primary-foreground/80 mb-8 max-w-2xl leading-relaxed">The official Journal of Yemeni Association of Plastic, Reconstructive and burn Surgeons .</p>
