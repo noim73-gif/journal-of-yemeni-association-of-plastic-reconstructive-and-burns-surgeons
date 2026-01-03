@@ -8,9 +8,7 @@ export function Hero() {
       <div className="container mx-auto px-4 py-16 md:py-24 relative">
         <div className="max-w-4xl">
           <div className="inline-block mb-6">
-            <span className="bg-accent/20 text-accent-foreground px-4 py-1.5 rounded-full text-sm font-medium">
-              Volume 153, Issue 1 — January 2026
-            </span>
+            <span className="bg-accent/20 text-accent-foreground px-4 py-1.5 rounded-full text-sm font-medium">  January 2026</span>
           </div>
           
           <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold text-primary-foreground mb-6 leading-tight">The Yemeni Journal 
