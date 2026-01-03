@@ -1,7 +1,9 @@
+import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { ArrowRight } from "lucide-react";
 
 interface FeaturedArticleProps {
+  id?: string;
   category: string;
   title: string;
   authors: string;
@@ -11,6 +13,7 @@ interface FeaturedArticleProps {
 }
 
 export function FeaturedArticle({ 
+  id,
   category, 
   title, 
   authors, 
@@ -18,6 +21,9 @@ export function FeaturedArticle({
   imageUrl,
   isMain = false 
 }: FeaturedArticleProps) {
+  const articleLink = id ? `/article/${id}` : "#";
+  const LinkWrapper = id ? Link : "a";
+
   if (isMain) {
     return (
       <article className="group relative bg-card rounded-xl overflow-hidden shadow-elegant hover:shadow-elegant-lg transition-all duration-300">
@@ -37,10 +43,10 @@ export function FeaturedArticle({
             </h3>
             <p className="text-sm text-muted-foreground mb-3">{authors}</p>
             <p className="text-muted-foreground line-clamp-3 mb-4">{abstract}</p>
-            <a href="#" className="inline-flex items-center text-primary font-medium text-sm group/link">
+            <LinkWrapper to={articleLink} href={articleLink} className="inline-flex items-center text-primary font-medium text-sm group/link">
               Read Article
               <ArrowRight className="ml-1 h-4 w-4 group-hover/link:translate-x-1 transition-transform" />
-            </a>
+            </LinkWrapper>
           </div>
         </div>
       </article>
@@ -62,10 +68,10 @@ export function FeaturedArticle({
           {title}
         </h3>
         <p className="text-sm text-muted-foreground mb-3">{authors}</p>
-        <a href="#" className="inline-flex items-center text-primary font-medium text-sm group/link">
+        <LinkWrapper to={articleLink} href={articleLink} className="inline-flex items-center text-primary font-medium text-sm group/link">
           Read Article
           <ArrowRight className="ml-1 h-4 w-4 group-hover/link:translate-x-1 transition-transform" />
-        </a>
+        </LinkWrapper>
       </div>
     </article>
   );
