@@ -219,13 +219,10 @@ export default function ArticlePage() {
 
             {/* Content */}
             {article.content && (
-              <div className="prose prose-lg max-w-none mb-12">
-                {article.content.split("\n\n").map((paragraph, index) => (
-                  <p key={index} className="mb-4 text-foreground leading-relaxed">
-                    {paragraph}
-                  </p>
-                ))}
-              </div>
+              <div 
+                className="prose prose-lg max-w-none mb-12 prose-headings:font-serif prose-headings:text-foreground prose-p:text-foreground prose-p:leading-relaxed prose-a:text-primary prose-blockquote:border-primary prose-blockquote:text-muted-foreground prose-li:text-foreground"
+                dangerouslySetInnerHTML={{ __html: article.content }}
+              />
             )}
 
             <Separator className="my-12" />
