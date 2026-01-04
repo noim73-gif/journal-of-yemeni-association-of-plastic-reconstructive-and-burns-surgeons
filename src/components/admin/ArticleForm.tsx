@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Article, ArticleInput } from "@/hooks/useArticles";
 import { ImageUpload } from "./ImageUpload";
+import { RichTextEditor } from "./RichTextEditor";
 import { X } from "lucide-react";
 
 interface ArticleFormProps {
@@ -137,13 +138,11 @@ export function ArticleForm({ article, onSubmit, onCancel, isSubmitting }: Artic
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="content">Content</Label>
-            <Textarea
-              id="content"
-              value={formData.content}
-              onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-              placeholder="Enter full article content"
-              rows={8}
+            <Label>Content</Label>
+            <RichTextEditor
+              value={formData.content || ""}
+              onChange={(content) => setFormData({ ...formData, content })}
+              placeholder="Start writing your article content..."
             />
           </div>
 
