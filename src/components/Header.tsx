@@ -10,7 +10,8 @@ const navItems = [{
   href: "#current-issue"
 }, {
   label: "Articles",
-  href: "#articles"
+  href: "/articles",
+  isRoute: true
 }, {
   label: "For Authors",
   href: "#authors"
@@ -49,9 +50,17 @@ export function Header() {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-8">
-            {navItems.map(item => <a key={item.label} href={item.href} className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-                {item.label}
-              </a>)}
+            {navItems.map(item => 
+              item.isRoute ? (
+                <Link key={item.label} to={item.href} className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+                  {item.label}
+                </Link>
+              ) : (
+                <a key={item.label} href={item.href} className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+                  {item.label}
+                </a>
+              )
+            )}
           </nav>
 
           {/* Actions */}
@@ -99,9 +108,17 @@ export function Header() {
         {/* Mobile Menu */}
         {mobileMenuOpen && <nav className="md:hidden py-4 border-t border-border">
             <div className="flex flex-col gap-4">
-              {navItems.map(item => <a key={item.label} href={item.href} className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors" onClick={() => setMobileMenuOpen(false)}>
-                  {item.label}
-                </a>)}
+              {navItems.map(item => 
+                item.isRoute ? (
+                  <Link key={item.label} to={item.href} className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors" onClick={() => setMobileMenuOpen(false)}>
+                    {item.label}
+                  </Link>
+                ) : (
+                  <a key={item.label} href={item.href} className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors" onClick={() => setMobileMenuOpen(false)}>
+                    {item.label}
+                  </a>
+                )
+              )}
               {user ? <>
                   <Button variant="ghost" size="sm" className="w-fit justify-start" onClick={() => {
               navigate("/dashboard");
