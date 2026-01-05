@@ -425,6 +425,13 @@ export default function Articles() {
                   {/* Article Content */}
                   <div className="flex-1 p-6">
                     <div className="flex flex-wrap items-center gap-3 mb-3">
+                      {/* DOI Badge */}
+                      {article.doi && (
+                        <span className="text-xs font-mono text-primary bg-primary/10 px-2 py-1 rounded">
+                          DOI: {article.doi}
+                        </span>
+                      )}
+                      
                       {/* Citation Reference */}
                       <span className="text-xs font-mono text-muted-foreground bg-muted px-2 py-1 rounded">
                         Ref: {getCitationRef(article, index)}

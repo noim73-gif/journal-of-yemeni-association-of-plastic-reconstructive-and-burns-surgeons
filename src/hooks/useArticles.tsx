@@ -14,6 +14,7 @@ export interface Article {
   is_main_featured: boolean;
   volume: string | null;
   issue: string | null;
+  doi: string | null;
   published_at: string | null;
   created_at: string;
   updated_at: string;

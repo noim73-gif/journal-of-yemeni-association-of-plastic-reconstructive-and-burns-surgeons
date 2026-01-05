@@ -10,7 +10,7 @@ import { ArticleLikeButton } from "@/components/article/ArticleLikeButton";
 import { ArticleComments } from "@/components/article/ArticleComments";
 import { useAuth } from "@/hooks/useAuth";
 import { useReadingHistory } from "@/hooks/useReadingHistory";
-import { ArrowLeft, Calendar, User, BookOpen, Share2, Bookmark, Loader2 } from "lucide-react";
+import { ArrowLeft, Calendar, User, BookOpen, Share2, Bookmark, Loader2, ExternalLink } from "lucide-react";
 import { format } from "date-fns";
 import { useSavedArticles } from "@/hooks/useSavedArticles";
 
@@ -24,6 +24,7 @@ interface Article {
   image_url: string | null;
   volume: string | null;
   issue: string | null;
+  doi: string | null;
   published_at: string | null;
   created_at: string;
 }
@@ -180,6 +181,22 @@ export default function ArticlePage() {
                   </div>
                 )}
               </div>
+              
+              {/* DOI Display */}
+              {article.doi && (
+                <div className="mt-4">
+                  <a
+                    href={`https://doi.org/${article.doi}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-3 py-1.5 bg-white/10 hover:bg-white/20 rounded-md text-sm font-mono transition-colors"
+                  >
+                    <span className="opacity-70">DOI:</span>
+                    <span>{article.doi}</span>
+                    <ExternalLink className="h-3 w-3 opacity-70" />
+                  </a>
+                </div>
+              )}
             </div>
           </div>
         </div>
