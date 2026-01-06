@@ -78,6 +78,56 @@ export type Database = {
           },
         ]
       }
+      article_reviews: {
+        Row: {
+          article_id: string
+          assigned_at: string
+          completed_at: string | null
+          created_at: string
+          feedback: string | null
+          id: string
+          private_notes: string | null
+          recommendation: string | null
+          reviewer_id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          article_id: string
+          assigned_at?: string
+          completed_at?: string | null
+          created_at?: string
+          feedback?: string | null
+          id?: string
+          private_notes?: string | null
+          recommendation?: string | null
+          reviewer_id: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          article_id?: string
+          assigned_at?: string
+          completed_at?: string | null
+          created_at?: string
+          feedback?: string | null
+          id?: string
+          private_notes?: string | null
+          recommendation?: string | null
+          reviewer_id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "article_reviews_article_id_fkey"
+            columns: ["article_id"]
+            isOneToOne: false
+            referencedRelation: "articles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       articles: {
         Row: {
           abstract: string | null
@@ -93,6 +143,7 @@ export type Database = {
           is_main_featured: boolean | null
           issue: string | null
           published_at: string | null
+          review_status: string | null
           title: string
           updated_at: string
           volume: string | null
@@ -111,6 +162,7 @@ export type Database = {
           is_main_featured?: boolean | null
           issue?: string | null
           published_at?: string | null
+          review_status?: string | null
           title: string
           updated_at?: string
           volume?: string | null
@@ -129,6 +181,7 @@ export type Database = {
           is_main_featured?: boolean | null
           issue?: string | null
           published_at?: string | null
+          review_status?: string | null
           title?: string
           updated_at?: string
           volume?: string | null
@@ -260,7 +313,7 @@ export type Database = {
       }
     }
     Enums: {
-      app_role: "admin" | "moderator" | "user"
+      app_role: "admin" | "moderator" | "user" | "reviewer"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -388,7 +441,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "moderator", "user"],
+      app_role: ["admin", "moderator", "user", "reviewer"],
     },
   },
 } as const

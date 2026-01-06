@@ -46,17 +46,20 @@ import {
   Users,
   ShieldCheck,
   UserCheck,
+  Eye,
 } from "lucide-react";
 
 const roleColors: Record<string, string> = {
   admin: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
   moderator: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
+  reviewer: "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400",
   user: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
 };
 
 const roleIcons: Record<string, React.ReactNode> = {
   admin: <Shield className="h-3 w-3" />,
   moderator: <UserCog className="h-3 w-3" />,
+  reviewer: <Eye className="h-3 w-3" />,
   user: <Users className="h-3 w-3" />,
 };
 
@@ -80,14 +83,14 @@ export default function AdminUsers() {
     if (!selectedUser || !selectedRole) return;
     
     setIsSubmitting(true);
-    await assignRole(selectedUser.user_id, selectedRole as "admin" | "moderator" | "user");
+    await assignRole(selectedUser.user_id, selectedRole as "admin" | "moderator" | "reviewer" | "user");
     setIsSubmitting(false);
     setIsAssignDialogOpen(false);
     setSelectedRole("");
   };
 
   const handleRemoveRole = async (user: UserWithRole, role: string) => {
-    await removeRole(user.user_id, role as "admin" | "moderator" | "user");
+    await removeRole(user.user_id, role as "admin" | "moderator" | "reviewer" | "user");
   };
 
   const getInitials = (name: string | null) => {
@@ -288,6 +291,12 @@ export default function AdminUsers() {
                   <div className="flex items-center gap-2">
                     <UserCog className="h-4 w-4" />
                     Moderator - Can manage articles and comments
+                  </div>
+                </SelectItem>
+                <SelectItem value="reviewer">
+                  <div className="flex items-center gap-2">
+                    <Eye className="h-4 w-4" />
+                    Reviewer - Can review article submissions
                   </div>
                 </SelectItem>
                 <SelectItem value="user">

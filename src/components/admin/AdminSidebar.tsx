@@ -18,11 +18,13 @@ import {
   Settings,
   BookOpen,
   Users,
+  ClipboardCheck,
 } from "lucide-react";
 
 const menuItems = [
   { title: "Dashboard", url: "/admin", icon: LayoutDashboard },
   { title: "Articles", url: "/admin/articles", icon: FileText },
+  { title: "Reviews", url: "/admin/reviews", icon: ClipboardCheck },
   { title: "Users", url: "/admin/users", icon: Users },
   { title: "Analytics", url: "/admin/analytics", icon: BarChart3 },
   { title: "Journal Settings", url: "/admin/settings", icon: Settings },
