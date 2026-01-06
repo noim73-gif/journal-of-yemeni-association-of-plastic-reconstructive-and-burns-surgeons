@@ -60,7 +60,7 @@ export function useUsers() {
     setLoading(false);
   }
 
-  async function assignRole(userId: string, role: "admin" | "moderator" | "user") {
+  async function assignRole(userId: string, role: "admin" | "moderator" | "reviewer" | "user") {
     const { error } = await supabase
       .from("user_roles")
       .insert([{ user_id: userId, role }]);
@@ -80,7 +80,7 @@ export function useUsers() {
     return true;
   }
 
-  async function removeRole(userId: string, role: "admin" | "moderator" | "user") {
+  async function removeRole(userId: string, role: "admin" | "moderator" | "reviewer" | "user") {
     const { error } = await supabase
       .from("user_roles")
       .delete()
