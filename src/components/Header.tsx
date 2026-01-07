@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Menu, X, Search, User, LogOut, Bookmark, Settings } from "lucide-react";
+import { Menu, X, Search, User, LogOut, Bookmark, Settings, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { useAdmin } from "@/hooks/useAdmin";
@@ -17,8 +17,9 @@ const navItems = [{
   href: "/archive",
   isRoute: true
 }, {
-  label: "For Authors",
-  href: "#authors"
+  label: "Submit",
+  href: "/submit",
+  isRoute: true
 }, {
   label: "About",
   href: "#about"
@@ -84,6 +85,10 @@ export function Header() {
                       <DropdownMenuItem onClick={() => navigate("/dashboard")} className="cursor-pointer">
                         <Bookmark className="mr-2 h-4 w-4" />
                         My Library
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => navigate("/submit")} className="cursor-pointer">
+                        <Send className="mr-2 h-4 w-4" />
+                        Submit Manuscript
                       </DropdownMenuItem>
                       {isAdmin && <>
                           <DropdownMenuSeparator />

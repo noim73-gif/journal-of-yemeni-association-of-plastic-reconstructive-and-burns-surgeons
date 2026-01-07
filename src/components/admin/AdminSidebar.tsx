@@ -19,11 +19,13 @@ import {
   BookOpen,
   Users,
   ClipboardCheck,
+  Inbox,
 } from "lucide-react";
 
 const menuItems = [
   { title: "Dashboard", url: "/admin", icon: LayoutDashboard },
   { title: "Articles", url: "/admin/articles", icon: FileText },
+  { title: "Submissions", url: "/admin/submissions", icon: Inbox },
   { title: "Reviews", url: "/admin/reviews", icon: ClipboardCheck },
   { title: "Users", url: "/admin/users", icon: Users },
   { title: "Analytics", url: "/admin/analytics", icon: BarChart3 },
