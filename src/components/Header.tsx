@@ -13,6 +13,10 @@ const navItems = [{
   href: "/articles",
   isRoute: true
 }, {
+  label: "Archive",
+  href: "/archive",
+  isRoute: true
+}, {
   label: "For Authors",
   href: "#authors"
 }, {

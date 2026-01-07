@@ -9,6 +9,7 @@ import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import Article from "./pages/Article";
 import Articles from "./pages/Articles";
+import Archive from "./pages/Archive";
 import NotFound from "./pages/NotFound";
 import { AdminLayout } from "./components/admin/AdminLayout";
 import AdminDashboard from "./pages/admin/AdminDashboard";
@@ -42,6 +43,7 @@ const App = () => (
               <Route path="settings" element={<AdminSettings />} />
             </Route>
             <Route path="/articles" element={<Articles />} />
+            <Route path="/archive" element={<Archive />} />
             <Route path="/article/:id" element={<Article />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
