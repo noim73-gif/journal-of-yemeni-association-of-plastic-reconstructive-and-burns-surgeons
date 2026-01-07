@@ -278,6 +278,57 @@ export type Database = {
         }
         Relationships: []
       }
+      submissions: {
+        Row: {
+          abstract: string
+          admin_notes: string | null
+          authors: string
+          category: string | null
+          cover_letter: string | null
+          created_at: string
+          id: string
+          keywords: string | null
+          manuscript_url: string | null
+          status: string
+          supplementary_url: string | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          abstract: string
+          admin_notes?: string | null
+          authors: string
+          category?: string | null
+          cover_letter?: string | null
+          created_at?: string
+          id?: string
+          keywords?: string | null
+          manuscript_url?: string | null
+          status?: string
+          supplementary_url?: string | null
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          abstract?: string
+          admin_notes?: string | null
+          authors?: string
+          category?: string | null
+          cover_letter?: string | null
+          created_at?: string
+          id?: string
+          keywords?: string | null
+          manuscript_url?: string | null
+          status?: string
+          supplementary_url?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
