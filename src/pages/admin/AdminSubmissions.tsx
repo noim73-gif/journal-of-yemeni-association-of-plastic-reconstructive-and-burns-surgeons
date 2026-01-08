@@ -1,5 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSubmissions, Submission } from "@/hooks/useSubmissions";
+import { useSubmissionReviews, SubmissionReview } from "@/hooks/useSubmissionReviews";
+import { useUsers } from "@/hooks/useUsers";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -27,7 +29,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Loader2, Eye, FileText, Download } from "lucide-react";
+import { Loader2, Eye, FileText, Download, UserPlus, Users } from "lucide-react";
 import { format } from "date-fns";
 
 const statusOptions = [
@@ -62,14 +64,36 @@ const getStatusBadge = (status: string) => {
   );
 };
 
+const getReviewStatusBadge = (status: string) => {
+  const colors: Record<string, string> = {
+    pending: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
+    in_progress: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
+    completed: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
+  };
+
+  return (
+    <Badge variant="secondary" className={colors[status] || ""}>
+      {status.replace("_", " ")}
+    </Badge>
+  );
+};
+
 export default function AdminSubmissions() {
   const { submissions, loading, updateSubmissionStatus, getManuscriptUrl } = useSubmissions();
+  const { reviews, assignReviewer, removeReviewer, getReviewsForSubmission, refetch: refetchReviews } = useSubmissionReviews();
+  const { users } = useUsers();
   const [selectedSubmission, setSelectedSubmission] = useState<Submission | null>(null);
   const [showDetails, setShowDetails] = useState(false);
   const [showStatusDialog, setShowStatusDialog] = useState(false);
+  const [showAssignDialog, setShowAssignDialog] = useState(false);
+  const [showReviewersDialog, setShowReviewersDialog] = useState(false);
+  const [submissionReviews, setSubmissionReviews] = useState<SubmissionReview[]>([]);
   const [newStatus, setNewStatus] = useState("");
   const [adminNotes, setAdminNotes] = useState("");
+  const [selectedReviewer, setSelectedReviewer] = useState("");
   const [isUpdating, setIsUpdating] = useState(false);
+
+  const reviewers = users.filter((u) => u.roles.includes("reviewer"));
 
   const handleViewDetails = (submission: Submission) => {
     setSelectedSubmission(submission);
@@ -99,6 +123,41 @@ export default function AdminSubmissions() {
     }
   };
 
+  const handleAssignReviewer = (submission: Submission) => {
+    setSelectedSubmission(submission);
+    setSelectedReviewer("");
+    setShowAssignDialog(true);
+  };
+
+  const handleConfirmAssign = async () => {
+    if (!selectedSubmission || !selectedReviewer) return;
+    setIsUpdating(true);
+    await assignReviewer(selectedSubmission.id, selectedReviewer);
+    setIsUpdating(false);
+    setShowAssignDialog(false);
+    setSelectedSubmission(null);
+    setSelectedReviewer("");
+  };
+
+  const handleViewReviewers = async (submission: Submission) => {
+    setSelectedSubmission(submission);
+    const reviews = await getReviewsForSubmission(submission.id);
+    setSubmissionReviews(reviews);
+    setShowReviewersDialog(true);
+  };
+
+  const handleRemoveReviewer = async (reviewId: string) => {
+    await removeReviewer(reviewId);
+    if (selectedSubmission) {
+      const reviews = await getReviewsForSubmission(selectedSubmission.id);
+      setSubmissionReviews(reviews);
+    }
+  };
+
+  const getReviewerCount = (submissionId: string) => {
+    return reviews.filter((r) => r.submission_id === submissionId).length;
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -112,7 +171,7 @@ export default function AdminSubmissions() {
       <div>
         <h1 className="font-serif text-3xl font-bold mb-2">Submissions</h1>
         <p className="text-muted-foreground">
-          Manage manuscript submissions
+          Manage manuscript submissions and assign reviewers
         </p>
       </div>
 
@@ -124,6 +183,7 @@ export default function AdminSubmissions() {
               <TableHead>Authors</TableHead>
               <TableHead>Category</TableHead>
               <TableHead>Status</TableHead>
+              <TableHead>Reviewers</TableHead>
               <TableHead>Submitted</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
@@ -131,7 +191,7 @@ export default function AdminSubmissions() {
           <TableBody>
             {submissions.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
+                <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
                   No submissions yet
                 </TableCell>
               </TableRow>
@@ -147,6 +207,17 @@ export default function AdminSubmissions() {
                   <TableCell>{submission.category || "-"}</TableCell>
                   <TableCell>{getStatusBadge(submission.status)}</TableCell>
                   <TableCell>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="gap-1"
+                      onClick={() => handleViewReviewers(submission)}
+                    >
+                      <Users className="h-4 w-4" />
+                      {getReviewerCount(submission.id)}
+                    </Button>
+                  </TableCell>
+                  <TableCell>
                     {format(new Date(submission.created_at), "MMM d, yyyy")}
                   </TableCell>
                   <TableCell className="text-right">
@@ -157,6 +228,13 @@ export default function AdminSubmissions() {
                         onClick={() => handleViewDetails(submission)}
                       >
                         <Eye className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleAssignReviewer(submission)}
+                      >
+                        <UserPlus className="h-4 w-4" />
                       </Button>
                       <Button
                         variant="outline"
@@ -301,6 +379,125 @@ export default function AdminSubmissions() {
               ) : (
                 "Save Changes"
               )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Assign Reviewer Dialog */}
+      <Dialog open={showAssignDialog} onOpenChange={setShowAssignDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Assign Reviewer</DialogTitle>
+            <DialogDescription>
+              Select a reviewer for: {selectedSubmission?.title}
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label>Reviewer</Label>
+              <Select value={selectedReviewer} onValueChange={setSelectedReviewer}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a reviewer" />
+                </SelectTrigger>
+                <SelectContent>
+                  {reviewers.length === 0 ? (
+                    <SelectItem value="none" disabled>
+                      No reviewers available
+                    </SelectItem>
+                  ) : (
+                    reviewers.map((reviewer) => (
+                      <SelectItem key={reviewer.user_id} value={reviewer.user_id}>
+                        {reviewer.full_name || "Unnamed Reviewer"}
+                      </SelectItem>
+                    ))
+                  )}
+                </SelectContent>
+              </Select>
+            </div>
+            {reviewers.length === 0 && (
+              <p className="text-sm text-muted-foreground">
+                No users have the reviewer role. Go to Users to assign the reviewer role.
+              </p>
+            )}
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowAssignDialog(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleConfirmAssign} disabled={!selectedReviewer || isUpdating}>
+              {isUpdating ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Assigning...
+                </>
+              ) : (
+                "Assign Reviewer"
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* View Reviewers Dialog */}
+      <Dialog open={showReviewersDialog} onOpenChange={setShowReviewersDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Assigned Reviewers</DialogTitle>
+            <DialogDescription>
+              Reviewers for: {selectedSubmission?.title}
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-4">
+            {submissionReviews.length === 0 ? (
+              <p className="text-center text-muted-foreground py-4">
+                No reviewers assigned yet
+              </p>
+            ) : (
+              <div className="space-y-3">
+                {submissionReviews.map((review) => (
+                  <div
+                    key={review.id}
+                    className="flex items-center justify-between p-3 border rounded-lg"
+                  >
+                    <div>
+                      <p className="font-medium">{review.reviewer_name}</p>
+                      <div className="flex items-center gap-2 mt-1">
+                        {getReviewStatusBadge(review.status)}
+                        {review.recommendation && (
+                          <Badge variant="outline" className="text-xs">
+                            {review.recommendation.replace("_", " ")}
+                          </Badge>
+                        )}
+                      </div>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="text-destructive hover:text-destructive"
+                      onClick={() => handleRemoveReviewer(review.id)}
+                    >
+                      Remove
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowReviewersDialog(false)}>
+              Close
+            </Button>
+            <Button onClick={() => {
+              setShowReviewersDialog(false);
+              if (selectedSubmission) handleAssignReviewer(selectedSubmission);
+            }}>
+              <UserPlus className="mr-2 h-4 w-4" />
+              Add Reviewer
             </Button>
           </DialogFooter>
         </DialogContent>
