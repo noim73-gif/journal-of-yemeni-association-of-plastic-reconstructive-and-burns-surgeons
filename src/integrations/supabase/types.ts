@@ -278,6 +278,56 @@ export type Database = {
         }
         Relationships: []
       }
+      submission_reviews: {
+        Row: {
+          assigned_at: string
+          completed_at: string | null
+          created_at: string
+          feedback: string | null
+          id: string
+          private_notes: string | null
+          recommendation: string | null
+          reviewer_id: string
+          status: string
+          submission_id: string
+          updated_at: string
+        }
+        Insert: {
+          assigned_at?: string
+          completed_at?: string | null
+          created_at?: string
+          feedback?: string | null
+          id?: string
+          private_notes?: string | null
+          recommendation?: string | null
+          reviewer_id: string
+          status?: string
+          submission_id: string
+          updated_at?: string
+        }
+        Update: {
+          assigned_at?: string
+          completed_at?: string | null
+          created_at?: string
+          feedback?: string | null
+          id?: string
+          private_notes?: string | null
+          recommendation?: string | null
+          reviewer_id?: string
+          status?: string
+          submission_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "submission_reviews_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: false
+            referencedRelation: "submissions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       submissions: {
         Row: {
           abstract: string
