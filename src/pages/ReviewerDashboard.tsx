@@ -4,6 +4,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useReviews, useIsReviewer, Review } from "@/hooks/useReviews";
 import { useSubmissionReviews, SubmissionReview } from "@/hooks/useSubmissionReviews";
 import { supabase } from "@/integrations/supabase/client";
+import DOMPurify from "dompurify";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
@@ -447,7 +448,12 @@ export default function ReviewerDashboard() {
               <p className="text-sm text-muted-foreground">{selectedArticleReview?.article_abstract}</p>
             </div>
             <div className="prose dark:prose-invert max-w-none">
-              <div dangerouslySetInnerHTML={{ __html: articleContent }} />
+              <div dangerouslySetInnerHTML={{ 
+                __html: DOMPurify.sanitize(articleContent, {
+                  ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'u', 's', 'h1', 'h2', 'h3', 'ul', 'ol', 'li', 'blockquote', 'a', 'img', 'hr', 'div', 'span'],
+                  ALLOWED_ATTR: ['href', 'src', 'alt', 'class', 'style', 'target', 'rel']
+                })
+              }} />
             </div>
           </div>
           <DialogFooter>
