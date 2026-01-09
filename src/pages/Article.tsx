@@ -13,6 +13,7 @@ import { useReadingHistory } from "@/hooks/useReadingHistory";
 import { ArrowLeft, Calendar, User, BookOpen, Share2, Bookmark, Loader2, ExternalLink } from "lucide-react";
 import { format } from "date-fns";
 import { useSavedArticles } from "@/hooks/useSavedArticles";
+import DOMPurify from "dompurify";
 
 interface Article {
   id: string;
@@ -238,7 +239,12 @@ export default function ArticlePage() {
             {article.content && (
               <div 
                 className="prose prose-lg max-w-none mb-12 prose-headings:font-serif prose-headings:text-foreground prose-p:text-foreground prose-p:leading-relaxed prose-a:text-primary prose-blockquote:border-primary prose-blockquote:text-muted-foreground prose-li:text-foreground"
-                dangerouslySetInnerHTML={{ __html: article.content }}
+                dangerouslySetInnerHTML={{ 
+                  __html: DOMPurify.sanitize(article.content, {
+                    ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'u', 's', 'h1', 'h2', 'h3', 'ul', 'ol', 'li', 'blockquote', 'a', 'img', 'hr', 'div', 'span'],
+                    ALLOWED_ATTR: ['href', 'src', 'alt', 'class', 'style', 'target', 'rel']
+                  })
+                }}
               />
             )}
 
