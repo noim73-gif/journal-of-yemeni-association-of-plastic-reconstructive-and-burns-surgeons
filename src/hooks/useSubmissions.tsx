@@ -90,6 +90,23 @@ export function useSubmissions() {
       title: "Success",
       description: "Manuscript submitted successfully",
     });
+
+    // Send email notification (non-blocking)
+    try {
+      await supabase.functions.invoke("send-submission-notification", {
+        body: {
+          submissionId: data.id,
+          title: data.title,
+          authors: data.authors,
+          category: data.category,
+          submitterEmail: user.email,
+          submitterName: user.user_metadata?.full_name || null,
+        },
+      });
+    } catch (emailError) {
+      console.error("Failed to send notification email:", emailError);
+      // Don't fail the submission if email fails
+    }
     
     await fetchSubmissions();
     return data;
