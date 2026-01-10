@@ -188,28 +188,127 @@ export type Database = {
         }
         Relationships: []
       }
+      doctor_profiles: {
+        Row: {
+          academic_degree: string | null
+          created_at: string
+          google_scholar_id: string | null
+          hospital: string | null
+          id: string
+          is_public_profile: boolean | null
+          medical_license_number: string | null
+          orcid_id: string | null
+          research_interests: string[] | null
+          specialty: string | null
+          spoken_languages: string[] | null
+          university: string | null
+          updated_at: string
+          user_id: string
+          years_of_experience: number | null
+        }
+        Insert: {
+          academic_degree?: string | null
+          created_at?: string
+          google_scholar_id?: string | null
+          hospital?: string | null
+          id?: string
+          is_public_profile?: boolean | null
+          medical_license_number?: string | null
+          orcid_id?: string | null
+          research_interests?: string[] | null
+          specialty?: string | null
+          spoken_languages?: string[] | null
+          university?: string | null
+          updated_at?: string
+          user_id: string
+          years_of_experience?: number | null
+        }
+        Update: {
+          academic_degree?: string | null
+          created_at?: string
+          google_scholar_id?: string | null
+          hospital?: string | null
+          id?: string
+          is_public_profile?: boolean | null
+          medical_license_number?: string | null
+          orcid_id?: string | null
+          research_interests?: string[] | null
+          specialty?: string | null
+          spoken_languages?: string[] | null
+          university?: string | null
+          updated_at?: string
+          user_id?: string
+          years_of_experience?: number | null
+        }
+        Relationships: []
+      }
+      login_activity: {
+        Row: {
+          id: string
+          ip_address: string | null
+          login_at: string
+          user_agent: string | null
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          ip_address?: string | null
+          login_at?: string
+          user_agent?: string | null
+          user_id: string
+        }
+        Update: {
+          id?: string
+          ip_address?: string | null
+          login_at?: string
+          user_agent?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
+          account_status: string | null
           avatar_url: string | null
+          bio: string | null
+          city: string | null
+          country: string | null
           created_at: string
           full_name: string | null
           id: string
+          id_number: string | null
+          notification_preferences: Json | null
+          phone: string | null
           updated_at: string
           user_id: string
         }
         Insert: {
+          account_status?: string | null
           avatar_url?: string | null
+          bio?: string | null
+          city?: string | null
+          country?: string | null
           created_at?: string
           full_name?: string | null
           id?: string
+          id_number?: string | null
+          notification_preferences?: Json | null
+          phone?: string | null
           updated_at?: string
           user_id: string
         }
         Update: {
+          account_status?: string | null
           avatar_url?: string | null
+          bio?: string | null
+          city?: string | null
+          country?: string | null
           created_at?: string
           full_name?: string | null
           id?: string
+          id_number?: string | null
+          notification_preferences?: Json | null
+          phone?: string | null
           updated_at?: string
           user_id?: string
         }
@@ -414,7 +513,14 @@ export type Database = {
       }
     }
     Enums: {
-      app_role: "admin" | "moderator" | "user" | "reviewer"
+      app_role:
+        | "admin"
+        | "moderator"
+        | "user"
+        | "reviewer"
+        | "doctor"
+        | "editor"
+        | "member"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -542,7 +648,15 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "moderator", "user", "reviewer"],
+      app_role: [
+        "admin",
+        "moderator",
+        "user",
+        "reviewer",
+        "doctor",
+        "editor",
+        "member",
+      ],
     },
   },
 } as const
