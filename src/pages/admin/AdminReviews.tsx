@@ -80,10 +80,9 @@ export default function AdminReviews() {
   // Get reviewers (users with reviewer role)
   const reviewers = users.filter((u) => u.roles.includes("reviewer"));
 
-  // Get articles that can be reviewed (submitted or under review)
-  const reviewableArticles = articles.filter(
-    (a) => !a.published_at || (a as any).review_status === "submitted" || (a as any).review_status === "under_review"
-  );
+  // Get all articles for review assignment (both drafts and published)
+  // Admins can assign reviewers to any article
+  const reviewableArticles = articles;
 
   const filteredReviews = reviews.filter((review) => {
     const searchLower = searchQuery.toLowerCase();
@@ -279,11 +278,17 @@ export default function AdminReviews() {
                   <SelectValue placeholder="Select an article" />
                 </SelectTrigger>
                 <SelectContent>
-                  {reviewableArticles.map((article) => (
-                    <SelectItem key={article.id} value={article.id}>
-                      {article.title}
+                  {reviewableArticles.length === 0 ? (
+                    <SelectItem value="none" disabled>
+                      No articles available
                     </SelectItem>
-                  ))}
+                  ) : (
+                    reviewableArticles.map((article) => (
+                      <SelectItem key={article.id} value={article.id}>
+                        {article.title}
+                      </SelectItem>
+                    ))
+                  )}
                 </SelectContent>
               </Select>
             </div>
