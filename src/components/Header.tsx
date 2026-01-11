@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Menu, X, Search, User, LogOut, Bookmark, Settings, Send } from "lucide-react";
+import { Menu, X, Search, User, LogOut, Bookmark, Settings, Send, UserCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { useAdmin } from "@/hooks/useAdmin";
@@ -82,6 +82,10 @@ export function Header() {
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="w-48">
+                      <DropdownMenuItem onClick={() => navigate("/profile")} className="cursor-pointer">
+                        <UserCircle className="mr-2 h-4 w-4" />
+                        My Profile
+                      </DropdownMenuItem>
                       <DropdownMenuItem onClick={() => navigate("/dashboard")} className="cursor-pointer">
                         <Bookmark className="mr-2 h-4 w-4" />
                         My Library
