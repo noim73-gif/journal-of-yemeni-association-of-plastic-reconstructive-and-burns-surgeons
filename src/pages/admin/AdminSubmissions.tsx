@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useSubmissions, Submission } from "@/hooks/useSubmissions";
 import { useSubmissionReviews, SubmissionReview } from "@/hooks/useSubmissionReviews";
 import { useUsers } from "@/hooks/useUsers";
+import { SubmissionReviewPanel } from "@/components/admin/SubmissionReviewPanel";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -254,7 +255,7 @@ export default function AdminSubmissions() {
 
       {/* Details Dialog */}
       <Dialog open={showDetails} onOpenChange={setShowDetails}>
-        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+        <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="font-serif">{selectedSubmission?.title}</DialogTitle>
             <DialogDescription>
@@ -263,20 +264,21 @@ export default function AdminSubmissions() {
           </DialogHeader>
           
           {selectedSubmission && (
-            <div className="space-y-4">
-              <div>
-                <Label className="text-sm font-medium">Status</Label>
-                <div className="mt-1">{getStatusBadge(selectedSubmission.status)}</div>
+            <div className="space-y-6">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Status</Label>
+                  <div className="mt-1">{getStatusBadge(selectedSubmission.status)}</div>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium">Category</Label>
+                  <p className="mt-1 text-sm">{selectedSubmission.category || "Not specified"}</p>
+                </div>
               </div>
 
               <div>
                 <Label className="text-sm font-medium">Authors</Label>
                 <p className="mt-1 text-sm">{selectedSubmission.authors}</p>
-              </div>
-
-              <div>
-                <Label className="text-sm font-medium">Category</Label>
-                <p className="mt-1 text-sm">{selectedSubmission.category || "Not specified"}</p>
               </div>
 
               <div>
@@ -286,13 +288,13 @@ export default function AdminSubmissions() {
 
               <div>
                 <Label className="text-sm font-medium">Abstract</Label>
-                <p className="mt-1 text-sm whitespace-pre-wrap">{selectedSubmission.abstract}</p>
+                <p className="mt-1 text-sm whitespace-pre-wrap bg-muted p-3 rounded-md">{selectedSubmission.abstract}</p>
               </div>
 
               {selectedSubmission.cover_letter && (
                 <div>
                   <Label className="text-sm font-medium">Cover Letter</Label>
-                  <p className="mt-1 text-sm whitespace-pre-wrap">{selectedSubmission.cover_letter}</p>
+                  <p className="mt-1 text-sm whitespace-pre-wrap bg-muted p-3 rounded-md">{selectedSubmission.cover_letter}</p>
                 </div>
               )}
 
@@ -316,6 +318,9 @@ export default function AdminSubmissions() {
                   </Button>
                 )}
               </div>
+
+              {/* Peer Review Summary Section */}
+              <SubmissionReviewPanel submissionId={selectedSubmission.id} />
 
               {selectedSubmission.admin_notes && (
                 <div>
