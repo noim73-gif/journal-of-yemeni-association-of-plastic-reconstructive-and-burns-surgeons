@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Menu, X, Search, User, LogOut, Bookmark, Settings, Send, UserCircle } from "lucide-react";
+import { Menu, X, Search, User, LogOut, Bookmark, Settings, Send, UserCircle, ClipboardCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { useAdmin } from "@/hooks/useAdmin";
+import { supabase } from "@/integrations/supabase/client";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+
 const navItems = [{
   label: "Current Issue",
   href: "#current-issue"
@@ -24,8 +26,10 @@ const navItems = [{
   label: "About",
   href: "#about"
 }];
+
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isReviewer, setIsReviewer] = useState(false);
   const {
     user,
     signOut,
@@ -35,6 +39,27 @@ export function Header() {
     isAdmin
   } = useAdmin();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    async function checkReviewerRole() {
+      if (!user) {
+        setIsReviewer(false);
+        return;
+      }
+
+      const { data } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", user.id)
+        .eq("role", "reviewer")
+        .maybeSingle();
+
+      setIsReviewer(!!data);
+    }
+
+    checkReviewerRole();
+  }, [user]);
+
   const handleSignOut = async () => {
     await signOut();
     navigate("/");
@@ -94,6 +119,12 @@ export function Header() {
                         <Send className="mr-2 h-4 w-4" />
                         Submit Manuscript
                       </DropdownMenuItem>
+                      {isReviewer && (
+                        <DropdownMenuItem onClick={() => navigate("/reviewer")} className="cursor-pointer">
+                          <ClipboardCheck className="mr-2 h-4 w-4" />
+                          Reviewer Dashboard
+                        </DropdownMenuItem>
+                      )}
                       {isAdmin && <>
                           <DropdownMenuSeparator />
                           <DropdownMenuItem onClick={() => navigate("/admin")} className="cursor-pointer">
