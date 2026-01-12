@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { useReviews, Review } from "@/hooks/useReviews";
-import { useArticles } from "@/hooks/useArticles";
+import { useSubmissionReviews } from "@/hooks/useSubmissionReviews";
+import { useSubmissions, Submission } from "@/hooks/useSubmissions";
 import { useUsers } from "@/hooks/useUsers";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -66,40 +66,59 @@ const recommendationColors: Record<string, string> = {
   reject: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
 };
 
+// Define Review type locally since we're using submission_reviews
+interface Review {
+  id: string;
+  submission_id: string;
+  reviewer_id: string;
+  status: string;
+  recommendation: string | null;
+  feedback: string | null;
+  private_notes: string | null;
+  assigned_at: string;
+  completed_at: string | null;
+  submission_title?: string;
+  submission_abstract?: string;
+  reviewer_name?: string;
+}
+
 export default function AdminReviews() {
-  const { reviews, loading, assignReviewer, removeReviewer } = useReviews();
-  const { articles } = useArticles();
+  const { reviews: submissionReviews, loading: reviewsLoading, assignReviewer, removeReviewer, refetch } = useSubmissionReviews();
+  const { submissions, loading: submissionsLoading } = useSubmissions();
   const { users } = useUsers();
   const [searchQuery, setSearchQuery] = useState("");
   const [isAssignDialogOpen, setIsAssignDialogOpen] = useState(false);
-  const [selectedArticle, setSelectedArticle] = useState<string>("");
+  const [selectedSubmission, setSelectedSubmission] = useState<string>("");
   const [selectedReviewer, setSelectedReviewer] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedReview, setSelectedReview] = useState<Review | null>(null);
 
+  const loading = reviewsLoading || submissionsLoading;
+
   // Get reviewers (users with reviewer role)
   const reviewers = users.filter((u) => u.roles.includes("reviewer"));
 
-  // Get all articles for review assignment (both drafts and published)
-  // Admins can assign reviewers to any article
-  const reviewableArticles = articles;
+  // Get submitted manuscripts that are pending review or under review
+  const reviewableSubmissions = submissions.filter(
+    (s) => s.status === "pending" || s.status === "under_review" || s.status === "submitted"
+  );
 
-  const filteredReviews = reviews.filter((review) => {
+  const filteredReviews = submissionReviews.filter((review) => {
     const searchLower = searchQuery.toLowerCase();
     return (
-      review.article_title?.toLowerCase().includes(searchLower) ||
+      review.submission_title?.toLowerCase().includes(searchLower) ||
       review.reviewer_name?.toLowerCase().includes(searchLower)
     );
   });
 
   const handleAssignReviewer = async () => {
-    if (!selectedArticle || !selectedReviewer) return;
+    if (!selectedSubmission || !selectedReviewer) return;
 
     setIsSubmitting(true);
-    await assignReviewer(selectedArticle, selectedReviewer);
+    await assignReviewer(selectedSubmission, selectedReviewer);
     setIsSubmitting(false);
     setIsAssignDialogOpen(false);
-    setSelectedArticle("");
+    setSelectedSubmission("");
     setSelectedReviewer("");
   };
 
@@ -108,9 +127,9 @@ export default function AdminReviews() {
   };
 
   // Stats
-  const pendingCount = reviews.filter((r) => r.status === "pending").length;
-  const completedCount = reviews.filter((r) => r.status === "completed").length;
-  const activeCount = reviews.filter((r) => r.status === "in_progress").length;
+  const pendingCount = submissionReviews.filter((r) => r.status === "pending").length;
+  const completedCount = submissionReviews.filter((r) => r.status === "completed").length;
+  const activeCount = submissionReviews.filter((r) => r.status === "in_progress").length;
 
   if (loading) {
     return (
@@ -184,7 +203,7 @@ export default function AdminReviews() {
           <Table>
             <TableHeader>
               <TableRow className="bg-muted/50">
-                <TableHead>Article</TableHead>
+                <TableHead>Submission</TableHead>
                 <TableHead>Reviewer</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Recommendation</TableHead>
@@ -204,7 +223,7 @@ export default function AdminReviews() {
                   <TableRow key={review.id}>
                     <TableCell>
                       <div className="max-w-[200px]">
-                        <p className="font-medium truncate">{review.article_title}</p>
+                        <p className="font-medium truncate">{review.submission_title}</p>
                       </div>
                     </TableCell>
                     <TableCell>
@@ -239,7 +258,7 @@ export default function AdminReviews() {
                         <DropdownMenuContent align="end">
                           <DropdownMenuLabel>Actions</DropdownMenuLabel>
                           <DropdownMenuSeparator />
-                          <DropdownMenuItem onClick={() => setSelectedReview(review)}>
+                          <DropdownMenuItem onClick={() => setSelectedReview(review as unknown as Review)}>
                             <Eye className="h-4 w-4 mr-2" />
                             View Details
                           </DropdownMenuItem>
@@ -261,31 +280,30 @@ export default function AdminReviews() {
         </div>
       </div>
 
-      {/* Assign Reviewer Dialog */}
       <Dialog open={isAssignDialogOpen} onOpenChange={setIsAssignDialogOpen}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Assign Reviewer</DialogTitle>
             <DialogDescription>
-              Select an article and assign a reviewer for single-blind peer review
+              Select a submission and assign a reviewer for single-blind peer review
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <label className="text-sm font-medium">Article</label>
-              <Select value={selectedArticle} onValueChange={setSelectedArticle}>
+              <label className="text-sm font-medium">Submission</label>
+              <Select value={selectedSubmission} onValueChange={setSelectedSubmission}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select an article" />
+                  <SelectValue placeholder="Select a submission" />
                 </SelectTrigger>
                 <SelectContent>
-                  {reviewableArticles.length === 0 ? (
+                  {reviewableSubmissions.length === 0 ? (
                     <SelectItem value="none" disabled>
-                      No articles available
+                      No submissions available
                     </SelectItem>
                   ) : (
-                    reviewableArticles.map((article) => (
-                      <SelectItem key={article.id} value={article.id}>
-                        {article.title}
+                    reviewableSubmissions.map((submission) => (
+                      <SelectItem key={submission.id} value={submission.id}>
+                        {submission.title}
                       </SelectItem>
                     ))
                   )}
@@ -320,7 +338,7 @@ export default function AdminReviews() {
             </Button>
             <Button
               onClick={handleAssignReviewer}
-              disabled={!selectedArticle || !selectedReviewer || isSubmitting}
+              disabled={!selectedSubmission || !selectedReviewer || isSubmitting}
             >
               {isSubmitting && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
               Assign Reviewer
@@ -335,7 +353,7 @@ export default function AdminReviews() {
           <DialogHeader>
             <DialogTitle>Review Details</DialogTitle>
             <DialogDescription>
-              Review feedback for: {selectedReview?.article_title}
+              Review feedback for: {selectedReview?.submission_title}
             </DialogDescription>
           </DialogHeader>
           {selectedReview && (
