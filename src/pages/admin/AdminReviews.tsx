@@ -2,9 +2,11 @@ import { useState, useEffect } from "react";
 import { useSubmissionReviews } from "@/hooks/useSubmissionReviews";
 import { useSubmissions, Submission } from "@/hooks/useSubmissions";
 import { useUsers } from "@/hooks/useUsers";
+import { ReviewProgressDashboard } from "@/components/admin/ReviewProgressDashboard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Table,
   TableBody,
@@ -50,6 +52,8 @@ import {
   FileText,
   Users,
   ClipboardCheck,
+  BarChart3,
+  UserCheck,
 } from "lucide-react";
 
 const statusColors: Record<string, string> = {
@@ -140,7 +144,7 @@ export default function AdminReviews() {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="font-serif text-3xl font-bold mb-2">Peer Review Management</h1>
@@ -153,6 +157,24 @@ export default function AdminReviews() {
           Assign Reviewer
         </Button>
       </div>
+
+      <Tabs defaultValue="progress" className="space-y-6">
+        <TabsList className="grid w-full max-w-md grid-cols-2">
+          <TabsTrigger value="progress" className="flex items-center gap-2">
+            <BarChart3 className="h-4 w-4" />
+            Progress Dashboard
+          </TabsTrigger>
+          <TabsTrigger value="manage" className="flex items-center gap-2">
+            <UserCheck className="h-4 w-4" />
+            Manage Reviews
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="progress" className="space-y-6">
+          <ReviewProgressDashboard />
+        </TabsContent>
+
+        <TabsContent value="manage" className="space-y-6">
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -413,6 +435,8 @@ export default function AdminReviews() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
