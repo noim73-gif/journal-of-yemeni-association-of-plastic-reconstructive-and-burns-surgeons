@@ -3,6 +3,7 @@ import { useSubmissions, Submission } from "@/hooks/useSubmissions";
 import { useSubmissionReviews, SubmissionReview } from "@/hooks/useSubmissionReviews";
 import { useUsers } from "@/hooks/useUsers";
 import { SubmissionReviewPanel } from "@/components/admin/SubmissionReviewPanel";
+import { ConvertToArticleDialog } from "@/components/admin/ConvertToArticleDialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -30,7 +31,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Loader2, Eye, FileText, Download, UserPlus, Users } from "lucide-react";
+import { Loader2, Eye, FileText, Download, UserPlus, Users, BookOpen } from "lucide-react";
 import { format } from "date-fns";
 
 const statusOptions = [
@@ -88,11 +89,17 @@ export default function AdminSubmissions() {
   const [showStatusDialog, setShowStatusDialog] = useState(false);
   const [showAssignDialog, setShowAssignDialog] = useState(false);
   const [showReviewersDialog, setShowReviewersDialog] = useState(false);
+  const [showConvertDialog, setShowConvertDialog] = useState(false);
   const [submissionReviews, setSubmissionReviews] = useState<SubmissionReview[]>([]);
   const [newStatus, setNewStatus] = useState("");
   const [adminNotes, setAdminNotes] = useState("");
   const [selectedReviewer, setSelectedReviewer] = useState("");
   const [isUpdating, setIsUpdating] = useState(false);
+
+  const handleConvertToArticle = (submission: Submission) => {
+    setSelectedSubmission(submission);
+    setShowConvertDialog(true);
+  };
 
   const reviewers = users.filter((u) => u.roles.includes("reviewer"));
 
@@ -237,6 +244,17 @@ export default function AdminSubmissions() {
                       >
                         <UserPlus className="h-4 w-4" />
                       </Button>
+                      {submission.status === "accepted" && (
+                        <Button
+                          variant="default"
+                          size="sm"
+                          onClick={() => handleConvertToArticle(submission)}
+                          className="gap-1"
+                        >
+                          <BookOpen className="h-4 w-4" />
+                          Publish
+                        </Button>
+                      )}
                       <Button
                         variant="outline"
                         size="sm"
@@ -507,6 +525,13 @@ export default function AdminSubmissions() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Convert to Article Dialog */}
+      <ConvertToArticleDialog
+        submission={selectedSubmission}
+        open={showConvertDialog}
+        onOpenChange={setShowConvertDialog}
+      />
     </div>
   );
 }
