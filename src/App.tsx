@@ -12,6 +12,7 @@ import Article from "./pages/Article";
 import Articles from "./pages/Articles";
 import Archive from "./pages/Archive";
 import NotFound from "./pages/NotFound";
+import PublicProfile from "./pages/PublicProfile";
 import { AdminLayout } from "./components/admin/AdminLayout";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminArticles from "./pages/admin/AdminArticles";
@@ -51,6 +52,7 @@ const App = () => (
             <Route path="/articles" element={<Articles />} />
             <Route path="/archive" element={<Archive />} />
             <Route path="/article/:id" element={<Article />} />
+            <Route path="/u/:username" element={<PublicProfile />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
