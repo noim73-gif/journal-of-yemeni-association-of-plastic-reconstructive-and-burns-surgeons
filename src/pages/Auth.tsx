@@ -6,9 +6,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, Loader2, Mail, CheckCircle2, Shield } from "lucide-react";
+import { ArrowLeft, Loader2, Mail, CheckCircle2, Shield, KeyRound } from "lucide-react";
 import { z } from "zod";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { supabase } from "@/integrations/supabase/client";
 
 const emailSchema = z.string().email("Please enter a valid email address");
 const passwordSchema = z.string().min(6, "Password must be at least 6 characters");
@@ -24,6 +25,9 @@ export default function Auth() {
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
   const [showVerificationMessage, setShowVerificationMessage] = useState(false);
   const [registeredEmail, setRegisteredEmail] = useState("");
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [showResetSent, setShowResetSent] = useState(false);
+  const [resetEmail, setResetEmail] = useState("");
 
   useEffect(() => {
     if (user) {
@@ -46,6 +50,16 @@ export default function Auth() {
     
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
+  };
+
+  const validateEmail = () => {
+    const emailResult = emailSchema.safeParse(resetEmail);
+    if (!emailResult.success) {
+      setErrors({ email: emailResult.error.errors[0].message });
+      return false;
+    }
+    setErrors({});
+    return true;
   };
 
   const handleSignIn = async (e: React.FormEvent) => {
@@ -107,6 +121,159 @@ export default function Auth() {
       setFullName("");
     }
   };
+
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!validateEmail()) return;
+
+    setLoading(true);
+    const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
+      redirectTo: `${window.location.origin}/auth`,
+    });
+    setLoading(false);
+
+    if (error) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    } else {
+      setShowResetSent(true);
+    }
+  };
+
+  // Password reset sent confirmation screen
+  if (showResetSent) {
+    return (
+      <div className="min-h-screen bg-background flex flex-col">
+        <header className="border-b border-border p-4">
+          <Button variant="ghost" onClick={() => navigate("/")} className="gap-2">
+            <ArrowLeft className="h-4 w-4" />
+            Back to Journal
+          </Button>
+        </header>
+
+        <main className="flex-1 flex items-center justify-center p-4">
+          <Card className="w-full max-w-md">
+            <CardHeader className="text-center space-y-4">
+              <div className="mx-auto w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
+                <Mail className="h-8 w-8 text-primary" />
+              </div>
+              <CardTitle className="font-serif text-2xl">Check Your Email</CardTitle>
+              <CardDescription className="text-base">
+                We've sent password reset instructions to
+              </CardDescription>
+              <p className="font-medium text-foreground">{resetEmail}</p>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="space-y-4">
+                <div className="flex items-start gap-3 p-3 rounded-lg bg-muted/50">
+                  <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 shrink-0" />
+                  <div>
+                    <p className="font-medium text-sm">Check your inbox</p>
+                    <p className="text-sm text-muted-foreground">
+                      Click the reset link in the email to create a new password.
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3 p-3 rounded-lg bg-muted/50">
+                  <KeyRound className="h-5 w-5 text-primary mt-0.5 shrink-0" />
+                  <div>
+                    <p className="font-medium text-sm">Create a strong password</p>
+                    <p className="text-sm text-muted-foreground">
+                      Use at least 6 characters with a mix of letters and numbers.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="border-t pt-4 space-y-3">
+                <p className="text-sm text-muted-foreground text-center">
+                  Didn't receive the email? Check your spam folder.
+                </p>
+                <Button 
+                  variant="outline" 
+                  className="w-full"
+                  onClick={() => {
+                    setShowResetSent(false);
+                    setShowForgotPassword(false);
+                    setResetEmail("");
+                  }}
+                >
+                  Back to Sign In
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </main>
+      </div>
+    );
+  }
+
+  // Forgot password form
+  if (showForgotPassword) {
+    return (
+      <div className="min-h-screen bg-background flex flex-col">
+        <header className="border-b border-border p-4">
+          <Button variant="ghost" onClick={() => navigate("/")} className="gap-2">
+            <ArrowLeft className="h-4 w-4" />
+            Back to Journal
+          </Button>
+        </header>
+
+        <main className="flex-1 flex items-center justify-center p-4">
+          <Card className="w-full max-w-md">
+            <CardHeader className="text-center space-y-4">
+              <div className="mx-auto w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
+                <KeyRound className="h-8 w-8 text-primary" />
+              </div>
+              <CardTitle className="font-serif text-2xl">Reset Your Password</CardTitle>
+              <CardDescription className="text-base">
+                Enter your email address and we'll send you instructions to reset your password.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleForgotPassword} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="reset-email">Email Address</Label>
+                  <Input
+                    id="reset-email"
+                    type="email"
+                    placeholder="you@example.com"
+                    value={resetEmail}
+                    onChange={(e) => setResetEmail(e.target.value)}
+                    disabled={loading}
+                  />
+                  {errors.email && (
+                    <p className="text-sm text-destructive">{errors.email}</p>
+                  )}
+                </div>
+                
+                <Button type="submit" className="w-full" disabled={loading}>
+                  {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  Send Reset Instructions
+                </Button>
+                
+                <Button 
+                  type="button"
+                  variant="ghost" 
+                  className="w-full"
+                  onClick={() => {
+                    setShowForgotPassword(false);
+                    setResetEmail("");
+                    setErrors({});
+                  }}
+                >
+                  Back to Sign In
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
+        </main>
+      </div>
+    );
+  }
 
   if (showVerificationMessage) {
     return (
@@ -217,7 +384,17 @@ export default function Auth() {
                   )}
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="signin-password">Password</Label>
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="signin-password">Password</Label>
+                    <Button
+                      type="button"
+                      variant="link"
+                      className="px-0 h-auto font-normal text-sm text-muted-foreground hover:text-primary"
+                      onClick={() => setShowForgotPassword(true)}
+                    >
+                      Forgot password?
+                    </Button>
+                  </div>
                   <Input
                     id="signin-password"
                     type="password"
