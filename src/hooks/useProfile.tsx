@@ -6,6 +6,7 @@ import { toast } from "sonner";
 export interface Profile {
   id: string;
   user_id: string;
+  username: string | null;
   full_name: string | null;
   avatar_url: string | null;
   id_number: string | null;
@@ -18,7 +19,7 @@ export interface Profile {
     email_submissions: boolean;
     email_reviews: boolean;
     email_publications: boolean;
-  };
+  } | null;
   created_at: string;
   updated_at: string;
 }
@@ -274,11 +275,15 @@ export function usePublicDoctorProfiles() {
           const userProfile = profilesData?.find(p => p.user_id === doc.user_id);
           return {
             ...doc,
-            profile: userProfile,
+            profile: userProfile ? {
+              ...userProfile,
+              account_status: userProfile.account_status as Profile["account_status"],
+              notification_preferences: userProfile.notification_preferences as Profile["notification_preferences"],
+            } : null,
           };
-        }).filter(d => d.profile) || [];
+        }).filter(d => d.profile !== null) as (DoctorProfile & { profile: Profile })[] || [];
 
-        setDoctors(doctorsWithProfiles as (DoctorProfile & { profile: Profile })[]);
+        setDoctors(doctorsWithProfiles);
       } catch (error) {
         console.error("Error fetching public doctors:", error);
       } finally {
