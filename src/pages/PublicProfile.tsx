@@ -18,14 +18,27 @@ import {
   Search,
   ExternalLink,
   User,
-  ArrowLeft
+  ArrowLeft,
+  FileText,
+  Calendar
 } from "lucide-react";
 import { Profile, DoctorProfile } from "@/hooks/useProfile";
+import { format } from "date-fns";
+
+interface Article {
+  id: string;
+  title: string;
+  abstract: string | null;
+  published_at: string | null;
+  category: string | null;
+  image_url: string | null;
+}
 
 export default function PublicProfile() {
   const { username } = useParams<{ username: string }>();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [doctorProfile, setDoctorProfile] = useState<DoctorProfile | null>(null);
+  const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
 
@@ -76,6 +89,21 @@ export default function PublicProfile() {
           notification_preferences: profileData.notification_preferences as Profile["notification_preferences"],
         });
         setDoctorProfile(doctorData as DoctorProfile);
+
+        // Fetch published articles by this author
+        const { data: articlesData, error: articlesError } = await supabase
+          .from("articles")
+          .select("id, title, abstract, published_at, category, image_url")
+          .or(`created_by.eq.${profileData.user_id},authors.ilike.%${profileData.full_name}%`)
+          .not("published_at", "is", null)
+          .lte("published_at", new Date().toISOString())
+          .order("published_at", { ascending: false });
+
+        if (articlesError) {
+          console.error("Error fetching articles:", articlesError);
+        } else {
+          setArticles(articlesData || []);
+        }
       } catch (error) {
         console.error("Error fetching public profile:", error);
         setNotFound(true);
@@ -294,6 +322,67 @@ export default function PublicProfile() {
                     </div>
                   </div>
                 )}
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Published Articles */}
+          {articles.length > 0 && (
+            <Card className="shadow-elegant">
+              <CardHeader className="border-b">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-primary/10 rounded-lg">
+                    <FileText className="h-5 w-5 text-primary" />
+                  </div>
+                  <CardTitle className="font-serif">Published Articles</CardTitle>
+                  <Badge variant="secondary" className="ml-auto">
+                    {articles.length} {articles.length === 1 ? "article" : "articles"}
+                  </Badge>
+                </div>
+              </CardHeader>
+              <CardContent className="pt-6">
+                <div className="space-y-4">
+                  {articles.map((article) => (
+                    <Link
+                      key={article.id}
+                      to={`/articles/${article.id}`}
+                      className="block group"
+                    >
+                      <div className="flex gap-4 p-4 rounded-lg border bg-card hover:bg-accent/50 transition-colors">
+                        {article.image_url && (
+                          <img
+                            src={article.image_url}
+                            alt={article.title}
+                            className="w-20 h-20 object-cover rounded-md flex-shrink-0"
+                          />
+                        )}
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-medium group-hover:text-primary transition-colors line-clamp-2">
+                            {article.title}
+                          </h3>
+                          {article.abstract && (
+                            <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
+                              {article.abstract}
+                            </p>
+                          )}
+                          <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
+                            {article.published_at && (
+                              <span className="flex items-center gap-1">
+                                <Calendar className="h-3 w-3" />
+                                {format(new Date(article.published_at), "MMM d, yyyy")}
+                              </span>
+                            )}
+                            {article.category && (
+                              <Badge variant="outline" className="text-xs">
+                                {article.category}
+                              </Badge>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
               </CardContent>
             </Card>
           )}
