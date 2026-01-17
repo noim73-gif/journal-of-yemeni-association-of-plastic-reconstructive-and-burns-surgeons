@@ -20,10 +20,14 @@ import {
   User,
   ArrowLeft,
   FileText,
-  Calendar
+  Calendar,
+  ChevronLeft,
+  ChevronRight
 } from "lucide-react";
 import { Profile, DoctorProfile } from "@/hooks/useProfile";
 import { format } from "date-fns";
+
+const ARTICLES_PER_PAGE = 5;
 
 interface Article {
   id: string;
@@ -41,6 +45,13 @@ export default function PublicProfile() {
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const totalPages = Math.ceil(articles.length / ARTICLES_PER_PAGE);
+  const paginatedArticles = articles.slice(
+    (currentPage - 1) * ARTICLES_PER_PAGE,
+    currentPage * ARTICLES_PER_PAGE
+  );
 
   useEffect(() => {
     const fetchPublicProfile = async () => {
@@ -342,7 +353,7 @@ export default function PublicProfile() {
               </CardHeader>
               <CardContent className="pt-6">
                 <div className="space-y-4">
-                  {articles.map((article) => (
+                  {paginatedArticles.map((article) => (
                     <Link
                       key={article.id}
                       to={`/articles/${article.id}`}
@@ -383,6 +394,49 @@ export default function PublicProfile() {
                     </Link>
                   ))}
                 </div>
+
+                {/* Pagination */}
+                {totalPages > 1 && (
+                  <div className="flex items-center justify-between mt-6 pt-4 border-t">
+                    <p className="text-sm text-muted-foreground">
+                      Showing {(currentPage - 1) * ARTICLES_PER_PAGE + 1}-
+                      {Math.min(currentPage * ARTICLES_PER_PAGE, articles.length)} of {articles.length}
+                    </p>
+                    <div className="flex items-center gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                        disabled={currentPage === 1}
+                      >
+                        <ChevronLeft className="h-4 w-4" />
+                        Previous
+                      </Button>
+                      <div className="flex items-center gap-1">
+                        {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                          <Button
+                            key={page}
+                            variant={currentPage === page ? "default" : "outline"}
+                            size="sm"
+                            className="w-8 h-8 p-0"
+                            onClick={() => setCurrentPage(page)}
+                          >
+                            {page}
+                          </Button>
+                        ))}
+                      </div>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                        disabled={currentPage === totalPages}
+                      >
+                        Next
+                        <ChevronRight className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                )}
               </CardContent>
             </Card>
           )}
