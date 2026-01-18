@@ -23,6 +23,10 @@ const navItems = [{
   href: "/submit",
   isRoute: true
 }, {
+  label: "Author Guidelines",
+  href: "/author-guidelines",
+  isRoute: true
+}, {
   label: "About",
   href: "#about"
 }];
