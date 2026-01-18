@@ -25,6 +25,7 @@ import ReviewerDashboard from "./pages/ReviewerDashboard";
 import Submit from "./pages/Submit";
 import AuthorGuidelines from "./pages/AuthorGuidelines";
 import About from "./pages/About";
+import PeerReview from "./pages/PeerReview";
 
 const queryClient = new QueryClient();
 
@@ -57,6 +58,7 @@ const App = () => (
             <Route path="/u/:username" element={<PublicProfile />} />
             <Route path="/author-guidelines" element={<AuthorGuidelines />} />
             <Route path="/about" element={<About />} />
+            <Route path="/peer-review" element={<PeerReview />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
