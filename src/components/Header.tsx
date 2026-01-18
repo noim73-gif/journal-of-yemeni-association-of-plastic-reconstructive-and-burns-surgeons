@@ -28,7 +28,8 @@ const navItems = [{
   isRoute: true
 }, {
   label: "About",
-  href: "#about"
+  href: "/about",
+  isRoute: true
 }];
 
 export function Header() {

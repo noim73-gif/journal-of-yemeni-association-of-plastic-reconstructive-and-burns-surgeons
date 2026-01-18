@@ -24,6 +24,7 @@ import AdminSubmissions from "./pages/admin/AdminSubmissions";
 import ReviewerDashboard from "./pages/ReviewerDashboard";
 import Submit from "./pages/Submit";
 import AuthorGuidelines from "./pages/AuthorGuidelines";
+import About from "./pages/About";
 
 const queryClient = new QueryClient();
 
@@ -55,6 +56,7 @@ const App = () => (
             <Route path="/article/:id" element={<Article />} />
             <Route path="/u/:username" element={<PublicProfile />} />
             <Route path="/author-guidelines" element={<AuthorGuidelines />} />
+            <Route path="/about" element={<About />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
