@@ -46,6 +46,7 @@ export function Footer() {
               <li><a href="/peer-review" className="hover:text-accent transition-colors">Peer Review Process</a></li>
               <li><a href="/publication-ethics" className="hover:text-accent transition-colors">Publication Ethics</a></li>
               <li><a href="/open-access" className="hover:text-accent transition-colors">Open Access Policy</a></li>
+              <li><a href="/faq" className="hover:text-accent transition-colors">FAQ for Authors</a></li>
             </ul>
           </div>
 
