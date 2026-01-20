@@ -30,6 +30,7 @@ import PublicationEthics from "./pages/PublicationEthics";
 import OpenAccess from "./pages/OpenAccess";
 import Contact from "./pages/Contact";
 import FAQ from "./pages/FAQ";
+import BecomeReviewer from "./pages/BecomeReviewer";
 
 const queryClient = new QueryClient();
 
@@ -67,6 +68,7 @@ const App = () => (
             <Route path="/open-access" element={<OpenAccess />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/faq" element={<FAQ />} />
+            <Route path="/become-reviewer" element={<BecomeReviewer />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
