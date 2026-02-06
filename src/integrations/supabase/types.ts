@@ -242,6 +242,54 @@ export type Database = {
         }
         Relationships: []
       }
+      editorial_board_members: {
+        Row: {
+          affiliation: string | null
+          created_at: string
+          display_order: number | null
+          email: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          orcid_id: string | null
+          photo_url: string | null
+          role: Database["public"]["Enums"]["board_member_role"]
+          specialty: string | null
+          title: string | null
+          updated_at: string
+        }
+        Insert: {
+          affiliation?: string | null
+          created_at?: string
+          display_order?: number | null
+          email?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          orcid_id?: string | null
+          photo_url?: string | null
+          role: Database["public"]["Enums"]["board_member_role"]
+          specialty?: string | null
+          title?: string | null
+          updated_at?: string
+        }
+        Update: {
+          affiliation?: string | null
+          created_at?: string
+          display_order?: number | null
+          email?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          orcid_id?: string | null
+          photo_url?: string | null
+          role?: Database["public"]["Enums"]["board_member_role"]
+          specialty?: string | null
+          title?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       login_activity: {
         Row: {
           id: string
@@ -524,6 +572,11 @@ export type Database = {
         | "doctor"
         | "editor"
         | "member"
+      board_member_role:
+        | "editor_in_chief"
+        | "associate_editor"
+        | "board_member"
+        | "international_advisor"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -659,6 +712,12 @@ export const Constants = {
         "doctor",
         "editor",
         "member",
+      ],
+      board_member_role: [
+        "editor_in_chief",
+        "associate_editor",
+        "board_member",
+        "international_advisor",
       ],
     },
   },
