@@ -3,116 +3,19 @@ import { Footer } from "@/components/Footer";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Mail, ExternalLink } from "lucide-react";
-
-const editorInChief = {
-  name: "Dr. Ahmed Al-Maqtari",
-  role: "Editor-in-Chief",
-  affiliation: "Yemen University of Science and Technology",
-  department: "Department of Plastic Surgery",
-  specialty: "Reconstructive Microsurgery",
-  email: "editor@yjprbs.org",
-  orcid: "0000-0001-2345-6789",
-  image: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=400&h=400&fit=crop&crop=face",
-  bio: "Dr. Al-Maqtari has over 20 years of experience in plastic and reconstructive surgery. He has published extensively on burn reconstruction techniques and microsurgical innovations in resource-limited settings."
-};
-
-const associateEditors = [
-  {
-    name: "Dr. Fatima Hassan",
-    role: "Associate Editor",
-    affiliation: "Sana'a University Hospital",
-    department: "Division of Burn Surgery",
-    specialty: "Burn Care & Reconstruction",
-    email: "f.hassan@yjprbs.org",
-    orcid: "0000-0002-3456-7890",
-    image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&h=400&fit=crop&crop=face",
-  },
-  {
-    name: "Dr. Mohammed Al-Sanabani",
-    role: "Associate Editor",
-    affiliation: "Aden General Hospital",
-    department: "Department of Surgery",
-    specialty: "Hand Surgery & Trauma",
-    email: "m.sanabani@yjprbs.org",
-    orcid: "0000-0003-4567-8901",
-    image: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=400&h=400&fit=crop&crop=face",
-  },
-];
-
-const editorialBoardMembers = [
-  {
-    name: "Dr. Sarah Al-Hubaishi",
-    affiliation: "Taiz University",
-    specialty: "Craniofacial Surgery",
-    country: "Yemen",
-    image: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=400&h=400&fit=crop&crop=face",
-  },
-  {
-    name: "Dr. Khaled Omar",
-    affiliation: "Hadramout University",
-    specialty: "Aesthetic Surgery",
-    country: "Yemen",
-    image: "https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=400&h=400&fit=crop&crop=face",
-  },
-  {
-    name: "Dr. Nadia Al-Asbahi",
-    affiliation: "Al-Thawra Modern General Hospital",
-    specialty: "Pediatric Plastic Surgery",
-    country: "Yemen",
-    image: "https://images.unsplash.com/photo-1651008376811-b90baee60c1f?w=400&h=400&fit=crop&crop=face",
-  },
-  {
-    name: "Dr. Omar Basharahil",
-    affiliation: "Saudi German Hospital",
-    specialty: "Reconstructive Surgery",
-    country: "Yemen",
-    image: "https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=400&h=400&fit=crop&crop=face",
-  },
-];
-
-const internationalAdvisors = [
-  {
-    name: "Prof. James Mitchell",
-    affiliation: "Johns Hopkins University",
-    specialty: "Burn Surgery & Critical Care",
-    country: "USA",
-    image: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=400&h=400&fit=crop&crop=face",
-  },
-  {
-    name: "Prof. Elena Rodriguez",
-    affiliation: "University of Barcelona",
-    specialty: "Microsurgery",
-    country: "Spain",
-    image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&h=400&fit=crop&crop=face",
-  },
-  {
-    name: "Prof. Ahmed Kamel",
-    affiliation: "Cairo University",
-    specialty: "Craniofacial Surgery",
-    country: "Egypt",
-    image: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=400&h=400&fit=crop&crop=face",
-  },
-  {
-    name: "Prof. Yuki Tanaka",
-    affiliation: "Tokyo Medical University",
-    specialty: "Hand & Peripheral Nerve Surgery",
-    country: "Japan",
-    image: "https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=400&h=400&fit=crop&crop=face",
-  },
-];
+import { useEditorialBoard, BoardMember } from "@/hooks/useEditorialBoard";
 
 interface EditorCardProps {
   name: string;
   role?: string;
-  affiliation: string;
-  department?: string;
-  specialty: string;
-  email?: string;
-  orcid?: string;
-  image: string;
-  bio?: string;
-  country?: string;
+  affiliation: string | null;
+  title?: string | null;
+  specialty: string | null;
+  email?: string | null;
+  orcid?: string | null;
+  image: string | null;
   featured?: boolean;
 }
 
@@ -120,21 +23,21 @@ function EditorCard({
   name, 
   role, 
   affiliation, 
-  department, 
+  title, 
   specialty, 
   email, 
   orcid, 
   image, 
-  bio,
-  country,
   featured = false 
 }: EditorCardProps) {
+  const defaultImage = "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=400&h=400&fit=crop&crop=face";
+  
   return (
     <Card className={featured ? "border-primary/20 bg-primary/5" : ""}>
       <CardContent className={featured ? "p-6" : "p-4"}>
         <div className={featured ? "flex flex-col md:flex-row gap-6" : "flex flex-col items-center text-center"}>
           <img
-            src={image}
+            src={image || defaultImage}
             alt={name}
             className={`rounded-full object-cover ${featured ? "w-32 h-32" : "w-24 h-24"}`}
           />
@@ -147,18 +50,14 @@ function EditorCard({
                 {role}
               </Badge>
             )}
-            <p className="text-primary font-medium mt-2">{specialty}</p>
-            {department && (
-              <p className="text-sm text-muted-foreground">{department}</p>
+            {specialty && (
+              <p className="text-primary font-medium mt-2">{specialty}</p>
             )}
-            <p className="text-sm text-muted-foreground">{affiliation}</p>
-            {country && (
-              <p className="text-sm text-muted-foreground">{country}</p>
+            {title && (
+              <p className="text-sm text-muted-foreground">{title}</p>
             )}
-            {bio && (
-              <p className="text-sm text-muted-foreground mt-3 leading-relaxed">
-                {bio}
-              </p>
+            {affiliation && (
+              <p className="text-sm text-muted-foreground">{affiliation}</p>
             )}
             {(email || orcid) && (
               <div className="flex flex-wrap gap-3 mt-3 justify-center md:justify-start">
@@ -191,7 +90,55 @@ function EditorCard({
   );
 }
 
+function LoadingSkeleton() {
+  return (
+    <div className="space-y-12">
+      <div className="space-y-4">
+        <Skeleton className="h-8 w-48" />
+        <div className="flex gap-6">
+          <Skeleton className="w-32 h-32 rounded-full" />
+          <div className="flex-1 space-y-2">
+            <Skeleton className="h-6 w-48" />
+            <Skeleton className="h-4 w-32" />
+            <Skeleton className="h-4 w-64" />
+          </div>
+        </div>
+      </div>
+      <div className="space-y-4">
+        <Skeleton className="h-8 w-48" />
+        <div className="grid md:grid-cols-2 gap-6">
+          {[1, 2].map((i) => (
+            <div key={i} className="flex gap-6">
+              <Skeleton className="w-32 h-32 rounded-full" />
+              <div className="flex-1 space-y-2">
+                <Skeleton className="h-6 w-48" />
+                <Skeleton className="h-4 w-32" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+const roleDisplayNames: Record<string, string> = {
+  editor_in_chief: "Editor-in-Chief",
+  associate_editor: "Associate Editor",
+  board_member: "Board Member",
+  international_advisor: "International Advisor",
+};
+
 export default function EditorialBoard() {
+  const { data: members, isLoading } = useEditorialBoard();
+
+  const editorInChief = members?.filter(m => m.role === "editor_in_chief") || [];
+  const associateEditors = members?.filter(m => m.role === "associate_editor") || [];
+  const boardMembers = members?.filter(m => m.role === "board_member") || [];
+  const advisors = members?.filter(m => m.role === "international_advisor") || [];
+
+  const hasContent = members && members.length > 0;
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -208,62 +155,120 @@ export default function EditorialBoard() {
           </p>
         </div>
 
-        {/* Editor-in-Chief */}
-        <section className="mb-12">
-          <h2 className="font-serif text-2xl font-semibold text-foreground mb-6">
-            Editor-in-Chief
-          </h2>
-          <EditorCard {...editorInChief} featured />
-        </section>
+        {isLoading ? (
+          <LoadingSkeleton />
+        ) : !hasContent ? (
+          <Card className="bg-muted/50 border-0">
+            <CardContent className="p-8 text-center">
+              <p className="text-muted-foreground">
+                Editorial board information coming soon.
+              </p>
+            </CardContent>
+          </Card>
+        ) : (
+          <>
+            {/* Editor-in-Chief */}
+            {editorInChief.length > 0 && (
+              <section className="mb-12">
+                <h2 className="font-serif text-2xl font-semibold text-foreground mb-6">
+                  Editor-in-Chief
+                </h2>
+                {editorInChief.map((editor) => (
+                  <EditorCard
+                    key={editor.id}
+                    name={editor.name}
+                    role={roleDisplayNames[editor.role]}
+                    affiliation={editor.affiliation}
+                    title={editor.title}
+                    specialty={editor.specialty}
+                    email={editor.email}
+                    orcid={editor.orcid_id}
+                    image={editor.photo_url}
+                    featured
+                  />
+                ))}
+              </section>
+            )}
 
-        <Separator className="my-10" />
+            {associateEditors.length > 0 && (
+              <>
+                <Separator className="my-10" />
+                <section className="mb-12">
+                  <h2 className="font-serif text-2xl font-semibold text-foreground mb-6">
+                    Associate Editors
+                  </h2>
+                  <div className="grid md:grid-cols-2 gap-6">
+                    {associateEditors.map((editor) => (
+                      <EditorCard
+                        key={editor.id}
+                        name={editor.name}
+                        role={roleDisplayNames[editor.role]}
+                        affiliation={editor.affiliation}
+                        title={editor.title}
+                        specialty={editor.specialty}
+                        email={editor.email}
+                        orcid={editor.orcid_id}
+                        image={editor.photo_url}
+                        featured
+                      />
+                    ))}
+                  </div>
+                </section>
+              </>
+            )}
 
-        {/* Associate Editors */}
-        <section className="mb-12">
-          <h2 className="font-serif text-2xl font-semibold text-foreground mb-6">
-            Associate Editors
-          </h2>
-          <div className="grid md:grid-cols-2 gap-6">
-            {associateEditors.map((editor) => (
-              <EditorCard key={editor.name} {...editor} featured />
-            ))}
-          </div>
-        </section>
+            {boardMembers.length > 0 && (
+              <>
+                <Separator className="my-10" />
+                <section className="mb-12">
+                  <h2 className="font-serif text-2xl font-semibold text-foreground mb-6">
+                    Editorial Board Members
+                  </h2>
+                  <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    {boardMembers.map((member) => (
+                      <EditorCard
+                        key={member.id}
+                        name={member.name}
+                        affiliation={member.affiliation}
+                        specialty={member.specialty}
+                        image={member.photo_url}
+                      />
+                    ))}
+                  </div>
+                </section>
+              </>
+            )}
 
-        <Separator className="my-10" />
-
-        {/* Editorial Board Members */}
-        <section className="mb-12">
-          <h2 className="font-serif text-2xl font-semibold text-foreground mb-6">
-            Editorial Board Members
-          </h2>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {editorialBoardMembers.map((member) => (
-              <EditorCard key={member.name} {...member} />
-            ))}
-          </div>
-        </section>
-
-        <Separator className="my-10" />
-
-        {/* International Advisory Board */}
-        <section className="mb-12">
-          <h2 className="font-serif text-2xl font-semibold text-foreground mb-6">
-            International Advisory Board
-          </h2>
-          <p className="text-muted-foreground mb-6">
-            Our international advisors provide global perspective and expertise to guide the journal's 
-            editorial direction and ensure alignment with international standards.
-          </p>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {internationalAdvisors.map((advisor) => (
-              <EditorCard key={advisor.name} {...advisor} />
-            ))}
-          </div>
-        </section>
+            {advisors.length > 0 && (
+              <>
+                <Separator className="my-10" />
+                <section className="mb-12">
+                  <h2 className="font-serif text-2xl font-semibold text-foreground mb-6">
+                    International Advisory Board
+                  </h2>
+                  <p className="text-muted-foreground mb-6">
+                    Our international advisors provide global perspective and expertise to guide the journal's 
+                    editorial direction and ensure alignment with international standards.
+                  </p>
+                  <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    {advisors.map((advisor) => (
+                      <EditorCard
+                        key={advisor.id}
+                        name={advisor.name}
+                        affiliation={advisor.affiliation}
+                        specialty={advisor.specialty}
+                        image={advisor.photo_url}
+                      />
+                    ))}
+                  </div>
+                </section>
+              </>
+            )}
+          </>
+        )}
 
         {/* Join the Board CTA */}
-        <Card className="bg-muted/50 border-0">
+        <Card className="bg-muted/50 border-0 mt-12">
           <CardContent className="p-8 text-center">
             <h3 className="font-serif text-xl font-semibold text-foreground mb-3">
               Interested in Joining Our Team?
