@@ -27,7 +27,8 @@ import {
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { CheckCircle, Users, Award, Clock, FileText } from "lucide-react";
+import { CheckCircle, Users, Award, Clock, FileText, Loader2 } from "lucide-react";
+import { useSubmitApplication } from "@/hooks/useReviewerApplications";
 
 const applicationSchema = z.object({
   fullName: z.string().min(2, "Full name must be at least 2 characters").max(100),
@@ -106,9 +107,9 @@ const requirements = [
 ];
 
 export default function BecomeReviewer() {
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const { toast } = useToast();
+  const submitApplication = useSubmitApplication();
 
   const form = useForm<ApplicationFormData>({
     resolver: zodResolver(applicationSchema),
@@ -133,20 +134,35 @@ export default function BecomeReviewer() {
   });
 
   const onSubmit = async (data: ApplicationFormData) => {
-    setIsSubmitting(true);
-    
-    // Simulate form submission
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    
-    console.log("Reviewer application submitted:", data);
-    
-    setIsSubmitting(false);
-    setIsSubmitted(true);
-    
-    toast({
-      title: "Application Submitted",
-      description: "Thank you for your interest. We will review your application and contact you soon.",
-    });
+    try {
+      await submitApplication.mutateAsync({
+        full_name: data.fullName,
+        email: data.email,
+        institution: data.institution,
+        department: data.department || null,
+        academic_title: data.academicTitle,
+        orcid_id: data.orcidId || null,
+        google_scholar_id: data.googleScholarId || null,
+        publications_count: parseInt(data.publicationsCount.split("-")[0]) || 0,
+        expertise_areas: [data.specialty, ...data.areasOfExpertise.split(",").map(s => s.trim())].filter(Boolean),
+        previous_review_experience: data.previousReviewExperience || null,
+        motivation: data.motivation || null,
+        agreed_to_guidelines: data.agreeToGuidelines,
+        agreed_to_confidentiality: data.agreeToConfidentiality,
+      });
+
+      setIsSubmitted(true);
+      toast({
+        title: "Application Submitted",
+        description: "Thank you for your interest. We will review your application and contact you soon.",
+      });
+    } catch (error) {
+      toast({
+        title: "Submission Failed",
+        description: "There was an error submitting your application. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   if (isSubmitted) {
@@ -590,8 +606,15 @@ export default function BecomeReviewer() {
                         </div>
                       </div>
 
-                      <Button type="submit" className="w-full" disabled={isSubmitting}>
-                        {isSubmitting ? "Submitting Application..." : "Submit Application"}
+                      <Button type="submit" className="w-full" disabled={submitApplication.isPending}>
+                        {submitApplication.isPending ? (
+                          <>
+                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                            Submitting Application...
+                          </>
+                        ) : (
+                          "Submit Application"
+                        )}
                       </Button>
                     </form>
                   </Form>

@@ -23,6 +23,7 @@ import AdminAnalytics from "./pages/admin/AdminAnalytics";
 import AdminSettings from "./pages/admin/AdminSettings";
 import AdminSubmissions from "./pages/admin/AdminSubmissions";
 import AdminEditorialBoard from "./pages/admin/AdminEditorialBoard";
+import AdminReviewerApplications from "./pages/admin/AdminReviewerApplications";
 import ReviewerDashboard from "./pages/ReviewerDashboard";
 import Submit from "./pages/Submit";
 import AuthorGuidelines from "./pages/AuthorGuidelines";
@@ -56,6 +57,7 @@ const App = () => (
               <Route path="reviews" element={<AdminReviews />} />
               <Route path="submissions" element={<AdminSubmissions />} />
               <Route path="users" element={<AdminUsers />} />
+              <Route path="reviewer-applications" element={<AdminReviewerApplications />} />
               <Route path="editorial-board" element={<AdminEditorialBoard />} />
               <Route path="analytics" element={<AdminAnalytics />} />
               <Route path="settings" element={<AdminSettings />} />

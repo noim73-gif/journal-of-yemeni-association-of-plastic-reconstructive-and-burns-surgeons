@@ -21,6 +21,7 @@ import {
   ClipboardCheck,
   Inbox,
   UserSquare2,
+  UserPlus,
 } from "lucide-react";
 
 const menuItems = [
@@ -29,6 +30,7 @@ const menuItems = [
   { title: "Submissions", url: "/admin/submissions", icon: Inbox },
   { title: "Reviews", url: "/admin/reviews", icon: ClipboardCheck },
   { title: "Users", url: "/admin/users", icon: Users },
+  { title: "Reviewer Applications", url: "/admin/reviewer-applications", icon: UserPlus },
   { title: "Editorial Board", url: "/admin/editorial-board", icon: UserSquare2 },
   { title: "Analytics", url: "/admin/analytics", icon: BarChart3 },
   { title: "Journal Settings", url: "/admin/settings", icon: Settings },

@@ -398,6 +398,78 @@ export type Database = {
         }
         Relationships: []
       }
+      reviewer_applications: {
+        Row: {
+          academic_title: string
+          admin_notes: string | null
+          agreed_to_confidentiality: boolean
+          agreed_to_guidelines: boolean
+          created_at: string
+          department: string | null
+          email: string
+          expertise_areas: string[]
+          full_name: string
+          google_scholar_id: string | null
+          id: string
+          institution: string
+          motivation: string | null
+          orcid_id: string | null
+          previous_review_experience: string | null
+          publications_count: number | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: Database["public"]["Enums"]["reviewer_application_status"]
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          academic_title: string
+          admin_notes?: string | null
+          agreed_to_confidentiality?: boolean
+          agreed_to_guidelines?: boolean
+          created_at?: string
+          department?: string | null
+          email: string
+          expertise_areas?: string[]
+          full_name: string
+          google_scholar_id?: string | null
+          id?: string
+          institution: string
+          motivation?: string | null
+          orcid_id?: string | null
+          previous_review_experience?: string | null
+          publications_count?: number | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: Database["public"]["Enums"]["reviewer_application_status"]
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          academic_title?: string
+          admin_notes?: string | null
+          agreed_to_confidentiality?: boolean
+          agreed_to_guidelines?: boolean
+          created_at?: string
+          department?: string | null
+          email?: string
+          expertise_areas?: string[]
+          full_name?: string
+          google_scholar_id?: string | null
+          id?: string
+          institution?: string
+          motivation?: string | null
+          orcid_id?: string | null
+          previous_review_experience?: string | null
+          publications_count?: number | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: Database["public"]["Enums"]["reviewer_application_status"]
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       saved_articles: {
         Row: {
           article_authors: string | null
@@ -577,6 +649,11 @@ export type Database = {
         | "associate_editor"
         | "board_member"
         | "international_advisor"
+      reviewer_application_status:
+        | "pending"
+        | "under_review"
+        | "approved"
+        | "rejected"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -718,6 +795,12 @@ export const Constants = {
         "associate_editor",
         "board_member",
         "international_advisor",
+      ],
+      reviewer_application_status: [
+        "pending",
+        "under_review",
+        "approved",
+        "rejected",
       ],
     },
   },
