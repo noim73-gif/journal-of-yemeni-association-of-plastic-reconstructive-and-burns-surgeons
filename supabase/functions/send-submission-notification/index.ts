@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from "https://esm.sh/resend@2.0.0";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
@@ -11,11 +12,6 @@ const corsHeaders = {
 
 interface SubmissionNotificationRequest {
   submissionId: string;
-  title: string;
-  authors: string;
-  category: string | null;
-  submitterEmail: string;
-  submitterName: string | null;
   adminEmail?: string;
 }
 
@@ -26,22 +22,86 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const { 
-      submissionId, 
-      title, 
-      authors, 
-      category, 
-      submitterEmail,
-      submitterName,
-      adminEmail 
-    }: SubmissionNotificationRequest = await req.json();
+    // Validate authentication
+    const authHeader = req.headers.get("authorization");
+    if (!authHeader?.startsWith("Bearer ")) {
+      console.error("Missing or invalid authorization header");
+      return new Response(
+        JSON.stringify({ error: "Unauthorized" }),
+        { status: 401, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
 
-    console.log("Sending submission notification for:", title);
+    // Create Supabase client with user's auth context
+    const supabaseClient = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_ANON_KEY") ?? "",
+      { global: { headers: { Authorization: authHeader } } }
+    );
 
-    // Send confirmation email to submitter
+    // Verify user is authenticated using getClaims
+    const token = authHeader.replace("Bearer ", "");
+    const { data: claimsData, error: claimsError } = await supabaseClient.auth.getClaims(token);
+    
+    if (claimsError || !claimsData?.claims) {
+      console.error("Failed to verify user:", claimsError);
+      return new Response(
+        JSON.stringify({ error: "Unauthorized" }),
+        { status: 401, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
+    const userId = claimsData.claims.sub;
+    const userEmail = claimsData.claims.email as string;
+
+    const { submissionId, adminEmail }: SubmissionNotificationRequest = await req.json();
+
+    if (!submissionId) {
+      return new Response(
+        JSON.stringify({ error: "submissionId is required" }),
+        { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
+    // Verify the user owns this submission (RLS will also enforce this, but let's be explicit)
+    const { data: submission, error: submissionError } = await supabaseClient
+      .from("submissions")
+      .select("id, user_id, title, authors, category")
+      .eq("id", submissionId)
+      .single();
+
+    if (submissionError || !submission) {
+      console.error("Submission not found:", submissionError);
+      return new Response(
+        JSON.stringify({ error: "Submission not found" }),
+        { status: 404, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
+    // Verify ownership
+    if (submission.user_id !== userId) {
+      console.error("User does not own this submission");
+      return new Response(
+        JSON.stringify({ error: "Forbidden" }),
+        { status: 403, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
+    // Get user's name from profile
+    const { data: profile } = await supabaseClient
+      .from("profiles")
+      .select("full_name")
+      .eq("user_id", userId)
+      .single();
+
+    const submitterName = profile?.full_name || "Author";
+
+    console.log("Sending submission notification for:", submission.title);
+
+    // Send confirmation email to submitter (using verified email from JWT)
     const submitterResponse = await resend.emails.send({
       from: "Journal Submissions <onboarding@resend.dev>",
-      to: [submitterEmail],
+      to: [userEmail],
       subject: "Manuscript Submission Received",
       html: `
         <!DOCTYPE html>
@@ -62,13 +122,13 @@ const handler = async (req: Request): Promise<Response> => {
               <h1 style="margin: 0;">Submission Received</h1>
             </div>
             <div class="content">
-              <p>Dear ${submitterName || 'Author'},</p>
+              <p>Dear ${submitterName},</p>
               <p>Thank you for submitting your manuscript to our journal. We have successfully received your submission.</p>
               
               <div class="highlight">
-                <p><strong>Title:</strong> ${title}</p>
-                <p><strong>Authors:</strong> ${authors}</p>
-                ${category ? `<p><strong>Category:</strong> ${category}</p>` : ''}
+                <p><strong>Title:</strong> ${submission.title}</p>
+                <p><strong>Authors:</strong> ${submission.authors}</p>
+                ${submission.category ? `<p><strong>Category:</strong> ${submission.category}</p>` : ''}
                 <p><strong>Submission ID:</strong> ${submissionId.slice(0, 8)}</p>
               </div>
               
@@ -94,7 +154,7 @@ const handler = async (req: Request): Promise<Response> => {
       const adminResponse = await resend.emails.send({
         from: "Journal Submissions <onboarding@resend.dev>",
         to: [adminEmail],
-        subject: `New Manuscript Submission: ${title.slice(0, 50)}${title.length > 50 ? '...' : ''}`,
+        subject: `New Manuscript Submission: ${submission.title.slice(0, 50)}${submission.title.length > 50 ? '...' : ''}`,
         html: `
           <!DOCTYPE html>
           <html>
@@ -118,10 +178,10 @@ const handler = async (req: Request): Promise<Response> => {
                 <p>A new manuscript has been submitted for review.</p>
                 
                 <div class="highlight">
-                  <p><strong>Title:</strong> ${title}</p>
-                  <p><strong>Authors:</strong> ${authors}</p>
-                  ${category ? `<p><strong>Category:</strong> ${category}</p>` : ''}
-                  <p><strong>Submitted by:</strong> ${submitterEmail}</p>
+                  <p><strong>Title:</strong> ${submission.title}</p>
+                  <p><strong>Authors:</strong> ${submission.authors}</p>
+                  ${submission.category ? `<p><strong>Category:</strong> ${submission.category}</p>` : ''}
+                  <p><strong>Submitted by:</strong> ${userEmail}</p>
                   <p><strong>Submission ID:</strong> ${submissionId}</p>
                 </div>
                 
@@ -151,7 +211,7 @@ const handler = async (req: Request): Promise<Response> => {
   } catch (error: any) {
     console.error("Error in send-submission-notification function:", error);
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ error: "Internal server error" }),
       {
         status: 500,
         headers: { "Content-Type": "application/json", ...corsHeaders },

@@ -92,15 +92,11 @@ export function useSubmissions() {
     });
 
     // Send email notification (non-blocking)
+    // The edge function now verifies authentication and ownership server-side
     try {
       await supabase.functions.invoke("send-submission-notification", {
         body: {
           submissionId: data.id,
-          title: data.title,
-          authors: data.authors,
-          category: data.category,
-          submitterEmail: user.email,
-          submitterName: user.user_metadata?.full_name || null,
         },
       });
     } catch (emailError) {
@@ -163,8 +159,10 @@ export function useSubmissions() {
   const uploadManuscript = async (file: File, type: 'manuscript' | 'supplementary') => {
     if (!user) return null;
 
-    const fileExt = file.name.split('.').pop();
-    const fileName = `${user.id}/${type}_${Date.now()}.${fileExt}`;
+    // Generate a random identifier for obfuscation (prevents path enumeration)
+    const randomId = crypto.randomUUID();
+    // Store with opaque filename - no extension or predictable patterns
+    const fileName = `${user.id}/${randomId}`;
 
     const { error } = await supabase.storage
       .from("manuscripts")
@@ -179,10 +177,7 @@ export function useSubmissions() {
       return null;
     }
 
-    const { data: urlData } = supabase.storage
-      .from("manuscripts")
-      .getPublicUrl(fileName);
-
+    // Return only the opaque path (no public URL since bucket is private)
     return fileName;
   };
 
