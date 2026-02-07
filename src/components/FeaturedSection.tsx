@@ -40,7 +40,7 @@ const fallbackArticles = [
 ];
 
 export function FeaturedSection() {
-  const { articles, loading } = usePublishedArticles();
+  const { articles, loading, error } = usePublishedArticles();
 
   // Get featured articles from database, or use fallbacks
   const featuredFromDb = articles.filter(a => a.is_featured || a.is_main_featured);
@@ -76,6 +76,11 @@ export function FeaturedSection() {
         </div>
       </section>
     );
+  }
+
+  // Show fallback content on error instead of blocking UI
+  if (error && featuredFromDb.length === 0) {
+    console.warn("Failed to load articles, showing fallback content:", error);
   }
 
   return (
