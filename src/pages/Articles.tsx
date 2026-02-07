@@ -25,7 +25,7 @@ interface VolumeIssue {
 }
 
 export default function Articles() {
-  const { articles, loading } = usePublishedArticles();
+  const { articles, loading, error } = usePublishedArticles();
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
@@ -338,11 +338,13 @@ export default function Articles() {
           <p className="text-muted-foreground">
             {loading ? (
               "Loading articles..."
+            ) : error ? (
+              <span className="text-destructive">Failed to load articles. Please refresh the page.</span>
             ) : (
               <>
                 Showing{" "}
                 <span className="font-semibold text-foreground">
-                  {startIndex + 1}–{Math.min(endIndex, filteredArticles.length)}
+                  {filteredArticles.length > 0 ? startIndex + 1 : 0}–{Math.min(endIndex, filteredArticles.length)}
                 </span>{" "}
                 of{" "}
                 <span className="font-semibold text-foreground">

@@ -15,61 +15,83 @@ interface IssueData {
 export function RecentIssues() {
   const [issues, setIssues] = useState<IssueData[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    let isMounted = true;
+    
     async function fetchIssues() {
-      const { data, error } = await supabase
-        .from("articles")
-        .select("volume, issue, published_at, image_url")
-        .not("published_at", "is", null)
-        .not("volume", "is", null)
-        .not("issue", "is", null)
-        .order("volume", { ascending: false })
-        .order("issue", { ascending: false });
+      try {
+        setError(null);
+        const { data, error: fetchError } = await supabase
+          .from("articles")
+          .select("volume, issue, published_at, image_url")
+          .not("published_at", "is", null)
+          .not("volume", "is", null)
+          .not("issue", "is", null)
+          .order("volume", { ascending: false })
+          .order("issue", { ascending: false });
 
-      if (error) {
-        console.error("Error fetching issues:", error);
-        setLoading(false);
-        return;
-      }
+        if (!isMounted) return;
 
-      // Group by volume/issue
-      const issueMap = new Map<string, IssueData>();
-      
-      data?.forEach((article) => {
-        const key = `${article.volume}-${article.issue}`;
-        if (!issueMap.has(key)) {
-          issueMap.set(key, {
-            volume: article.volume!,
-            issue: article.issue!,
-            articleCount: 1,
-            latestDate: article.published_at!,
-            coverImage: article.image_url,
-          });
-        } else {
-          const existing = issueMap.get(key)!;
-          existing.articleCount++;
-          if (article.published_at! > existing.latestDate) {
-            existing.latestDate = article.published_at!;
-            if (article.image_url) existing.coverImage = article.image_url;
-          }
+        if (fetchError) {
+          console.error("Error fetching issues:", fetchError);
+          setError(fetchError.message);
+          return;
         }
-      });
 
-      // Sort by volume desc, then issue desc and take top 4
-      const sortedIssues = Array.from(issueMap.values())
-        .sort((a, b) => {
-          const volDiff = parseInt(b.volume) - parseInt(a.volume);
-          if (volDiff !== 0) return volDiff;
-          return parseInt(b.issue) - parseInt(a.issue);
-        })
-        .slice(0, 4);
+        // Group by volume/issue
+        const issueMap = new Map<string, IssueData>();
+        
+        data?.forEach((article) => {
+          const key = `${article.volume}-${article.issue}`;
+          if (!issueMap.has(key)) {
+            issueMap.set(key, {
+              volume: article.volume!,
+              issue: article.issue!,
+              articleCount: 1,
+              latestDate: article.published_at!,
+              coverImage: article.image_url,
+            });
+          } else {
+            const existing = issueMap.get(key)!;
+            existing.articleCount++;
+            if (article.published_at! > existing.latestDate) {
+              existing.latestDate = article.published_at!;
+              if (article.image_url) existing.coverImage = article.image_url;
+            }
+          }
+        });
 
-      setIssues(sortedIssues);
-      setLoading(false);
+        // Sort by volume desc, then issue desc and take top 4
+        const sortedIssues = Array.from(issueMap.values())
+          .sort((a, b) => {
+            const volDiff = parseInt(b.volume) - parseInt(a.volume);
+            if (volDiff !== 0) return volDiff;
+            return parseInt(b.issue) - parseInt(a.issue);
+          })
+          .slice(0, 4);
+
+        if (isMounted) {
+          setIssues(sortedIssues);
+        }
+      } catch (err) {
+        if (isMounted) {
+          console.error("Unexpected error fetching issues:", err);
+          setError(err instanceof Error ? err.message : "Failed to load issues");
+        }
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
     }
 
     fetchIssues();
+    
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const formatDate = (dateStr: string) => {

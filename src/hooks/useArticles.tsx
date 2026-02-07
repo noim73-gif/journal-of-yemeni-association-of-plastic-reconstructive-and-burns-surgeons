@@ -199,26 +199,48 @@ export function useArticles() {
 export function usePublishedArticles() {
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    let isMounted = true;
+    
     async function fetchPublishedArticles() {
-      const { data, error } = await supabase
-        .from("articles")
-        .select("*")
-        .not("published_at", "is", null)
-        .lte("published_at", new Date().toISOString())
-        .order("published_at", { ascending: false });
+      try {
+        setError(null);
+        const { data, error: fetchError } = await supabase
+          .from("articles")
+          .select("*")
+          .not("published_at", "is", null)
+          .lte("published_at", new Date().toISOString())
+          .order("published_at", { ascending: false });
 
-      if (error) {
-        console.error("Error fetching published articles:", error);
-      } else {
-        setArticles(data || []);
+        if (!isMounted) return;
+
+        if (fetchError) {
+          console.error("Error fetching published articles:", fetchError);
+          setError(fetchError.message);
+          setArticles([]);
+        } else {
+          setArticles(data || []);
+        }
+      } catch (err) {
+        if (!isMounted) return;
+        console.error("Unexpected error fetching articles:", err);
+        setError(err instanceof Error ? err.message : "Failed to load articles");
+        setArticles([]);
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
       }
-      setLoading(false);
     }
 
     fetchPublishedArticles();
+    
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
-  return { articles, loading };
+  return { articles, loading, error };
 }
