@@ -624,7 +624,51 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      doctor_profiles_public: {
+        Row: {
+          academic_degree: string | null
+          created_at: string | null
+          hospital: string | null
+          id: string | null
+          is_public_profile: boolean | null
+          research_interests: string[] | null
+          specialty: string | null
+          spoken_languages: string[] | null
+          university: string | null
+          updated_at: string | null
+          user_id: string | null
+          years_of_experience: number | null
+        }
+        Insert: {
+          academic_degree?: string | null
+          created_at?: string | null
+          hospital?: string | null
+          id?: string | null
+          is_public_profile?: boolean | null
+          research_interests?: string[] | null
+          specialty?: string | null
+          spoken_languages?: string[] | null
+          university?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+          years_of_experience?: number | null
+        }
+        Update: {
+          academic_degree?: string | null
+          created_at?: string | null
+          hospital?: string | null
+          id?: string | null
+          is_public_profile?: boolean | null
+          research_interests?: string[] | null
+          specialty?: string | null
+          spoken_languages?: string[] | null
+          university?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+          years_of_experience?: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       has_role: {
