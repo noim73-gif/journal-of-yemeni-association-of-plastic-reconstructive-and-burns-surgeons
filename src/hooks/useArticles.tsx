@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { logger } from "@/lib/logger";
 
 export interface Article {
   id: string;
@@ -48,7 +49,7 @@ export function useArticles() {
       .order("created_at", { ascending: false });
 
     if (error) {
-      console.error("Error fetching articles:", error);
+      logger.error("Error fetching articles:", error);
       toast({
         variant: "destructive",
         title: "Error",
@@ -72,7 +73,7 @@ export function useArticles() {
       .single();
 
     if (error) {
-      console.error("Error creating article:", error);
+      logger.error("Error creating article:", error);
       toast({
         variant: "destructive",
         title: "Error",
@@ -98,7 +99,7 @@ export function useArticles() {
       .single();
 
     if (error) {
-      console.error("Error updating article:", error);
+      logger.error("Error updating article:", error);
       toast({
         variant: "destructive",
         title: "Error",
@@ -119,7 +120,7 @@ export function useArticles() {
     const { error } = await supabase.from("articles").delete().eq("id", id);
 
     if (error) {
-      console.error("Error deleting article:", error);
+      logger.error("Error deleting article:", error);
       toast({
         variant: "destructive",
         title: "Error",
@@ -143,7 +144,7 @@ export function useArticles() {
       .eq("id", id);
 
     if (error) {
-      console.error("Error publishing article:", error);
+      logger.error("Error publishing article:", error);
       toast({
         variant: "destructive",
         title: "Error",
@@ -167,7 +168,7 @@ export function useArticles() {
       .eq("id", id);
 
     if (error) {
-      console.error("Error unpublishing article:", error);
+      logger.error("Error unpublishing article:", error);
       toast({
         variant: "destructive",
         title: "Error",
@@ -217,7 +218,7 @@ export function usePublishedArticles() {
         if (!isMounted) return;
 
         if (fetchError) {
-          console.error("Error fetching published articles:", fetchError);
+          logger.error("Error fetching published articles:", fetchError);
           setError(fetchError.message);
           setArticles([]);
         } else {
@@ -225,7 +226,7 @@ export function usePublishedArticles() {
         }
       } catch (err) {
         if (!isMounted) return;
-        console.error("Unexpected error fetching articles:", err);
+        logger.error("Unexpected error fetching articles:", err);
         setError(err instanceof Error ? err.message : "Failed to load articles");
         setArticles([]);
       } finally {

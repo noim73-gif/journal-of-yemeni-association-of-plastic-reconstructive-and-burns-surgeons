@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { logger } from "@/lib/logger";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -84,7 +85,7 @@ export default function PublicProfile() {
           .single();
 
         if (doctorError && doctorError.code !== "PGRST116") {
-          console.error("Error fetching doctor profile:", doctorError);
+          logger.error("Error fetching doctor profile:", doctorError);
         }
 
         // Only show the profile if either the doctor profile is public
@@ -116,12 +117,12 @@ export default function PublicProfile() {
           .order("published_at", { ascending: false });
 
         if (articlesError) {
-          console.error("Error fetching articles:", articlesError);
+          logger.error("Error fetching articles:", articlesError);
         } else {
           setArticles(articlesData || []);
         }
       } catch (error) {
-        console.error("Error fetching public profile:", error);
+        logger.error("Error fetching public profile:", error);
         setNotFound(true);
       } finally {
         setLoading(false);

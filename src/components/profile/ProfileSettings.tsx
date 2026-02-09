@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { logger } from "@/lib/logger";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
@@ -92,7 +93,7 @@ export function ProfileSettings({ profile, loginActivity, onUpdateNotifications 
       toast.success("Password updated successfully");
       passwordForm.reset();
     } catch (error: any) {
-      console.error("Error updating password:", error);
+      logger.error("Error updating password:", error);
       toast.error(error.message || "Failed to update password");
     } finally {
       setSavingPassword(false);

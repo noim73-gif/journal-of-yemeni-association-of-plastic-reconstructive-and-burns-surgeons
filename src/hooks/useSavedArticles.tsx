@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "./useAuth";
 import { useToast } from "./use-toast";
+import { logger } from "@/lib/logger";
 
 interface SavedArticle {
   id: string;
@@ -36,7 +37,7 @@ export function useSavedArticles() {
       .order("saved_at", { ascending: false });
 
     if (error) {
-      console.error("Error fetching saved articles:", error);
+      logger.error("Error fetching saved articles:", error);
     } else {
       setSavedArticles(data || []);
     }

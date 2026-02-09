@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "./useAuth";
 import { toast } from "sonner";
+import { logger } from "@/lib/logger";
 
 export interface Review {
   id: string;
@@ -35,7 +36,7 @@ export function useReviews() {
       .order("assigned_at", { ascending: false });
 
     if (error) {
-      console.error("Error fetching reviews:", error);
+      logger.error("Error fetching reviews:", error);
       toast.error("Failed to load reviews");
       setLoading(false);
       return;
@@ -81,7 +82,7 @@ export function useReviews() {
       .order("assigned_at", { ascending: false });
 
     if (error) {
-      console.error("Error fetching my reviews:", error);
+      logger.error("Error fetching my reviews:", error);
       toast.error("Failed to load reviews");
       setLoading(false);
       return;
@@ -116,7 +117,7 @@ export function useReviews() {
       if (error.code === "23505") {
         toast.error("Reviewer is already assigned to this article");
       } else {
-        console.error("Error assigning reviewer:", error);
+        logger.error("Error assigning reviewer:", error);
         toast.error("Failed to assign reviewer");
       }
       return false;
@@ -151,7 +152,7 @@ export function useReviews() {
       .eq("id", reviewId);
 
     if (error) {
-      console.error("Error submitting review:", error);
+      logger.error("Error submitting review:", error);
       toast.error("Failed to submit review");
       return false;
     }
@@ -167,7 +168,7 @@ export function useReviews() {
       .eq("id", reviewId);
 
     if (error) {
-      console.error("Error updating review status:", error);
+      logger.error("Error updating review status:", error);
       toast.error("Failed to update status");
       return false;
     }
@@ -184,7 +185,7 @@ export function useReviews() {
       .eq("id", reviewId);
 
     if (error) {
-      console.error("Error removing reviewer:", error);
+      logger.error("Error removing reviewer:", error);
       toast.error("Failed to remove reviewer");
       return false;
     }
@@ -231,7 +232,7 @@ export function useIsReviewer() {
         .maybeSingle();
 
       if (error) {
-        console.error("Error checking reviewer role:", error);
+        logger.error("Error checking reviewer role:", error);
         setIsReviewer(false);
       } else {
         setIsReviewer(!!data);

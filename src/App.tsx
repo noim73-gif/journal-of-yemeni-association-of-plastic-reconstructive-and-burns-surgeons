@@ -36,6 +36,7 @@ import Contact from "./pages/Contact";
 import FAQ from "./pages/FAQ";
 import BecomeReviewer from "./pages/BecomeReviewer";
 import { toast } from "sonner";
+import { logger } from "@/lib/logger";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -50,7 +51,7 @@ function AppContent() {
   // Global handler for unhandled promise rejections
   useEffect(() => {
     const handleRejection = (event: PromiseRejectionEvent) => {
-      console.error("Unhandled rejection:", event.reason);
+      logger.error("Unhandled rejection:", event.reason);
       toast.error("An error occurred. Please try again.");
       event.preventDefault();
     };

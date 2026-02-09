@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { logger } from "@/lib/logger";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
@@ -58,7 +59,7 @@ export function SubmissionReviewPanel({ submissionId }: SubmissionReviewPanelPro
         .order("assigned_at", { ascending: true });
 
       if (error) {
-        console.error("Error fetching reviews:", error);
+        logger.error("Error fetching reviews:", error);
         setLoading(false);
         return;
       }
