@@ -257,12 +257,8 @@ export function usePublicDoctorProfiles() {
     const fetchDoctors = async () => {
       try {
         const { data, error } = await supabase
-          .from("doctor_profiles")
-          .select(`
-            *,
-            profile:profiles!doctor_profiles_user_id_fkey(*)
-          `)
-          .eq("is_public_profile", true);
+          .from("doctor_profiles_public")
+          .select("*");
 
         if (error) throw error;
 
