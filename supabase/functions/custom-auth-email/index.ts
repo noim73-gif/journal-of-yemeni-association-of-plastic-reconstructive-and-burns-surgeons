@@ -327,11 +327,29 @@ const handler = async (req: Request): Promise<Response> => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  // Validate that the request comes from Supabase auth hook system
+  const authHeader = req.headers.get("authorization");
+  const supabaseSecret = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+  if (!authHeader || authHeader !== `Bearer ${supabaseSecret}`) {
+    return new Response(
+      JSON.stringify({ error: "Unauthorized" }),
+      { status: 401, headers: { "Content-Type": "application/json", ...corsHeaders } }
+    );
+  }
+
   try {
     const payload: AuthEmailRequest = await req.json();
-    console.log("Received auth email request:", JSON.stringify(payload, null, 2));
 
     const { user, email_data } = payload;
+
+    // Validate required payload fields
+    if (!user?.email || !email_data?.token_hash || !email_data?.email_action_type) {
+      return new Response(
+        JSON.stringify({ error: "Invalid payload" }),
+        { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
     const { token_hash, redirect_to, email_action_type, site_url } = email_data;
 
     // Construct the confirmation URL
