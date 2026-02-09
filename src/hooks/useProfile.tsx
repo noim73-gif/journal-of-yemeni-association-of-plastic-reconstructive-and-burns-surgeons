@@ -208,13 +208,13 @@ export function useProfile(userId?: string) {
       const fileName = `${targetUserId}/avatar.${fileExt}`;
 
       const { error: uploadError } = await supabase.storage
-        .from("article-images")
+        .from("avatars")
         .upload(fileName, file, { upsert: true });
 
       if (uploadError) throw uploadError;
 
       const { data } = supabase.storage
-        .from("article-images")
+        .from("avatars")
         .getPublicUrl(fileName);
 
       const avatarUrl = data.publicUrl;
