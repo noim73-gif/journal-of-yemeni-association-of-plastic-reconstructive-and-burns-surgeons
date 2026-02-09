@@ -75,9 +75,9 @@ export default function PublicProfile() {
           return;
         }
 
-        // Check if the doctor profile is public
+        // Check if the doctor profile is public (use safe view that excludes sensitive fields)
         const { data: doctorData, error: doctorError } = await supabase
-          .from("doctor_profiles")
+          .from("doctor_profiles_public")
           .select("*")
           .eq("user_id", profileData.user_id)
           .eq("is_public_profile", true)
@@ -99,7 +99,12 @@ export default function PublicProfile() {
           account_status: profileData.account_status as Profile["account_status"],
           notification_preferences: profileData.notification_preferences as Profile["notification_preferences"],
         });
-        setDoctorProfile(doctorData as DoctorProfile);
+        setDoctorProfile({
+          ...doctorData,
+          medical_license_number: null,
+          orcid_id: null,
+          google_scholar_id: null,
+        } as DoctorProfile);
 
         // Fetch published articles by this author
         const { data: articlesData, error: articlesError } = await supabase
