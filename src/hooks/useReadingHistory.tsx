@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "./useAuth";
+import { logger } from "@/lib/logger";
 
 interface ReadingHistoryItem {
   id: string;
@@ -35,7 +36,7 @@ export function useReadingHistory() {
       .order("read_at", { ascending: false });
 
     if (error) {
-      console.error("Error fetching reading history:", error);
+      logger.error("Error fetching reading history:", error);
     } else {
       setHistory(data || []);
     }
@@ -68,7 +69,7 @@ export function useReadingHistory() {
       );
 
     if (error) {
-      console.error("Error adding to reading history:", error);
+      logger.error("Error adding to reading history:", error);
     } else {
       fetchHistory();
     }

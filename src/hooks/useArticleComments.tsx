@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "./useAuth";
 import { useToast } from "./use-toast";
+import { logger } from "@/lib/logger";
 
 export interface Comment {
   id: string;
@@ -28,7 +29,7 @@ export function useArticleComments(articleId: string) {
       .order("created_at", { ascending: false });
 
     if (error) {
-      console.error("Error fetching comments:", error);
+      logger.error("Error fetching comments:", error);
     } else {
       // Fetch user profiles for comments
       const userIds = [...new Set(data.map((c) => c.user_id))];

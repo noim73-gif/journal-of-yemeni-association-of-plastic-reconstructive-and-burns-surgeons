@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { BookOpen, Calendar, FileText } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { logger } from "@/lib/logger";
 
 interface VolumeIssue {
   volume: string;
@@ -28,7 +29,7 @@ export default function Archive() {
         .lte("published_at", new Date().toISOString());
 
       if (error) {
-        console.error("Error fetching archive data:", error);
+        logger.error("Error fetching archive data:", error);
         setLoading(false);
         return;
       }

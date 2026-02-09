@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Upload, X, Loader2, Image as ImageIcon } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { logger } from "@/lib/logger";
 
 interface ImageUploadProps {
   value: string;
@@ -44,7 +45,7 @@ export function ImageUpload({ value, onChange }: ImageUploadProps) {
       .upload(fileName, file);
 
     if (uploadError) {
-      console.error("Upload error:", uploadError);
+      logger.error("Upload error:", uploadError);
       toast({
         variant: "destructive",
         title: "Upload failed",

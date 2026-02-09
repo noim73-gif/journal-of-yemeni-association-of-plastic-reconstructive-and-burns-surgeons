@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
+import { logger } from "@/lib/logger";
 
 export interface Profile {
   id: string;
@@ -94,7 +95,7 @@ export function useProfile(userId?: string) {
         .single();
 
       if (doctorError && doctorError.code !== "PGRST116") {
-        console.error("Error fetching doctor profile:", doctorError);
+        logger.error("Error fetching doctor profile:", doctorError);
       }
 
       if (doctorData) {
@@ -108,7 +109,7 @@ export function useProfile(userId?: string) {
         .eq("user_id", targetUserId);
 
       if (rolesError) {
-        console.error("Error fetching roles:", rolesError);
+        logger.error("Error fetching roles:", rolesError);
       } else {
         setUserRoles(rolesData?.map((r) => r.role) || []);
       }
@@ -123,13 +124,13 @@ export function useProfile(userId?: string) {
           .limit(10);
 
         if (activityError) {
-          console.error("Error fetching login activity:", activityError);
+          logger.error("Error fetching login activity:", activityError);
         } else {
           setLoginActivity(activityData || []);
         }
       }
     } catch (error) {
-      console.error("Error fetching profile:", error);
+      logger.error("Error fetching profile:", error);
       toast.error("Failed to load profile");
     } finally {
       setLoading(false);
@@ -155,7 +156,7 @@ export function useProfile(userId?: string) {
       toast.success("Profile updated successfully");
       return { success: true };
     } catch (error) {
-      console.error("Error updating profile:", error);
+      logger.error("Error updating profile:", error);
       toast.error("Failed to update profile");
       return { success: false };
     }
@@ -194,7 +195,7 @@ export function useProfile(userId?: string) {
       toast.success("Professional profile updated successfully");
       return { success: true };
     } catch (error) {
-      console.error("Error updating doctor profile:", error);
+      logger.error("Error updating doctor profile:", error);
       toast.error("Failed to update professional profile");
       return { success: false };
     }
@@ -222,7 +223,7 @@ export function useProfile(userId?: string) {
       await updateProfile({ avatar_url: avatarUrl });
       return { success: true, url: avatarUrl };
     } catch (error) {
-      console.error("Error uploading avatar:", error);
+      logger.error("Error uploading avatar:", error);
       toast.error("Failed to upload avatar");
       return { success: false, url: null };
     }
@@ -281,7 +282,7 @@ export function usePublicDoctorProfiles() {
 
         setDoctors(doctorsWithProfiles);
       } catch (error) {
-        console.error("Error fetching public doctors:", error);
+        logger.error("Error fetching public doctors:", error);
       } finally {
         setLoading(false);
       }

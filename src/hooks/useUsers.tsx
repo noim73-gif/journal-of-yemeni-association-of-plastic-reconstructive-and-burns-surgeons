@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { logger } from "@/lib/logger";
 
 export interface UserWithRole {
   id: string;
@@ -25,7 +26,7 @@ export function useUsers() {
       .order("created_at", { ascending: false });
 
     if (profilesError) {
-      console.error("Error fetching profiles:", profilesError);
+      logger.error("Error fetching profiles:", profilesError);
       toast.error("Failed to load users");
       setLoading(false);
       return;
@@ -37,7 +38,7 @@ export function useUsers() {
       .select("*");
 
     if (rolesError) {
-      console.error("Error fetching roles:", rolesError);
+      logger.error("Error fetching roles:", rolesError);
     }
 
     // Map profiles with their roles
@@ -69,7 +70,7 @@ export function useUsers() {
       if (error.code === "23505") {
         toast.error("User already has this role");
       } else {
-        console.error("Error assigning role:", error);
+        logger.error("Error assigning role:", error);
         toast.error("Failed to assign role");
       }
       return false;
@@ -88,7 +89,7 @@ export function useUsers() {
       .eq("role", role);
 
     if (error) {
-      console.error("Error removing role:", error);
+      logger.error("Error removing role:", error);
       toast.error("Failed to remove role");
       return false;
     }

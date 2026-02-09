@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { logger } from "@/lib/logger";
 import { IssueCard } from "./IssueCard";
 import { Skeleton } from "./ui/skeleton";
 
@@ -35,7 +36,7 @@ export function RecentIssues() {
         if (!isMounted) return;
 
         if (fetchError) {
-          console.error("Error fetching issues:", fetchError);
+          logger.error("Error fetching issues:", fetchError);
           setError(fetchError.message);
           return;
         }
@@ -77,7 +78,7 @@ export function RecentIssues() {
         }
       } catch (err) {
         if (isMounted) {
-          console.error("Unexpected error fetching issues:", err);
+          logger.error("Unexpected error fetching issues:", err);
           setError(err instanceof Error ? err.message : "Failed to load issues");
         }
       } finally {

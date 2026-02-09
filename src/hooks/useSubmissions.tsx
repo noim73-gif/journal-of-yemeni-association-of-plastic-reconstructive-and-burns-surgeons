@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
+import { logger } from "@/lib/logger";
 
 export interface Submission {
   id: string;
@@ -100,7 +101,7 @@ export function useSubmissions() {
         },
       });
     } catch (emailError) {
-      console.error("Failed to send notification email:", emailError);
+      logger.error("Failed to send notification email:", emailError);
       // Don't fail the submission if email fails
     }
     
