@@ -1,6 +1,8 @@
+import { forwardRef } from "react";
 import { Mail, Phone, MapPin, Twitter, Linkedin, Youtube } from "lucide-react";
-export function Footer() {
-  return <footer id="about" className="bg-primary text-primary-foreground">
+
+export const Footer = forwardRef<HTMLElement>((_, ref) => {
+  return <footer ref={ref} id="about" className="bg-primary text-primary-foreground">
       <div className="container mx-auto px-4 py-12 md:py-16">
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-10">
           {/* Brand */}
@@ -12,7 +14,7 @@ export function Footer() {
               <span className="font-serif font-semibold">YJPRS</span>
             </div>
             <p className="text-primary-foreground/70 text-sm mb-6">The official journal of the Yemeni Association of Plastic, Reconstructive and Burn Surgeons, advancing the science and art of plastic surgery since 2011.
- https://www.yafprs.org/</p>
+ https://www.yafprs.org/</p>
             <div className="flex gap-4">
               <a href="#" className="text-primary-foreground/60 hover:text-accent transition-colors">
                 <Twitter className="h-5 w-5" />
@@ -86,4 +88,6 @@ export function Footer() {
         </div>
       </div>
     </footer>;
-}
+});
+
+Footer.displayName = "Footer";
