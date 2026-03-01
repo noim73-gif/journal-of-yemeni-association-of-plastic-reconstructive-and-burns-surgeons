@@ -15,6 +15,10 @@ export interface Profile {
   city: string | null;
   country: string | null;
   bio: string | null;
+  profession: string | null;
+  primary_specialty: string | null;
+  additional_specialties: string | null;
+  postal_code: string | null;
   account_status: "verified" | "unverified" | "suspended";
   notification_preferences: {
     email_submissions: boolean;
@@ -278,7 +282,7 @@ export function usePublicDoctorProfiles() {
               notification_preferences: userProfile.notification_preferences as Profile["notification_preferences"],
             } : null,
           };
-        }).filter(d => d.profile !== null) as (DoctorProfile & { profile: Profile })[] || [];
+        }).filter(d => d.profile !== null) as unknown as (DoctorProfile & { profile: Profile })[] || [];
 
         setDoctors(doctorsWithProfiles);
       } catch (error) {

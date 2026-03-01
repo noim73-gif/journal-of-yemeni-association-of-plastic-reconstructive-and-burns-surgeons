@@ -10,6 +10,11 @@ export interface UserWithRole {
   avatar_url: string | null;
   created_at: string;
   roles: string[];
+  account_status: string | null;
+  profession: string | null;
+  primary_specialty: string | null;
+  additional_specialties: string | null;
+  postal_code: string | null;
 }
 
 export function useUsers() {
@@ -54,6 +59,11 @@ export function useUsers() {
         avatar_url: profile.avatar_url,
         created_at: profile.created_at,
         roles: userRoles,
+        account_status: profile.account_status,
+        profession: profile.profession,
+        primary_specialty: profile.primary_specialty,
+        additional_specialties: profile.additional_specialties,
+        postal_code: profile.postal_code,
       };
     });
 
@@ -99,6 +109,23 @@ export function useUsers() {
     return true;
   }
 
+  async function updateAccountStatus(userId: string, status: "verified" | "unverified" | "suspended") {
+    const { error } = await supabase
+      .from("profiles")
+      .update({ account_status: status })
+      .eq("user_id", userId);
+
+    if (error) {
+      logger.error("Error updating account status:", error);
+      toast.error("Failed to update account status");
+      return false;
+    }
+
+    toast.success(`Account ${status} successfully`);
+    await fetchUsers();
+    return true;
+  }
+
   useEffect(() => {
     fetchUsers();
   }, []);
@@ -109,5 +136,6 @@ export function useUsers() {
     refetch: fetchUsers,
     assignRole,
     removeRole,
+    updateAccountStatus,
   };
 }

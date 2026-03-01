@@ -47,6 +47,9 @@ import {
   ShieldCheck,
   UserCheck,
   Eye,
+  CheckCircle,
+  XCircle,
+  AlertCircle,
 } from "lucide-react";
 
 const roleColors: Record<string, string> = {
@@ -64,7 +67,7 @@ const roleIcons: Record<string, React.ReactNode> = {
 };
 
 export default function AdminUsers() {
-  const { users, loading, assignRole, removeRole } = useUsers();
+  const { users, loading, assignRole, removeRole, updateAccountStatus } = useUsers();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedUser, setSelectedUser] = useState<UserWithRole | null>(null);
   const [isAssignDialogOpen, setIsAssignDialogOpen] = useState(false);
@@ -176,6 +179,8 @@ export default function AdminUsers() {
             <TableHeader>
               <TableRow className="bg-muted/50">
                 <TableHead>User</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Profession / Specialty</TableHead>
                 <TableHead>Roles</TableHead>
                 <TableHead>Joined</TableHead>
                 <TableHead className="w-[100px]">Actions</TableHead>
@@ -184,7 +189,7 @@ export default function AdminUsers() {
             <TableBody>
               {filteredUsers.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={4} className="text-center py-8 text-muted-foreground">
+                  <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
                     No users found
                   </TableCell>
                 </TableRow>
@@ -205,6 +210,30 @@ export default function AdminUsers() {
                             {user.user_id}
                           </p>
                         </div>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      {user.account_status === "verified" ? (
+                        <Badge variant="secondary" className="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 gap-1">
+                          <CheckCircle className="h-3 w-3" />
+                          Verified
+                        </Badge>
+                      ) : user.account_status === "suspended" ? (
+                        <Badge variant="secondary" className="bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 gap-1">
+                          <XCircle className="h-3 w-3" />
+                          Suspended
+                        </Badge>
+                      ) : (
+                        <Badge variant="secondary" className="bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400 gap-1">
+                          <AlertCircle className="h-3 w-3" />
+                          Unverified
+                        </Badge>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      <div className="text-sm">
+                        <p className="font-medium">{user.profession || "—"}</p>
+                        <p className="text-muted-foreground text-xs">{user.primary_specialty || "—"}</p>
                       </div>
                     </TableCell>
                     <TableCell>
@@ -255,6 +284,25 @@ export default function AdminUsers() {
                             <Shield className="h-4 w-4 mr-2" />
                             Assign Role
                           </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          {user.account_status !== "verified" && (
+                            <DropdownMenuItem onClick={() => updateAccountStatus(user.user_id, "verified")}>
+                              <CheckCircle className="h-4 w-4 mr-2" />
+                              Verify User
+                            </DropdownMenuItem>
+                          )}
+                          {user.account_status !== "suspended" && (
+                            <DropdownMenuItem onClick={() => updateAccountStatus(user.user_id, "suspended")} className="text-destructive">
+                              <XCircle className="h-4 w-4 mr-2" />
+                              Suspend User
+                            </DropdownMenuItem>
+                          )}
+                          {user.account_status === "suspended" && (
+                            <DropdownMenuItem onClick={() => updateAccountStatus(user.user_id, "unverified")}>
+                              <AlertCircle className="h-4 w-4 mr-2" />
+                              Unsuspend User
+                            </DropdownMenuItem>
+                          )}
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </TableCell>
