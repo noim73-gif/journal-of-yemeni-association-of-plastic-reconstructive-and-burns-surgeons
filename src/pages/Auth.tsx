@@ -6,13 +6,41 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, Loader2, Mail, CheckCircle2, Shield, KeyRound } from "lucide-react";
+import { ArrowLeft, Loader2, Mail, CheckCircle2, Shield, KeyRound, Eye, EyeOff } from "lucide-react";
 import { z } from "zod";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
 
-const emailSchema = z.string().email("Please enter a valid email address");
-const passwordSchema = z.string().min(6, "Password must be at least 6 characters");
+const professions = [
+  "Surgeon",
+  "Physician",
+  "Resident",
+  "Medical Student",
+  "Nurse",
+  "Researcher",
+  "Academic/Professor",
+  "Other Healthcare Professional",
+];
+
+const specialties = [
+  "Plastic Surgery",
+  "Reconstructive Surgery",
+  "Burn Surgery",
+  "Hand Surgery",
+  "Craniofacial Surgery",
+  "Microsurgery",
+  "Aesthetic/Cosmetic Surgery",
+  "Maxillofacial Surgery",
+  "General Surgery",
+  "Dermatology",
+  "Orthopedic Surgery",
+  "ENT Surgery",
+  "Ophthalmology",
+  "Emergency Medicine",
+  "Other",
+];
 
 export default function Auth() {
   const navigate = useNavigate();
@@ -21,8 +49,16 @@ export default function Auth() {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [fullName, setFullName] = useState("");
-  const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
+  const [showPassword, setShowPassword] = useState(false);
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [profession, setProfession] = useState("");
+  const [primarySpecialty, setPrimarySpecialty] = useState("");
+  const [additionalSpecialties, setAdditionalSpecialties] = useState("");
+  const [postalCode, setPostalCode] = useState("");
+  const [acceptEula, setAcceptEula] = useState(false);
+  const [acceptPrivacy, setAcceptPrivacy] = useState(false);
+  const [errors, setErrors] = useState<{ email?: string; password?: string; firstName?: string; lastName?: string; profession?: string; specialty?: string; agreements?: string }>({});
   const [showVerificationMessage, setShowVerificationMessage] = useState(false);
   const [registeredEmail, setRegisteredEmail] = useState("");
   const [showForgotPassword, setShowForgotPassword] = useState(false);
@@ -35,17 +71,25 @@ export default function Auth() {
     }
   }, [user, navigate]);
 
-  const validate = () => {
-    const newErrors: { email?: string; password?: string } = {};
+  const validate = (isSignUp = false) => {
+    const newErrors: typeof errors = {};
     
-    const emailResult = emailSchema.safeParse(email);
+    const emailResult = z.string().email("Please enter a valid email address").safeParse(email);
     if (!emailResult.success) {
       newErrors.email = emailResult.error.errors[0].message;
     }
     
-    const passwordResult = passwordSchema.safeParse(password);
+    const passwordResult = z.string().min(6, "Password must be at least 6 characters").safeParse(password);
     if (!passwordResult.success) {
       newErrors.password = passwordResult.error.errors[0].message;
+    }
+
+    if (isSignUp) {
+      if (!firstName.trim()) newErrors.firstName = "First name is required";
+      if (!lastName.trim()) newErrors.lastName = "Last name is required";
+      if (!profession) newErrors.profession = "Please select your profession";
+      if (!primarySpecialty) newErrors.specialty = "Please select your primary specialty";
+      if (!acceptEula || !acceptPrivacy) newErrors.agreements = "You must accept both agreements";
     }
     
     setErrors(newErrors);
@@ -53,7 +97,7 @@ export default function Auth() {
   };
 
   const validateEmail = () => {
-    const emailResult = emailSchema.safeParse(resetEmail);
+    const emailResult = z.string().email("Please enter a valid email address").safeParse(resetEmail);
     if (!emailResult.success) {
       setErrors({ email: emailResult.error.errors[0].message });
       return false;
@@ -93,10 +137,16 @@ export default function Auth() {
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!validate()) return;
+    if (!validate(true)) return;
 
+    const fullName = `${firstName.trim()} ${lastName.trim()}`;
     setLoading(true);
-    const { error } = await signUp(email, password, fullName);
+    const { error } = await signUp(email, password, fullName, {
+      profession,
+      primary_specialty: primarySpecialty,
+      additional_specialties: additionalSpecialties || undefined,
+      postal_code: postalCode || undefined,
+    });
     setLoading(false);
 
     if (error) {
@@ -118,7 +168,14 @@ export default function Auth() {
       setShowVerificationMessage(true);
       setEmail("");
       setPassword("");
-      setFullName("");
+      setFirstName("");
+      setLastName("");
+      setProfession("");
+      setPrimarySpecialty("");
+      setAdditionalSpecialties("");
+      setPostalCode("");
+      setAcceptEula(false);
+      setAcceptPrivacy(false);
     }
   };
 
@@ -416,19 +473,39 @@ export default function Auth() {
 
             <TabsContent value="signup" className="space-y-4 mt-6">
               <form onSubmit={handleSignUp} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="signup-name">Full Name</Label>
-                  <Input
-                    id="signup-name"
-                    type="text"
-                    placeholder="Dr. Jane Smith"
-                    value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
-                    disabled={loading}
-                  />
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="signup-firstname">First Name *</Label>
+                    <Input
+                      id="signup-firstname"
+                      type="text"
+                      placeholder="Jane"
+                      value={firstName}
+                      onChange={(e) => setFirstName(e.target.value)}
+                      disabled={loading}
+                    />
+                    {errors.firstName && (
+                      <p className="text-sm text-destructive">{errors.firstName}</p>
+                    )}
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="signup-lastname">Last Name *</Label>
+                    <Input
+                      id="signup-lastname"
+                      type="text"
+                      placeholder="Smith"
+                      value={lastName}
+                      onChange={(e) => setLastName(e.target.value)}
+                      disabled={loading}
+                    />
+                    {errors.lastName && (
+                      <p className="text-sm text-destructive">{errors.lastName}</p>
+                    )}
+                  </div>
                 </div>
+
                 <div className="space-y-2">
-                  <Label htmlFor="signup-email">Email</Label>
+                  <Label htmlFor="signup-email">Email Address *</Label>
                   <Input
                     id="signup-email"
                     type="email"
@@ -441,11 +518,24 @@ export default function Auth() {
                     <p className="text-sm text-destructive">{errors.email}</p>
                   )}
                 </div>
+
                 <div className="space-y-2">
-                  <Label htmlFor="signup-password">Password</Label>
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="signup-password">Password *</Label>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="h-auto px-2 py-1 text-xs gap-1"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      {showPassword ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
+                      {showPassword ? "Hide" : "Show"}
+                    </Button>
+                  </div>
                   <Input
                     id="signup-password"
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     placeholder="••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
@@ -455,11 +545,103 @@ export default function Auth() {
                     <p className="text-sm text-destructive">{errors.password}</p>
                   )}
                 </div>
+
+                <div className="space-y-2">
+                  <Label>Profession / Role *</Label>
+                  <Select value={profession} onValueChange={setProfession} disabled={loading}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Choose your profession or role" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {professions.map((p) => (
+                        <SelectItem key={p} value={p}>{p}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {errors.profession && (
+                    <p className="text-sm text-destructive">{errors.profession}</p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Primary Specialty *</Label>
+                  <Select value={primarySpecialty} onValueChange={setPrimarySpecialty} disabled={loading}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Choose your primary specialty" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {specialties.map((s) => (
+                        <SelectItem key={s} value={s}>{s}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {errors.specialty && (
+                    <p className="text-sm text-destructive">{errors.specialty}</p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <Label>Additional Specialties of Interest</Label>
+                    <span className="text-xs text-muted-foreground">Optional</span>
+                  </div>
+                  <Select value={additionalSpecialties} onValueChange={setAdditionalSpecialties} disabled={loading}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Choose additional specialties" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {specialties.map((s) => (
+                        <SelectItem key={s} value={s}>{s}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="signup-postal">Postal Code</Label>
+                  <Input
+                    id="signup-postal"
+                    type="text"
+                    placeholder="Enter your postal code"
+                    value={postalCode}
+                    onChange={(e) => setPostalCode(e.target.value)}
+                    disabled={loading}
+                  />
+                </div>
+
+                <div className="space-y-3 pt-2">
+                  <div className="flex items-center gap-2">
+                    <Checkbox
+                      id="accept-eula"
+                      checked={acceptEula}
+                      onCheckedChange={(checked) => setAcceptEula(checked === true)}
+                      disabled={loading}
+                    />
+                    <Label htmlFor="accept-eula" className="text-sm font-normal cursor-pointer">
+                      I accept the <a href="/publication-ethics" className="text-primary underline hover:no-underline">End User License Agreement</a>
+                    </Label>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Checkbox
+                      id="accept-privacy"
+                      checked={acceptPrivacy}
+                      onCheckedChange={(checked) => setAcceptPrivacy(checked === true)}
+                      disabled={loading}
+                    />
+                    <Label htmlFor="accept-privacy" className="text-sm font-normal cursor-pointer">
+                      I accept the <a href="/publication-ethics" className="text-primary underline hover:no-underline">Privacy Policy</a>
+                    </Label>
+                  </div>
+                  {errors.agreements && (
+                    <p className="text-sm text-destructive">{errors.agreements}</p>
+                  )}
+                </div>
+
                 <div className="flex items-center gap-2 p-3 rounded-lg bg-muted/50 text-sm text-muted-foreground">
                   <Shield className="h-4 w-4 shrink-0" />
                   <span>You'll receive a verification email to confirm your account</span>
                 </div>
-                <Button type="submit" className="w-full" disabled={loading}>
+                <Button type="submit" className="w-full" disabled={loading || !acceptEula || !acceptPrivacy}>
                   {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                   Create Account
                 </Button>
