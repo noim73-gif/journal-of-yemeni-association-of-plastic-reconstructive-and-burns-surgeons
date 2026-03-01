@@ -317,6 +317,7 @@ export type Database = {
       profiles: {
         Row: {
           account_status: string | null
+          additional_specialties: string | null
           avatar_url: string | null
           bio: string | null
           city: string | null
@@ -327,12 +328,16 @@ export type Database = {
           id_number: string | null
           notification_preferences: Json | null
           phone: string | null
+          postal_code: string | null
+          primary_specialty: string | null
+          profession: string | null
           updated_at: string
           user_id: string
           username: string | null
         }
         Insert: {
           account_status?: string | null
+          additional_specialties?: string | null
           avatar_url?: string | null
           bio?: string | null
           city?: string | null
@@ -343,12 +348,16 @@ export type Database = {
           id_number?: string | null
           notification_preferences?: Json | null
           phone?: string | null
+          postal_code?: string | null
+          primary_specialty?: string | null
+          profession?: string | null
           updated_at?: string
           user_id: string
           username?: string | null
         }
         Update: {
           account_status?: string | null
+          additional_specialties?: string | null
           avatar_url?: string | null
           bio?: string | null
           city?: string | null
@@ -359,6 +368,9 @@ export type Database = {
           id_number?: string | null
           notification_preferences?: Json | null
           phone?: string | null
+          postal_code?: string | null
+          primary_specialty?: string | null
+          profession?: string | null
           updated_at?: string
           user_id?: string
           username?: string | null
