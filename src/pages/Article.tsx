@@ -21,6 +21,11 @@ interface Article {
   title: string;
   abstract: string | null;
   content: string | null;
+  introduction: string | null;
+  methods: string | null;
+  results: string | null;
+  discussion: string | null;
+  references: string | null;
   authors: string | null;
   category: string | null;
   image_url: string | null;
@@ -29,6 +34,27 @@ interface Article {
   doi: string | null;
   published_at: string | null;
   created_at: string;
+}
+
+const SANITIZE_OPTIONS = {
+  ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'u', 's', 'h1', 'h2', 'h3', 'ul', 'ol', 'li', 'blockquote', 'a', 'img', 'hr', 'div', 'span', 'sub', 'sup', 'table', 'thead', 'tbody', 'tr', 'th', 'td'],
+  ALLOWED_ATTR: ['href', 'src', 'alt', 'class', 'style', 'target', 'rel']
+};
+
+function AcademicSection({ title, content, numbering }: { title: string; content: string; numbering?: string }) {
+  if (!content) return null;
+  return (
+    <section className="mb-10">
+      <h2 className="font-serif text-xl md:text-2xl font-bold text-foreground mb-4 pb-2 border-b border-border">
+        {numbering && <span className="text-muted-foreground mr-2">{numbering}</span>}
+        {title}
+      </h2>
+      <div
+        className="prose prose-lg max-w-none prose-headings:font-serif prose-headings:text-foreground prose-p:text-foreground prose-p:leading-relaxed prose-a:text-primary prose-blockquote:border-primary prose-blockquote:text-muted-foreground prose-li:text-foreground"
+        dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(content, SANITIZE_OPTIONS) }}
+      />
+    </section>
+  );
 }
 
 export default function ArticlePage() {
@@ -59,7 +85,6 @@ export default function ArticlePage() {
         setError("Article not found");
       } else {
         setArticle(data);
-        // Track reading history
         if (user) {
           addToHistory({
             id: data.id,
@@ -128,6 +153,8 @@ export default function ArticlePage() {
     );
   }
 
+  const hasAcademicSections = article.introduction || article.methods || article.results || article.discussion || article.references;
+
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <Header />
@@ -184,7 +211,6 @@ export default function ArticlePage() {
                 )}
               </div>
               
-              {/* DOI Display */}
               {article.doi && (
                 <div className="mt-4">
                   <a
@@ -228,25 +254,44 @@ export default function ArticlePage() {
               </div>
             </div>
 
-            {/* Abstract */}
-            {article.abstract && (
-              <div className="mb-8">
-                <h2 className="font-serif text-xl font-semibold mb-3">Abstract</h2>
-                <p className="text-muted-foreground leading-relaxed">{article.abstract}</p>
-              </div>
-            )}
+            {/* Academic Structured Sections */}
+            {hasAcademicSections ? (
+              <div className="space-y-2">
+                {/* Abstract */}
+                {article.abstract && (
+                  <section className="mb-10 bg-muted/50 rounded-lg p-6 border border-border">
+                    <h2 className="font-serif text-xl md:text-2xl font-bold text-foreground mb-4">
+                      Abstract
+                    </h2>
+                    <p className="text-muted-foreground leading-relaxed whitespace-pre-line">{article.abstract}</p>
+                  </section>
+                )}
 
-            {/* Content */}
-            {article.content && (
-              <div 
-                className="prose prose-lg max-w-none mb-12 prose-headings:font-serif prose-headings:text-foreground prose-p:text-foreground prose-p:leading-relaxed prose-a:text-primary prose-blockquote:border-primary prose-blockquote:text-muted-foreground prose-li:text-foreground"
-                dangerouslySetInnerHTML={{ 
-                  __html: DOMPurify.sanitize(article.content, {
-                    ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'u', 's', 'h1', 'h2', 'h3', 'ul', 'ol', 'li', 'blockquote', 'a', 'img', 'hr', 'div', 'span'],
-                    ALLOWED_ATTR: ['href', 'src', 'alt', 'class', 'style', 'target', 'rel']
-                  })
-                }}
-              />
+                <AcademicSection title="Introduction" content={article.introduction || ""} numbering="1." />
+                <AcademicSection title="Methods" content={article.methods || ""} numbering="2." />
+                <AcademicSection title="Results" content={article.results || ""} numbering="3." />
+                <AcademicSection title="Discussion" content={article.discussion || ""} numbering="4." />
+                <AcademicSection title="References" content={article.references || ""} numbering="5." />
+              </div>
+            ) : (
+              <>
+                {/* Fallback: legacy single-content articles */}
+                {article.abstract && (
+                  <div className="mb-8">
+                    <h2 className="font-serif text-xl font-semibold mb-3">Abstract</h2>
+                    <p className="text-muted-foreground leading-relaxed">{article.abstract}</p>
+                  </div>
+                )}
+
+                {article.content && (
+                  <div 
+                    className="prose prose-lg max-w-none mb-12 prose-headings:font-serif prose-headings:text-foreground prose-p:text-foreground prose-p:leading-relaxed prose-a:text-primary prose-blockquote:border-primary prose-blockquote:text-muted-foreground prose-li:text-foreground"
+                    dangerouslySetInnerHTML={{ 
+                      __html: DOMPurify.sanitize(article.content, SANITIZE_OPTIONS)
+                    }}
+                  />
+                )}
+              </>
             )}
 
             <Separator className="my-12" />

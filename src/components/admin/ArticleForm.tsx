@@ -21,6 +21,11 @@ export function ArticleForm({ article, onSubmit, onCancel, isSubmitting }: Artic
     title: "",
     abstract: "",
     content: "",
+    introduction: "",
+    methods: "",
+    results: "",
+    discussion: "",
+    references: "",
     authors: "",
     category: "",
     image_url: "",
@@ -36,6 +41,11 @@ export function ArticleForm({ article, onSubmit, onCancel, isSubmitting }: Artic
         title: article.title,
         abstract: article.abstract || "",
         content: article.content || "",
+        introduction: article.introduction || "",
+        methods: article.methods || "",
+        results: article.results || "",
+        discussion: article.discussion || "",
+        references: article.references || "",
         authors: article.authors || "",
         category: article.category || "",
         image_url: article.image_url || "",
@@ -126,24 +136,65 @@ export function ArticleForm({ article, onSubmit, onCancel, isSubmitting }: Artic
             />
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="abstract">Abstract</Label>
-            <Textarea
-              id="abstract"
-              value={formData.abstract}
-              onChange={(e) => setFormData({ ...formData, abstract: e.target.value })}
-              placeholder="Enter article abstract"
-              rows={4}
-            />
-          </div>
+          {/* Academic Sections */}
+          <div className="space-y-6 border-t border-border pt-6">
+            <h3 className="font-serif text-lg font-semibold text-foreground">Article Sections</h3>
 
-          <div className="space-y-2">
-            <Label>Content</Label>
-            <RichTextEditor
-              value={formData.content || ""}
-              onChange={(content) => setFormData({ ...formData, content })}
-              placeholder="Start writing your article content..."
-            />
+            <div className="space-y-2">
+              <Label htmlFor="abstract">Abstract</Label>
+              <Textarea
+                id="abstract"
+                value={formData.abstract}
+                onChange={(e) => setFormData({ ...formData, abstract: e.target.value })}
+                placeholder="Provide a structured summary of the study objectives, methods, results, and conclusions..."
+                rows={5}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Introduction</Label>
+              <RichTextEditor
+                value={formData.introduction || ""}
+                onChange={(introduction) => setFormData({ ...formData, introduction })}
+                placeholder="Background, rationale, and objectives of the study..."
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Methods</Label>
+              <RichTextEditor
+                value={formData.methods || ""}
+                onChange={(methods) => setFormData({ ...formData, methods })}
+                placeholder="Study design, participants, interventions, data collection, and statistical analysis..."
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Results</Label>
+              <RichTextEditor
+                value={formData.results || ""}
+                onChange={(results) => setFormData({ ...formData, results })}
+                placeholder="Main findings, data, tables, and figures..."
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Discussion</Label>
+              <RichTextEditor
+                value={formData.discussion || ""}
+                onChange={(discussion) => setFormData({ ...formData, discussion })}
+                placeholder="Interpretation of results, comparison with literature, limitations, and implications..."
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label>References</Label>
+              <RichTextEditor
+                value={formData.references || ""}
+                onChange={(references) => setFormData({ ...formData, references })}
+                placeholder="List references in Vancouver style (numbered sequentially)..."
+              />
+            </div>
           </div>
 
           <div className="flex items-center gap-6">
