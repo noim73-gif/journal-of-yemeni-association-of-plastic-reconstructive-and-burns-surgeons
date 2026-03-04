@@ -715,6 +715,10 @@ export type Database = {
         | "doctor"
         | "editor"
         | "member"
+        | "journal_manager"
+        | "copyeditor"
+        | "layout_editor"
+        | "section_editor"
       board_member_role:
         | "editor_in_chief"
         | "associate_editor"
@@ -860,6 +864,10 @@ export const Constants = {
         "doctor",
         "editor",
         "member",
+        "journal_manager",
+        "copyeditor",
+        "layout_editor",
+        "section_editor",
       ],
       board_member_role: [
         "editor_in_chief",
