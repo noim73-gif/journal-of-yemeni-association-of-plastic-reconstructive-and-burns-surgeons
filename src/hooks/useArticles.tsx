@@ -8,6 +8,11 @@ export interface Article {
   title: string;
   abstract: string | null;
   content: string | null;
+  introduction: string | null;
+  methods: string | null;
+  results: string | null;
+  discussion: string | null;
+  references: string | null;
   authors: string | null;
   category: string | null;
   image_url: string | null;
@@ -26,6 +31,11 @@ export interface ArticleInput {
   title: string;
   abstract?: string;
   content?: string;
+  introduction?: string;
+  methods?: string;
+  results?: string;
+  discussion?: string;
+  references?: string;
   authors?: string;
   category?: string;
   image_url?: string;

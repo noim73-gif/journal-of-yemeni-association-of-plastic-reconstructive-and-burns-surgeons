@@ -136,13 +136,18 @@ export type Database = {
           content: string | null
           created_at: string
           created_by: string | null
+          discussion: string | null
           doi: string | null
           id: string
           image_url: string | null
+          introduction: string | null
           is_featured: boolean | null
           is_main_featured: boolean | null
           issue: string | null
+          methods: string | null
           published_at: string | null
+          references: string | null
+          results: string | null
           review_status: string | null
           title: string
           updated_at: string
@@ -155,13 +160,18 @@ export type Database = {
           content?: string | null
           created_at?: string
           created_by?: string | null
+          discussion?: string | null
           doi?: string | null
           id?: string
           image_url?: string | null
+          introduction?: string | null
           is_featured?: boolean | null
           is_main_featured?: boolean | null
           issue?: string | null
+          methods?: string | null
           published_at?: string | null
+          references?: string | null
+          results?: string | null
           review_status?: string | null
           title: string
           updated_at?: string
@@ -174,13 +184,18 @@ export type Database = {
           content?: string | null
           created_at?: string
           created_by?: string | null
+          discussion?: string | null
           doi?: string | null
           id?: string
           image_url?: string | null
+          introduction?: string | null
           is_featured?: boolean | null
           is_main_featured?: boolean | null
           issue?: string | null
+          methods?: string | null
           published_at?: string | null
+          references?: string | null
+          results?: string | null
           review_status?: string | null
           title?: string
           updated_at?: string
