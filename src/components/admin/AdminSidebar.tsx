@@ -22,12 +22,16 @@ import {
   Inbox,
   UserSquare2,
   UserPlus,
+  GitBranch,
+  Library,
 } from "lucide-react";
 
 const menuItems = [
   { title: "Dashboard", url: "/admin", icon: LayoutDashboard },
+  { title: "Editorial Workflow", url: "/admin/workflow", icon: GitBranch },
   { title: "Articles", url: "/admin/articles", icon: FileText },
   { title: "Submissions", url: "/admin/submissions", icon: Inbox },
+  { title: "Issues", url: "/admin/issues", icon: Library },
   { title: "Reviews", url: "/admin/reviews", icon: ClipboardCheck },
   { title: "Users", url: "/admin/users", icon: Users },
   { title: "Reviewer Applications", url: "/admin/reviewer-applications", icon: UserPlus },
