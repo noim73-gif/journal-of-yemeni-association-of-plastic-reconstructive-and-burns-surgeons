@@ -25,6 +25,8 @@ import AdminSettings from "./pages/admin/AdminSettings";
 import AdminSubmissions from "./pages/admin/AdminSubmissions";
 import AdminEditorialBoard from "./pages/admin/AdminEditorialBoard";
 import AdminReviewerApplications from "./pages/admin/AdminReviewerApplications";
+import AdminWorkflow from "./pages/admin/AdminWorkflow";
+import AdminIssues from "./pages/admin/AdminIssues";
 import ReviewerDashboard from "./pages/ReviewerDashboard";
 import Submit from "./pages/Submit";
 import AuthorGuidelines from "./pages/AuthorGuidelines";
