@@ -76,9 +76,11 @@ function AppContent() {
           <Route path="/reviewer" element={<ReviewerDashboard />} />
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<AdminDashboard />} />
+            <Route path="workflow" element={<AdminWorkflow />} />
             <Route path="articles" element={<AdminArticles />} />
             <Route path="reviews" element={<AdminReviews />} />
             <Route path="submissions" element={<AdminSubmissions />} />
+            <Route path="issues" element={<AdminIssues />} />
             <Route path="users" element={<AdminUsers />} />
             <Route path="reviewer-applications" element={<AdminReviewerApplications />} />
             <Route path="editorial-board" element={<AdminEditorialBoard />} />
