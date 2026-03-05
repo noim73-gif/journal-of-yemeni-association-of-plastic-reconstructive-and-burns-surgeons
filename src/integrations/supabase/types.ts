@@ -49,6 +49,50 @@ export type Database = {
           },
         ]
       }
+      article_galleys: {
+        Row: {
+          article_id: string
+          created_at: string
+          file_type: string
+          file_url: string
+          id: string
+          is_primary: boolean | null
+          label: string
+          locale: string | null
+          updated_at: string
+        }
+        Insert: {
+          article_id: string
+          created_at?: string
+          file_type?: string
+          file_url: string
+          id?: string
+          is_primary?: boolean | null
+          label?: string
+          locale?: string | null
+          updated_at?: string
+        }
+        Update: {
+          article_id?: string
+          created_at?: string
+          file_type?: string
+          file_url?: string
+          id?: string
+          is_primary?: boolean | null
+          label?: string
+          locale?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "article_galleys_article_id_fkey"
+            columns: ["article_id"]
+            isOneToOne: false
+            referencedRelation: "articles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       article_likes: {
         Row: {
           article_id: string
@@ -131,6 +175,7 @@ export type Database = {
       articles: {
         Row: {
           abstract: string | null
+          article_number: number | null
           authors: string | null
           category: string | null
           content: string | null
@@ -144,17 +189,22 @@ export type Database = {
           is_featured: boolean | null
           is_main_featured: boolean | null
           issue: string | null
+          journal_issue_id: string | null
+          keywords: string[] | null
           methods: string | null
+          pages: string | null
           published_at: string | null
           references: string | null
           results: string | null
           review_status: string | null
+          submission_id: string | null
           title: string
           updated_at: string
           volume: string | null
         }
         Insert: {
           abstract?: string | null
+          article_number?: number | null
           authors?: string | null
           category?: string | null
           content?: string | null
@@ -168,17 +218,22 @@ export type Database = {
           is_featured?: boolean | null
           is_main_featured?: boolean | null
           issue?: string | null
+          journal_issue_id?: string | null
+          keywords?: string[] | null
           methods?: string | null
+          pages?: string | null
           published_at?: string | null
           references?: string | null
           results?: string | null
           review_status?: string | null
+          submission_id?: string | null
           title: string
           updated_at?: string
           volume?: string | null
         }
         Update: {
           abstract?: string | null
+          article_number?: number | null
           authors?: string | null
           category?: string | null
           content?: string | null
@@ -192,16 +247,35 @@ export type Database = {
           is_featured?: boolean | null
           is_main_featured?: boolean | null
           issue?: string | null
+          journal_issue_id?: string | null
+          keywords?: string[] | null
           methods?: string | null
+          pages?: string | null
           published_at?: string | null
           references?: string | null
           results?: string | null
           review_status?: string | null
+          submission_id?: string | null
           title?: string
           updated_at?: string
           volume?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "articles_journal_issue_id_fkey"
+            columns: ["journal_issue_id"]
+            isOneToOne: false
+            referencedRelation: "journal_issues"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "articles_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: false
+            referencedRelation: "submissions"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       doctor_profiles: {
         Row: {
@@ -302,6 +376,92 @@ export type Database = {
           specialty?: string | null
           title?: string | null
           updated_at?: string
+        }
+        Relationships: []
+      }
+      editorial_decisions: {
+        Row: {
+          comments: string | null
+          created_at: string
+          decision: string
+          editor_id: string
+          id: string
+          notify_author: boolean | null
+          stage: string
+          submission_id: string
+        }
+        Insert: {
+          comments?: string | null
+          created_at?: string
+          decision: string
+          editor_id: string
+          id?: string
+          notify_author?: boolean | null
+          stage: string
+          submission_id: string
+        }
+        Update: {
+          comments?: string | null
+          created_at?: string
+          decision?: string
+          editor_id?: string
+          id?: string
+          notify_author?: boolean | null
+          stage?: string
+          submission_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "editorial_decisions_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: false
+            referencedRelation: "submissions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      journal_issues: {
+        Row: {
+          cover_image_url: string | null
+          created_at: string
+          description: string | null
+          id: string
+          is_current: boolean | null
+          number: number
+          published_at: string | null
+          status: string
+          title: string | null
+          updated_at: string
+          volume: number
+          year: number
+        }
+        Insert: {
+          cover_image_url?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_current?: boolean | null
+          number: number
+          published_at?: string | null
+          status?: string
+          title?: string | null
+          updated_at?: string
+          volume: number
+          year: number
+        }
+        Update: {
+          cover_image_url?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_current?: boolean | null
+          number?: number
+          published_at?: string | null
+          status?: string
+          title?: string | null
+          updated_at?: string
+          volume?: number
+          year?: number
         }
         Relationships: []
       }
@@ -527,6 +687,53 @@ export type Database = {
         }
         Relationships: []
       }
+      submission_files: {
+        Row: {
+          created_at: string
+          file_name: string
+          file_type: string
+          file_url: string
+          id: string
+          notes: string | null
+          stage: string
+          submission_id: string
+          uploaded_by: string
+          version: number
+        }
+        Insert: {
+          created_at?: string
+          file_name: string
+          file_type?: string
+          file_url: string
+          id?: string
+          notes?: string | null
+          stage?: string
+          submission_id: string
+          uploaded_by: string
+          version?: number
+        }
+        Update: {
+          created_at?: string
+          file_name?: string
+          file_type?: string
+          file_url?: string
+          id?: string
+          notes?: string | null
+          stage?: string
+          submission_id?: string
+          uploaded_by?: string
+          version?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "submission_files_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: false
+            referencedRelation: "submissions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       submission_reviews: {
         Row: {
           assigned_at: string
@@ -583,50 +790,91 @@ export type Database = {
           admin_notes: string | null
           authors: string
           category: string | null
+          copyeditor_id: string | null
           cover_letter: string | null
           created_at: string
+          decision: string | null
+          decision_date: string | null
+          editor_id: string | null
           id: string
+          journal_issue_id: string | null
           keywords: string | null
+          layout_editor_id: string | null
           manuscript_url: string | null
+          metadata: Json | null
+          review_type: string | null
+          revision_number: number | null
+          section_editor_id: string | null
           status: string
           supplementary_url: string | null
           title: string
           updated_at: string
           user_id: string
+          workflow_stage: string
         }
         Insert: {
           abstract: string
           admin_notes?: string | null
           authors: string
           category?: string | null
+          copyeditor_id?: string | null
           cover_letter?: string | null
           created_at?: string
+          decision?: string | null
+          decision_date?: string | null
+          editor_id?: string | null
           id?: string
+          journal_issue_id?: string | null
           keywords?: string | null
+          layout_editor_id?: string | null
           manuscript_url?: string | null
+          metadata?: Json | null
+          review_type?: string | null
+          revision_number?: number | null
+          section_editor_id?: string | null
           status?: string
           supplementary_url?: string | null
           title: string
           updated_at?: string
           user_id: string
+          workflow_stage?: string
         }
         Update: {
           abstract?: string
           admin_notes?: string | null
           authors?: string
           category?: string | null
+          copyeditor_id?: string | null
           cover_letter?: string | null
           created_at?: string
+          decision?: string | null
+          decision_date?: string | null
+          editor_id?: string | null
           id?: string
+          journal_issue_id?: string | null
           keywords?: string | null
+          layout_editor_id?: string | null
           manuscript_url?: string | null
+          metadata?: Json | null
+          review_type?: string | null
+          revision_number?: number | null
+          section_editor_id?: string | null
           status?: string
           supplementary_url?: string | null
           title?: string
           updated_at?: string
           user_id?: string
+          workflow_stage?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "submissions_journal_issue_id_fkey"
+            columns: ["journal_issue_id"]
+            isOneToOne: false
+            referencedRelation: "journal_issues"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_roles: {
         Row: {
