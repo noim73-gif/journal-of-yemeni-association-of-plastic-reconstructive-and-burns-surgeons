@@ -184,7 +184,8 @@ export function BoardMemberFormDialog({
                 </FormItem>
               )}
             />
-
+            <FormField
+              control={form.control}
               name="role"
               render={({ field }) => (
                 <FormItem>
