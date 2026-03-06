@@ -36,6 +36,7 @@ import {
 
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
+  username: z.string().optional(),
   role: z.enum(["editor_in_chief", "associate_editor", "board_member", "international_advisor"]),
   title: z.string().optional(),
   affiliation: z.string().optional(),
