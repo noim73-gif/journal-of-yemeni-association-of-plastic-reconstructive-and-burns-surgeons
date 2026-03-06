@@ -93,6 +93,7 @@ export function BoardMemberFormDialog({
     if (member) {
       form.reset({
         name: member.name,
+        username: member.username || "",
         role: member.role,
         title: member.title || "",
         affiliation: member.affiliation || "",
