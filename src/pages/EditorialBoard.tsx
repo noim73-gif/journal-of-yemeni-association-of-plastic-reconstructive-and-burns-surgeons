@@ -208,6 +208,7 @@ export default function EditorialBoard() {
                       <EditorCard
                         key={editor.id}
                         name={editor.name}
+                        username={editor.username}
                         role={roleDisplayNames[editor.role]}
                         affiliation={editor.affiliation}
                         title={editor.title}
