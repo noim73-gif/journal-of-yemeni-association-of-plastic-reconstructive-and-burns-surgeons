@@ -76,6 +76,7 @@ export function BoardMemberFormDialog({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
+      username: "",
       role: "board_member",
       title: "",
       affiliation: "",
