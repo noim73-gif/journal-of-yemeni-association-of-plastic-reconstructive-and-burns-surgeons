@@ -107,6 +107,7 @@ export function BoardMemberFormDialog({
     } else {
       form.reset({
         name: "",
+        username: "",
         role: "board_member",
         title: "",
         affiliation: "",
