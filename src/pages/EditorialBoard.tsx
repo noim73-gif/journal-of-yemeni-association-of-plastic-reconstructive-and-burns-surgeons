@@ -9,6 +9,7 @@ import { useEditorialBoard, BoardMember } from "@/hooks/useEditorialBoard";
 
 interface EditorCardProps {
   name: string;
+  username?: string | null;
   role?: string;
   affiliation: string | null;
   title?: string | null;
