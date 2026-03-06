@@ -1,0 +1,1 @@
+ALTER TABLE public.editorial_board_members ADD COLUMN username text;
