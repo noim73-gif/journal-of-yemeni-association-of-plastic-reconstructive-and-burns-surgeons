@@ -10,8 +10,10 @@ import { Separator } from "@/components/ui/separator";
 import { ArticleLikeButton } from "@/components/article/ArticleLikeButton";
 import { ArticleComments } from "@/components/article/ArticleComments";
 import { useAuth } from "@/hooks/useAuth";
+import { useAdmin } from "@/hooks/useAdmin";
 import { useReadingHistory } from "@/hooks/useReadingHistory";
-import { ArrowLeft, Calendar, User, BookOpen, Share2, Bookmark, Loader2, ExternalLink } from "lucide-react";
+import { ArrowLeft, Calendar, User, BookOpen, Share2, Bookmark, Loader2, ExternalLink, FileCode2 } from "lucide-react";
+import { toast } from "sonner";
 import { format } from "date-fns";
 import { useSavedArticles } from "@/hooks/useSavedArticles";
 import DOMPurify from "dompurify";
@@ -60,6 +62,7 @@ function AcademicSection({ title, content, numbering }: { title: string; content
 export default function ArticlePage() {
   const { id } = useParams<{ id: string }>();
   const { user } = useAuth();
+  const { isAdmin } = useAdmin();
   const { addToHistory } = useReadingHistory();
   const { savedArticles, saveArticle, unsaveArticle } = useSavedArticles();
   const [article, setArticle] = useState<Article | null>(null);
@@ -111,6 +114,28 @@ export default function ArticlePage() {
         authors: article.authors || undefined,
         image: article.image_url || undefined,
       });
+    }
+  };
+
+  const handleExportJatsXml = async () => {
+    if (!article) return;
+    try {
+      const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID;
+      const url = `https://${projectId}.supabase.co/functions/v1/export-jats-xml?article_id=${article.id}`;
+      const response = await fetch(url, {
+        headers: { "apikey": import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY },
+      });
+      if (!response.ok) throw new Error("Export failed");
+      const blob = await response.blob();
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = `article-${article.id}.xml`;
+      link.click();
+      URL.revokeObjectURL(link.href);
+      toast.success("JATS XML exported successfully");
+    } catch (err) {
+      logger.error("JATS XML export error:", err);
+      toast.error("Failed to export JATS XML");
     }
   };
 
@@ -249,6 +274,12 @@ export default function ArticlePage() {
                   >
                     <Bookmark className={`h-4 w-4 mr-2 ${isSaved ? "fill-current" : ""}`} />
                     {isSaved ? "Saved" : "Save"}
+                  </Button>
+                )}
+                {isAdmin && (
+                  <Button variant="ghost" size="sm" onClick={handleExportJatsXml}>
+                    <FileCode2 className="h-4 w-4 mr-2" />
+                    JATS XML
                   </Button>
                 )}
               </div>
