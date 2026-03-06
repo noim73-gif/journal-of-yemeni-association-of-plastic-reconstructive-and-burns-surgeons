@@ -62,6 +62,7 @@ function AcademicSection({ title, content, numbering }: { title: string; content
 export default function ArticlePage() {
   const { id } = useParams<{ id: string }>();
   const { user } = useAuth();
+  const { isAdmin } = useAdmin();
   const { addToHistory } = useReadingHistory();
   const { savedArticles, saveArticle, unsaveArticle } = useSavedArticles();
   const [article, setArticle] = useState<Article | null>(null);
