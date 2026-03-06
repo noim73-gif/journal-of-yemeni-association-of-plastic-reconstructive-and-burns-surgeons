@@ -276,6 +276,12 @@ export default function ArticlePage() {
                     {isSaved ? "Saved" : "Save"}
                   </Button>
                 )}
+                {isAdmin && (
+                  <Button variant="ghost" size="sm" onClick={handleExportJatsXml}>
+                    <FileCode2 className="h-4 w-4 mr-2" />
+                    JATS XML
+                  </Button>
+                )}
               </div>
             </div>
 
