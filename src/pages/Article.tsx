@@ -10,6 +10,7 @@ import { Separator } from "@/components/ui/separator";
 import { ArticleLikeButton } from "@/components/article/ArticleLikeButton";
 import { ArticleComments } from "@/components/article/ArticleComments";
 import { useAuth } from "@/hooks/useAuth";
+import { useAdmin } from "@/hooks/useAdmin";
 import { useReadingHistory } from "@/hooks/useReadingHistory";
 import { ArrowLeft, Calendar, User, BookOpen, Share2, Bookmark, Loader2, ExternalLink } from "lucide-react";
 import { format } from "date-fns";
