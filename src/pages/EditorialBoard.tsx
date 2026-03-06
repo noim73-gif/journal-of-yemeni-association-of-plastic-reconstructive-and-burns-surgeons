@@ -22,6 +22,7 @@ interface EditorCardProps {
 
 function EditorCard({ 
   name, 
+  username,
   role, 
   affiliation, 
   title, 
