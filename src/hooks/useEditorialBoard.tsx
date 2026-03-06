@@ -7,6 +7,7 @@ export type BoardMemberRole = "editor_in_chief" | "associate_editor" | "board_me
 export interface BoardMember {
   id: string;
   name: string;
+  username: string | null;
   role: BoardMemberRole;
   title: string | null;
   affiliation: string | null;
@@ -22,6 +23,7 @@ export interface BoardMember {
 
 export interface BoardMemberInput {
   name: string;
+  username?: string | null;
   role: BoardMemberRole;
   title?: string | null;
   affiliation?: string | null;

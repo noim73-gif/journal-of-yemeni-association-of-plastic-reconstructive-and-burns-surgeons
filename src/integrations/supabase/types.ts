@@ -346,6 +346,7 @@ export type Database = {
           specialty: string | null
           title: string | null
           updated_at: string
+          username: string | null
         }
         Insert: {
           affiliation?: string | null
@@ -361,6 +362,7 @@ export type Database = {
           specialty?: string | null
           title?: string | null
           updated_at?: string
+          username?: string | null
         }
         Update: {
           affiliation?: string | null
@@ -376,6 +378,7 @@ export type Database = {
           specialty?: string | null
           title?: string | null
           updated_at?: string
+          username?: string | null
         }
         Relationships: []
       }

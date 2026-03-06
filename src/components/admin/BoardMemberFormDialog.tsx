@@ -36,6 +36,7 @@ import {
 
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
+  username: z.string().optional(),
   role: z.enum(["editor_in_chief", "associate_editor", "board_member", "international_advisor"]),
   title: z.string().optional(),
   affiliation: z.string().optional(),
@@ -75,6 +76,7 @@ export function BoardMemberFormDialog({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
+      username: "",
       role: "board_member",
       title: "",
       affiliation: "",
@@ -91,6 +93,7 @@ export function BoardMemberFormDialog({
     if (member) {
       form.reset({
         name: member.name,
+        username: member.username || "",
         role: member.role,
         title: member.title || "",
         affiliation: member.affiliation || "",
@@ -104,6 +107,7 @@ export function BoardMemberFormDialog({
     } else {
       form.reset({
         name: "",
+        username: "",
         role: "board_member",
         title: "",
         affiliation: "",
@@ -120,6 +124,7 @@ export function BoardMemberFormDialog({
   const onSubmit = async (values: FormValues) => {
     const data = {
       name: values.name,
+      username: values.username || null,
       role: values.role,
       title: values.title || null,
       affiliation: values.affiliation || null,
@@ -166,6 +171,19 @@ export function BoardMemberFormDialog({
               )}
             />
 
+            <FormField
+              control={form.control}
+              name="username"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Username</FormLabel>
+                  <FormControl>
+                    <Input placeholder="@drsmith" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <FormField
               control={form.control}
               name="role"

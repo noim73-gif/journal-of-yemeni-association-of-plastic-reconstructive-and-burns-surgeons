@@ -9,6 +9,7 @@ import { useEditorialBoard, BoardMember } from "@/hooks/useEditorialBoard";
 
 interface EditorCardProps {
   name: string;
+  username?: string | null;
   role?: string;
   affiliation: string | null;
   title?: string | null;
@@ -21,6 +22,7 @@ interface EditorCardProps {
 
 function EditorCard({ 
   name, 
+  username,
   role, 
   affiliation, 
   title, 
@@ -45,6 +47,9 @@ function EditorCard({
             <h3 className={`font-serif font-semibold text-foreground ${featured ? "text-xl" : "text-lg"}`}>
               {name}
             </h3>
+            {username && (
+              <p className="text-sm text-muted-foreground">@{username}</p>
+            )}
             {role && (
               <Badge variant="secondary" className="mt-1">
                 {role}
@@ -177,6 +182,7 @@ export default function EditorialBoard() {
                   <EditorCard
                     key={editor.id}
                     name={editor.name}
+                    username={editor.username}
                     role={roleDisplayNames[editor.role]}
                     affiliation={editor.affiliation}
                     title={editor.title}
@@ -202,6 +208,7 @@ export default function EditorialBoard() {
                       <EditorCard
                         key={editor.id}
                         name={editor.name}
+                        username={editor.username}
                         role={roleDisplayNames[editor.role]}
                         affiliation={editor.affiliation}
                         title={editor.title}
@@ -229,6 +236,7 @@ export default function EditorialBoard() {
                       <EditorCard
                         key={member.id}
                         name={member.name}
+                        username={member.username}
                         affiliation={member.affiliation}
                         specialty={member.specialty}
                         image={member.photo_url}
@@ -255,6 +263,7 @@ export default function EditorialBoard() {
                       <EditorCard
                         key={advisor.id}
                         name={advisor.name}
+                        username={advisor.username}
                         affiliation={advisor.affiliation}
                         specialty={advisor.specialty}
                         image={advisor.photo_url}
