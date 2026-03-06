@@ -117,6 +117,28 @@ export default function ArticlePage() {
     }
   };
 
+  const handleExportJatsXml = async () => {
+    if (!article) return;
+    try {
+      const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID;
+      const url = `https://${projectId}.supabase.co/functions/v1/export-jats-xml?article_id=${article.id}`;
+      const response = await fetch(url, {
+        headers: { "apikey": import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY },
+      });
+      if (!response.ok) throw new Error("Export failed");
+      const blob = await response.blob();
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = `article-${article.id}.xml`;
+      link.click();
+      URL.revokeObjectURL(link.href);
+      toast.success("JATS XML exported successfully");
+    } catch (err) {
+      logger.error("JATS XML export error:", err);
+      toast.error("Failed to export JATS XML");
+    }
+  };
+
   const handleShare = async () => {
     if (navigator.share) {
       await navigator.share({
