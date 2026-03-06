@@ -173,6 +173,18 @@ export function BoardMemberFormDialog({
 
             <FormField
               control={form.control}
+              name="username"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Username</FormLabel>
+                  <FormControl>
+                    <Input placeholder="@drsmith" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
               name="role"
               render={({ field }) => (
                 <FormItem>
