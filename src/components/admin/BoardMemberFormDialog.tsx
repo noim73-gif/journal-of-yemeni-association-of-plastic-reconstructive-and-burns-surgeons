@@ -124,6 +124,7 @@ export function BoardMemberFormDialog({
   const onSubmit = async (values: FormValues) => {
     const data = {
       name: values.name,
+      username: values.username || null,
       role: values.role,
       title: values.title || null,
       affiliation: values.affiliation || null,

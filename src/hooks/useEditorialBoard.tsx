@@ -23,6 +23,7 @@ export interface BoardMember {
 
 export interface BoardMemberInput {
   name: string;
+  username?: string | null;
   role: BoardMemberRole;
   title?: string | null;
   affiliation?: string | null;
