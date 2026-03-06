@@ -45,6 +45,9 @@ function EditorCard({
             <h3 className={`font-serif font-semibold text-foreground ${featured ? "text-xl" : "text-lg"}`}>
               {name}
             </h3>
+            {props.username && (
+              <p className="text-sm text-muted-foreground">@{props.username}</p>
+            )}
             {role && (
               <Badge variant="secondary" className="mt-1">
                 {role}
