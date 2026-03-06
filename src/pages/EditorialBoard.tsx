@@ -263,6 +263,7 @@ export default function EditorialBoard() {
                       <EditorCard
                         key={advisor.id}
                         name={advisor.name}
+                        username={advisor.username}
                         affiliation={advisor.affiliation}
                         specialty={advisor.specialty}
                         image={advisor.photo_url}
