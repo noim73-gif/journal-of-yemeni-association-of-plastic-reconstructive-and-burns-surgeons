@@ -103,6 +103,42 @@ export default function ArticlePage() {
     fetchArticle();
   }, [id, user, addToHistory]);
 
+  // Google Scholar citation meta tags
+  useEffect(() => {
+    if (!article) return;
+
+    const metaTags: HTMLMetaElement[] = [];
+
+    const addMeta = (name: string, content: string) => {
+      const tag = document.createElement("meta");
+      tag.setAttribute("name", name);
+      tag.setAttribute("content", content);
+      document.head.appendChild(tag);
+      metaTags.push(tag);
+    };
+
+    addMeta("citation_title", article.title);
+    addMeta("citation_journal_title", "Yemeni Journal of Plastic, Reconstructive and Burn Surgery");
+    addMeta("citation_issn", "XXXX-XXXX");
+
+    if (article.authors) {
+      article.authors.split(",").forEach((author) => {
+        addMeta("citation_author", author.trim());
+      });
+    }
+    if (article.published_at) {
+      addMeta("citation_publication_date", article.published_at.split("T")[0]);
+    }
+    if (article.volume) addMeta("citation_volume", article.volume);
+    if (article.issue) addMeta("citation_issue", article.issue);
+    if (article.doi) addMeta("citation_doi", article.doi);
+    if (article.abstract) addMeta("citation_abstract", article.abstract.substring(0, 500));
+
+    return () => {
+      metaTags.forEach((tag) => tag.remove());
+    };
+  }, [article]);
+
   const handleSave = () => {
     if (!article) return;
     if (isSaved) {

@@ -78,8 +78,8 @@ export function Header() {
               <span className="font-serif text-primary-foreground font-bold text-lg">YJ</span>
             </div>
             <div className="hidden sm:block">
-              <h1 className="font-serif text-lg font-semibold text-foreground leading-tight">YJPRBS  <br className="hidden lg:block" /> ​ 
-              </h1>
+              <h1 className="font-serif text-lg font-semibold text-foreground leading-tight">YJPRBS</h1>
+              <span className="text-[10px] text-muted-foreground tracking-wide">eISSN: XXXX-XXXX</span>
             </div>
           </Link>
 
