@@ -70,6 +70,9 @@ export default function ArticlePage() {
   const [article, setArticle] = useState<Article | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [galleys, setGalleys] = useState<{ id: string; label: string; file_url: string; file_type: string }[]>([]);
+
+  usePageTitle(article?.title || "Article");
 
   const isSaved = savedArticles.some((a) => a.article_id === id);
 
