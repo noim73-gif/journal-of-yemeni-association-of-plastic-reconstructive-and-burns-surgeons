@@ -18,6 +18,9 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { useAuth } from "@/hooks/useAuth";
 import { useSubmissions } from "@/hooks/useSubmissions";
 import { Upload, FileText, Loader2, CheckCircle } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+
+const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20MB
 
 const categories = [
   "Aesthetic Surgery",

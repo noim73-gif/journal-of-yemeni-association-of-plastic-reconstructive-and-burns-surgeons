@@ -352,6 +352,20 @@ export default function ArticlePage() {
               </div>
             </div>
 
+            {/* Galley Downloads */}
+            {galleys.length > 0 && (
+              <div className="mb-8 flex flex-wrap gap-2">
+                {galleys.map((galley) => (
+                  <a key={galley.id} href={galley.file_url} target="_blank" rel="noopener noreferrer">
+                    <Button variant="outline" size="sm">
+                      <Download className="h-4 w-4 mr-2" />
+                      {galley.label} ({galley.file_type.toUpperCase()})
+                    </Button>
+                  </a>
+                ))}
+              </div>
+            )}
+
             {/* Citation Export */}
             <div className="mb-8">
               <CitationExport article={article} />
