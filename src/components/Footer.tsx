@@ -15,17 +15,6 @@ export const Footer = forwardRef<HTMLElement>((_, ref) => {
             </div>
             <p className="text-primary-foreground/70 text-sm mb-4">The official journal of the Yemeni Association of Plastic, Reconstructive and Burn Surgeons, advancing the science and art of plastic surgery since 2011.</p>
             <p className="text-primary-foreground/80 text-xs font-medium mb-4 tracking-wide">eISSN: XXXX-XXXX</p>
-            <div className="flex gap-4">
-              <a href="#" className="text-primary-foreground/60 hover:text-accent transition-colors">
-                <Twitter className="h-5 w-5" />
-              </a>
-              <a href="#" className="text-primary-foreground/60 hover:text-accent transition-colors">
-                <Linkedin className="h-5 w-5" />
-              </a>
-              <a href="#" className="text-primary-foreground/60 hover:text-accent transition-colors">
-                <Youtube className="h-5 w-5" />
-              </a>
-            </div>
           </div>
 
           {/* Quick Links */}
