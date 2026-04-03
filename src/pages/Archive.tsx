@@ -18,6 +18,7 @@ interface VolumeIssue {
 }
 
 export default function Archive() {
+  usePageTitle("Archive");
   const [volumeIssues, setVolumeIssues] = useState<VolumeIssue[]>([]);
   const [loading, setLoading] = useState(true);
 

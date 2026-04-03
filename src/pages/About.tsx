@@ -65,6 +65,7 @@ const advisoryBoard = [
 ];
 
 export default function About() {
+  usePageTitle("About");
   return (
     <div className="min-h-screen bg-background">
       <Header />

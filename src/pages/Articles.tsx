@@ -26,6 +26,7 @@ interface VolumeIssue {
 }
 
 export default function Articles() {
+  usePageTitle("Browse Articles");
   const { articles, loading, error } = usePublishedArticles();
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState("");

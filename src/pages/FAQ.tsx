@@ -110,6 +110,7 @@ const publicationFAQs = [
 ];
 
 const FAQ = () => {
+  usePageTitle("FAQ");
   return (
     <div className="min-h-screen bg-background">
       <Header />
