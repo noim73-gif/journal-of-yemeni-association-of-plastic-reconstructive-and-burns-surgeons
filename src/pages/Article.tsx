@@ -108,6 +108,16 @@ export default function ArticlePage() {
     fetchArticle();
   }, [id, user, addToHistory]);
 
+  // Fetch galleys
+  useEffect(() => {
+    if (!id) return;
+    supabase
+      .from("article_galleys")
+      .select("id, label, file_url, file_type")
+      .eq("article_id", id)
+      .then(({ data }) => setGalleys(data || []));
+  }, [id]);
+
   // Google Scholar citation meta tags
   useEffect(() => {
     if (!article) return;
