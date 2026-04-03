@@ -1,5 +1,5 @@
 import { forwardRef } from "react";
-import { Mail, Phone, MapPin, Twitter, Linkedin, Youtube } from "lucide-react";
+import { Mail, Phone, MapPin } from "lucide-react";
 
 export const Footer = forwardRef<HTMLElement>((_, ref) => {
   return <footer ref={ref} id="about" className="bg-primary text-primary-foreground">
@@ -11,31 +11,19 @@ export const Footer = forwardRef<HTMLElement>((_, ref) => {
               <div className="h-10 w-10 rounded-full bg-primary-foreground/20 flex items-center justify-center">
                 <span className="font-serif font-bold text-lg">J</span>
               </div>
-              <span className="font-serif font-semibold">YJPRS</span>
+              <span className="font-serif font-semibold">YJPRBS</span>
             </div>
             <p className="text-primary-foreground/70 text-sm mb-4">The official journal of the Yemeni Association of Plastic, Reconstructive and Burn Surgeons, advancing the science and art of plastic surgery since 2011.</p>
             <p className="text-primary-foreground/80 text-xs font-medium mb-4 tracking-wide">eISSN: XXXX-XXXX</p>
-            <div className="flex gap-4">
-              <a href="#" className="text-primary-foreground/60 hover:text-accent transition-colors">
-                <Twitter className="h-5 w-5" />
-              </a>
-              <a href="#" className="text-primary-foreground/60 hover:text-accent transition-colors">
-                <Linkedin className="h-5 w-5" />
-              </a>
-              <a href="#" className="text-primary-foreground/60 hover:text-accent transition-colors">
-                <Youtube className="h-5 w-5" />
-              </a>
-            </div>
           </div>
 
           {/* Quick Links */}
           <div>
             <h4 className="font-semibold mb-4">Quick Links</h4>
             <ul className="space-y-3 text-sm text-primary-foreground/70">
-              <li><a href="#" className="hover:text-accent transition-colors">Current Issue</a></li>
-              <li><a href="#" className="hover:text-accent transition-colors">Archive</a></li>
+              <li><a href="/articles" className="hover:text-accent transition-colors">Current Issue</a></li>
+              <li><a href="/archive" className="hover:text-accent transition-colors">Archive</a></li>
               <li><a href="/editorial-board" className="hover:text-accent transition-colors">Editorial Board</a></li>
-              <li><a href="#" className="hover:text-accent transition-colors">CME Activities</a></li>
             </ul>
           </div>
 
@@ -79,12 +67,7 @@ export const Footer = forwardRef<HTMLElement>((_, ref) => {
         </div>
 
         <div className="border-t border-primary-foreground/20 mt-10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-primary-foreground/60">
-          <p>© 2026 Journal of Plastic, Reconstructive & Burn Surgery. All rights reserved.</p>
-          <div className="flex gap-6">
-            <a href="#" className="hover:text-accent transition-colors">Privacy Policy</a>
-            <a href="#" className="hover:text-accent transition-colors">Terms of Use</a>
-            <a href="#" className="hover:text-accent transition-colors">Accessibility</a>
-          </div>
+          <p>© 2026 Yemeni Journal of Plastic, Reconstructive & Burn Surgery. All rights reserved.</p>
         </div>
       </div>
     </footer>;
