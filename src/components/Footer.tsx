@@ -1,5 +1,5 @@
 import { forwardRef } from "react";
-import { Mail, Phone, MapPin, Twitter, Linkedin, Youtube } from "lucide-react";
+import { Mail, Phone, MapPin } from "lucide-react";
 
 export const Footer = forwardRef<HTMLElement>((_, ref) => {
   return <footer ref={ref} id="about" className="bg-primary text-primary-foreground">
