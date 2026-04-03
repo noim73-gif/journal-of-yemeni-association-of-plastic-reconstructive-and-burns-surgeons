@@ -7,6 +7,7 @@ import { Footer } from "@/components/Footer";
 import { usePageTitle } from "@/hooks/usePageTitle";
 
 const Index = () => {
+  usePageTitle("");
   return (
     <div className="min-h-screen bg-background">
       <Header />
