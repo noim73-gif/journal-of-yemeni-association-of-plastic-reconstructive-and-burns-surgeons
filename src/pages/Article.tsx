@@ -149,6 +149,22 @@ export default function ArticlePage() {
     if (article.doi) addMeta("citation_doi", article.doi);
     if (article.abstract) addMeta("citation_abstract", article.abstract.substring(0, 500));
 
+    // Open Graph meta tags
+    const addOg = (property: string, content: string) => {
+      const tag = document.createElement("meta");
+      tag.setAttribute("property", property);
+      tag.setAttribute("content", content);
+      document.head.appendChild(tag);
+      metaTags.push(tag);
+    };
+
+    addOg("og:title", article.title);
+    addOg("og:type", "article");
+    addOg("og:url", window.location.href);
+    if (article.abstract) addOg("og:description", article.abstract.substring(0, 200));
+    if (article.image_url) addOg("og:image", article.image_url);
+    addOg("og:site_name", "YJPRBS");
+
     return () => {
       metaTags.forEach((tag) => tag.remove());
     };
