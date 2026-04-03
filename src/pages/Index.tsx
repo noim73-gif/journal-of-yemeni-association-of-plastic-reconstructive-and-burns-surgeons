@@ -4,6 +4,7 @@ import { FeaturedSection } from "@/components/FeaturedSection";
 import { RecentIssues } from "@/components/RecentIssues";
 import { QuickLinks } from "@/components/QuickLinks";
 import { Footer } from "@/components/Footer";
+import { usePageTitle } from "@/hooks/usePageTitle";
 
 const Index = () => {
   return (
