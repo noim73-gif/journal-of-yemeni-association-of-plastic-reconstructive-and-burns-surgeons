@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Menu, X, Search, User, LogOut, Bookmark, Settings, Send, UserCircle, ClipboardCheck } from "lucide-react";
+import { SearchDialog } from "@/components/SearchDialog";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { useAdmin } from "@/hooks/useAdmin";
@@ -9,7 +10,8 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSepara
 
 const navItems = [{
   label: "Current Issue",
-  href: "#current-issue"
+  href: "/articles",
+  isRoute: true
 }, {
   label: "Articles",
   href: "/articles",
@@ -33,6 +35,7 @@ const navItems = [{
 }];
 
 export function Header() {
+  const [searchOpen, setSearchOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isReviewer, setIsReviewer] = useState(false);
   const {
@@ -100,9 +103,10 @@ export function Header() {
 
           {/* Actions */}
           <div className="flex items-center gap-2">
-            <Button variant="ghost" size="icon" className="text-muted-foreground">
+            <Button variant="ghost" size="icon" className="text-muted-foreground" onClick={() => setSearchOpen(true)}>
               <Search className="h-5 w-5" />
             </Button>
+            <SearchDialog open={searchOpen} onOpenChange={setSearchOpen} />
             
             {!loading && <>
                 {user ? <DropdownMenu>

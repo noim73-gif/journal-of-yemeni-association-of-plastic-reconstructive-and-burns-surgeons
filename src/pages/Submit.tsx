@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { usePageTitle } from "@/hooks/usePageTitle";
 import { useNavigate } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -17,6 +18,9 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { useAuth } from "@/hooks/useAuth";
 import { useSubmissions } from "@/hooks/useSubmissions";
 import { Upload, FileText, Loader2, CheckCircle } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+
+const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20MB
 
 const categories = [
   "Aesthetic Surgery",
@@ -34,6 +38,8 @@ const categories = [
 ];
 
 export default function Submit() {
+  usePageTitle("Submit Manuscript");
+  const { toast } = useToast();
   const navigate = useNavigate();
   const { user } = useAuth();
   const { createSubmission, uploadManuscript } = useSubmissions();
@@ -277,7 +283,15 @@ export default function Submit() {
                           type="file"
                           className="hidden"
                           accept=".pdf,.doc,.docx"
-                          onChange={(e) => setManuscriptFile(e.target.files?.[0] || null)}
+                          onChange={(e) => {
+                            const file = e.target.files?.[0] || null;
+                            if (file && file.size > MAX_FILE_SIZE) {
+                              toast({ title: "File too large", description: "Maximum file size is 20MB", variant: "destructive" });
+                              e.target.value = "";
+                              return;
+                            }
+                            setManuscriptFile(file);
+                          }}
                         />
                       </label>
                     )}
@@ -315,7 +329,15 @@ export default function Submit() {
                           type="file"
                           className="hidden"
                           accept=".pdf,.zip,.png,.jpg,.jpeg"
-                          onChange={(e) => setSupplementaryFile(e.target.files?.[0] || null)}
+                          onChange={(e) => {
+                            const file = e.target.files?.[0] || null;
+                            if (file && file.size > MAX_FILE_SIZE) {
+                              toast({ title: "File too large", description: "Maximum file size is 20MB", variant: "destructive" });
+                              e.target.value = "";
+                              return;
+                            }
+                            setSupplementaryFile(file);
+                          }}
                         />
                       </label>
                     )}

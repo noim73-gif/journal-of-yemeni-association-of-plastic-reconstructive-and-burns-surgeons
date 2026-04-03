@@ -1,3 +1,4 @@
+import { usePageTitle } from "@/hooks/usePageTitle";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Card, CardContent } from "@/components/ui/card";
@@ -64,6 +65,7 @@ const advisoryBoard = [
 ];
 
 export default function About() {
+  usePageTitle("About");
   return (
     <div className="min-h-screen bg-background">
       <Header />

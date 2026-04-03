@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
+import { usePageTitle } from "@/hooks/usePageTitle";
 import { Link } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -17,6 +18,7 @@ interface VolumeIssue {
 }
 
 export default function Archive() {
+  usePageTitle("Archive");
   const [volumeIssues, setVolumeIssues] = useState<VolumeIssue[]>([]);
   const [loading, setLoading] = useState(true);
 

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { usePageTitle } from "@/hooks/usePageTitle";
 import { useParams, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
@@ -13,7 +14,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { CitationExport } from "@/components/article/CitationExport";
 import { useAdmin } from "@/hooks/useAdmin";
 import { useReadingHistory } from "@/hooks/useReadingHistory";
-import { ArrowLeft, Calendar, User, BookOpen, Share2, Bookmark, Loader2, ExternalLink, FileCode2 } from "lucide-react";
+import { ArrowLeft, Calendar, User, BookOpen, Share2, Bookmark, Loader2, ExternalLink, FileCode2, Download } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { useSavedArticles } from "@/hooks/useSavedArticles";
@@ -69,6 +70,9 @@ export default function ArticlePage() {
   const [article, setArticle] = useState<Article | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [galleys, setGalleys] = useState<{ id: string; label: string; file_url: string; file_type: string }[]>([]);
+
+  usePageTitle(article?.title || "Article");
 
   const isSaved = savedArticles.some((a) => a.article_id === id);
 
@@ -104,6 +108,16 @@ export default function ArticlePage() {
     fetchArticle();
   }, [id, user, addToHistory]);
 
+  // Fetch galleys
+  useEffect(() => {
+    if (!id) return;
+    supabase
+      .from("article_galleys")
+      .select("id, label, file_url, file_type")
+      .eq("article_id", id)
+      .then(({ data }) => setGalleys(data || []));
+  }, [id]);
+
   // Google Scholar citation meta tags
   useEffect(() => {
     if (!article) return;
@@ -134,6 +148,22 @@ export default function ArticlePage() {
     if (article.issue) addMeta("citation_issue", article.issue);
     if (article.doi) addMeta("citation_doi", article.doi);
     if (article.abstract) addMeta("citation_abstract", article.abstract.substring(0, 500));
+
+    // Open Graph meta tags
+    const addOg = (property: string, content: string) => {
+      const tag = document.createElement("meta");
+      tag.setAttribute("property", property);
+      tag.setAttribute("content", content);
+      document.head.appendChild(tag);
+      metaTags.push(tag);
+    };
+
+    addOg("og:title", article.title);
+    addOg("og:type", "article");
+    addOg("og:url", window.location.href);
+    if (article.abstract) addOg("og:description", article.abstract.substring(0, 200));
+    if (article.image_url) addOg("og:image", article.image_url);
+    addOg("og:site_name", "YJPRBS");
 
     return () => {
       metaTags.forEach((tag) => tag.remove());
@@ -321,6 +351,20 @@ export default function ArticlePage() {
                 )}
               </div>
             </div>
+
+            {/* Galley Downloads */}
+            {galleys.length > 0 && (
+              <div className="mb-8 flex flex-wrap gap-2">
+                {galleys.map((galley) => (
+                  <a key={galley.id} href={galley.file_url} target="_blank" rel="noopener noreferrer">
+                    <Button variant="outline" size="sm">
+                      <Download className="h-4 w-4 mr-2" />
+                      {galley.label} ({galley.file_type.toUpperCase()})
+                    </Button>
+                  </a>
+                ))}
+              </div>
+            )}
 
             {/* Citation Export */}
             <div className="mb-8">
