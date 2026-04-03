@@ -103,9 +103,10 @@ export function Header() {
 
           {/* Actions */}
           <div className="flex items-center gap-2">
-            <Button variant="ghost" size="icon" className="text-muted-foreground">
+            <Button variant="ghost" size="icon" className="text-muted-foreground" onClick={() => setSearchOpen(true)}>
               <Search className="h-5 w-5" />
             </Button>
+            <SearchDialog open={searchOpen} onOpenChange={setSearchOpen} />
             
             {!loading && <>
                 {user ? <DropdownMenu>
