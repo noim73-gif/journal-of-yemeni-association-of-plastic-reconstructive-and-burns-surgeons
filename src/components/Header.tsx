@@ -35,6 +35,7 @@ const navItems = [{
 }];
 
 export function Header() {
+  const [searchOpen, setSearchOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isReviewer, setIsReviewer] = useState(false);
   const {
