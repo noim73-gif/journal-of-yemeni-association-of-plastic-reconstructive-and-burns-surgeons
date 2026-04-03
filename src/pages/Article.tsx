@@ -14,7 +14,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { CitationExport } from "@/components/article/CitationExport";
 import { useAdmin } from "@/hooks/useAdmin";
 import { useReadingHistory } from "@/hooks/useReadingHistory";
-import { ArrowLeft, Calendar, User, BookOpen, Share2, Bookmark, Loader2, ExternalLink, FileCode2 } from "lucide-react";
+import { ArrowLeft, Calendar, User, BookOpen, Share2, Bookmark, Loader2, ExternalLink, FileCode2, Download } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { useSavedArticles } from "@/hooks/useSavedArticles";
