@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Menu, X, Search, User, LogOut, Bookmark, Settings, Send, UserCircle, ClipboardCheck } from "lucide-react";
+import { SearchDialog } from "@/components/SearchDialog";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { useAdmin } from "@/hooks/useAdmin";
