@@ -21,10 +21,9 @@ export const Footer = forwardRef<HTMLElement>((_, ref) => {
           <div>
             <h4 className="font-semibold mb-4">Quick Links</h4>
             <ul className="space-y-3 text-sm text-primary-foreground/70">
-              <li><a href="#" className="hover:text-accent transition-colors">Current Issue</a></li>
-              <li><a href="#" className="hover:text-accent transition-colors">Archive</a></li>
+              <li><a href="/articles" className="hover:text-accent transition-colors">Current Issue</a></li>
+              <li><a href="/archive" className="hover:text-accent transition-colors">Archive</a></li>
               <li><a href="/editorial-board" className="hover:text-accent transition-colors">Editorial Board</a></li>
-              <li><a href="#" className="hover:text-accent transition-colors">CME Activities</a></li>
             </ul>
           </div>
 
