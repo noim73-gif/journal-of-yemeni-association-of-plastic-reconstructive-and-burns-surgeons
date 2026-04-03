@@ -328,7 +328,15 @@ export default function Submit() {
                           type="file"
                           className="hidden"
                           accept=".pdf,.zip,.png,.jpg,.jpeg"
-                          onChange={(e) => setSupplementaryFile(e.target.files?.[0] || null)}
+                          onChange={(e) => {
+                            const file = e.target.files?.[0] || null;
+                            if (file && file.size > MAX_FILE_SIZE) {
+                              toast({ title: "File too large", description: "Maximum file size is 20MB", variant: "destructive" });
+                              e.target.value = "";
+                              return;
+                            }
+                            setSupplementaryFile(file);
+                          }}
                         />
                       </label>
                     )}
