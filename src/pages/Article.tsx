@@ -10,6 +10,7 @@ import { Separator } from "@/components/ui/separator";
 import { ArticleLikeButton } from "@/components/article/ArticleLikeButton";
 import { ArticleComments } from "@/components/article/ArticleComments";
 import { useAuth } from "@/hooks/useAuth";
+import { CitationExport } from "@/components/article/CitationExport";
 import { useAdmin } from "@/hooks/useAdmin";
 import { useReadingHistory } from "@/hooks/useReadingHistory";
 import { ArrowLeft, Calendar, User, BookOpen, Share2, Bookmark, Loader2, ExternalLink, FileCode2 } from "lucide-react";
@@ -319,6 +320,11 @@ export default function ArticlePage() {
                   </Button>
                 )}
               </div>
+            </div>
+
+            {/* Citation Export */}
+            <div className="mb-8">
+              <CitationExport article={article} />
             </div>
 
             {/* Academic Structured Sections */}
