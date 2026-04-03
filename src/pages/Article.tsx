@@ -322,6 +322,11 @@ export default function ArticlePage() {
               </div>
             </div>
 
+            {/* Citation Export */}
+            <div className="mb-8">
+              <CitationExport article={article} />
+            </div>
+
             {/* Academic Structured Sections */}
             {hasAcademicSections ? (
               <div className="space-y-2">
