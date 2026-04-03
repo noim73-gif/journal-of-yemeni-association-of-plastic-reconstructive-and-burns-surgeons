@@ -39,6 +39,7 @@ const categories = [
 
 export default function Submit() {
   usePageTitle("Submit Manuscript");
+  const { toast } = useToast();
   const navigate = useNavigate();
   const { user } = useAuth();
   const { createSubmission, uploadManuscript } = useSubmissions();
