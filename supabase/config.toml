@@ -6,6 +6,9 @@ verify_jwt = false
 [functions.custom-auth-email]
 verify_jwt = false
 
+[functions.generate-article-pdf]
+verify_jwt = false
+
 [auth.hook.send_email]
 enabled = true
 uri = "pg-functions://postgres/supabase_functions/http_request"

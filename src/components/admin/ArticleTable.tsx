@@ -1,6 +1,8 @@
+import { useState } from "react";
 import { Article } from "@/hooks/useArticles";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { AdminGalleyManager } from "./AdminGalleyManager";
 import {
   Table,
   TableBody,
@@ -16,7 +18,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal, Pencil, Trash2, Eye, EyeOff, Star } from "lucide-react";
+import { MoreHorizontal, Pencil, Trash2, Eye, EyeOff, Star, FileText } from "lucide-react";
 import { format } from "date-fns";
 
 interface ArticleTableProps {
@@ -34,7 +36,10 @@ export function ArticleTable({
   onPublish,
   onUnpublish,
 }: ArticleTableProps) {
+  const [galleyArticle, setGalleyArticle] = useState<Article | null>(null);
+
   return (
+    <>
     <div className="rounded-lg border border-border overflow-hidden">
       <Table>
         <TableHeader>
@@ -113,6 +118,10 @@ export function ArticleTable({
                           Publish
                         </DropdownMenuItem>
                       )}
+                      <DropdownMenuItem onClick={() => setGalleyArticle(article)}>
+                        <FileText className="mr-2 h-4 w-4" />
+                        Manage Galleys
+                      </DropdownMenuItem>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem
                         onClick={() => onDelete(article.id)}
@@ -130,5 +139,12 @@ export function ArticleTable({
         </TableBody>
       </Table>
     </div>
+    <AdminGalleyManager
+      articleId={galleyArticle?.id || ""}
+      articleTitle={galleyArticle?.title || ""}
+      open={!!galleyArticle}
+      onOpenChange={(open) => { if (!open) setGalleyArticle(null); }}
+    />
+    </>
   );
 }
