@@ -7,19 +7,21 @@ import { Skeleton } from "@/components/ui/skeleton";
 export function FeaturedSection() {
   const { articles, loading, error } = usePublishedArticles();
 
-  // Get featured articles from database, or use fallbacks
+  // Get featured articles from database
   const featuredFromDb = articles.filter(a => a.is_featured || a.is_main_featured);
-  const displayArticles = featuredFromDb.length > 0 
-    ? featuredFromDb.map(article => ({
-        id: article.id,
-        category: article.category || "Research",
-        title: article.title,
-        authors: article.authors || "",
-        abstract: article.abstract || "",
-        imageUrl: article.image_url || "https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=800&q=80",
-        isMain: article.is_main_featured,
-      }))
-    : fallbackArticles;
+  const displayArticles = featuredFromDb.map(article => ({
+    id: article.id,
+    category: article.category || "Research",
+    title: article.title,
+    authors: article.authors || "",
+    abstract: article.abstract || "",
+    imageUrl: article.image_url || "",
+    isMain: article.is_main_featured,
+  }));
+
+  if (!loading && displayArticles.length === 0) {
+    return null; // Hide section when no featured articles exist
+  }
 
   const mainArticle = displayArticles.find(a => a.isMain) || displayArticles[0];
   const otherArticles = displayArticles.filter(a => a.id !== mainArticle.id).slice(0, 3);

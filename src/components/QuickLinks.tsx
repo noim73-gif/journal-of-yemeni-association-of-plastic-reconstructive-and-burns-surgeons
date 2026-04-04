@@ -6,25 +6,25 @@ const links = [
     icon: Send,
     title: "Submit Manuscript",
     description: "Share your research with the global plastic surgery community",
-    href: "#",
+    href: "/submit",
   },
   {
     icon: FileText,
     title: "Author Guidelines",
     description: "Formatting requirements and submission process",
-    href: "#",
+    href: "/author-guidelines",
   },
   {
     icon: BookOpen,
     title: "Peer Review",
     description: "Join our panel of expert reviewers",
-    href: "#",
+    href: "/peer-review",
   },
   {
     icon: Users,
     title: "Editorial Board",
     description: "Meet our distinguished editors and advisors",
-    href: "#",
+    href: "/editorial-board",
   },
 ];
 

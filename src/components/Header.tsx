@@ -81,7 +81,7 @@ export function Header() {
             <img src={journalLogo} alt="YJPRBS Logo" className="h-10 w-auto" />
             <div className="hidden sm:block">
               <h1 className="font-serif text-lg font-semibold text-foreground leading-tight">YJPRBS</h1>
-              <span className="text-[10px] text-muted-foreground tracking-wide">eISSN: XXXX-XXXX</span>
+              <span className="text-[10px] text-muted-foreground tracking-wide">eISSN: 3009-6316</span>
             </div>
           </Link>
 
