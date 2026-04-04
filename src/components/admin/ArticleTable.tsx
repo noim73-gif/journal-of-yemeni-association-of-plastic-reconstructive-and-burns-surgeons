@@ -19,7 +19,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal, Pencil, Trash2, Eye, EyeOff, Star } from "lucide-react";
+import { MoreHorizontal, Pencil, Trash2, Eye, EyeOff, Star, FileText } from "lucide-react";
 import { format } from "date-fns";
 
 interface ArticleTableProps {
