@@ -95,7 +95,7 @@ export function FeaturedSection() {
               Groundbreaking studies shaping the future of plastic surgery
             </p>
           </div>
-          <a href="#" className="hidden md:block text-primary font-medium hover:underline">
+          <a href="/articles" className="hidden md:block text-primary font-medium hover:underline">
             View All Articles →
           </a>
         </div>
