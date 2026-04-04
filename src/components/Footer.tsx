@@ -1,4 +1,5 @@
 import { forwardRef } from "react";
+import journalLogo from "@/assets/journal-logo.png";
 import { Mail, Phone, MapPin } from "lucide-react";
 
 export const Footer = forwardRef<HTMLElement>((_, ref) => {

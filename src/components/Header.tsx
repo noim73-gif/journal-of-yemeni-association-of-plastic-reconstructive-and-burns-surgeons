@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import journalLogo from "@/assets/journal-logo.png";
 import { Link, useNavigate } from "react-router-dom";
 import { Menu, X, Search, User, LogOut, Bookmark, Settings, Send, UserCircle, ClipboardCheck } from "lucide-react";
 import { SearchDialog } from "@/components/SearchDialog";
