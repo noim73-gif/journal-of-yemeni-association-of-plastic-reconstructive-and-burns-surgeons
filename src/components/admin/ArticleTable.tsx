@@ -119,6 +119,10 @@ export function ArticleTable({
                           Publish
                         </DropdownMenuItem>
                       )}
+                      <DropdownMenuItem onClick={() => setGalleyArticle(article)}>
+                        <FileText className="mr-2 h-4 w-4" />
+                        Manage Galleys
+                      </DropdownMenuItem>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem
                         onClick={() => onDelete(article.id)}
