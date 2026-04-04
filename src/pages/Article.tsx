@@ -217,7 +217,44 @@ export default function ArticlePage() {
     if (article.image_url) addOg("og:image", article.image_url);
     addOg("og:site_name", "YJPRBS");
 
-    return () => { metaTags.forEach((t) => t.remove()); };
+    // JSON-LD structured data for ScholarlyArticle
+    const jsonLd = document.createElement("script");
+    jsonLd.type = "application/ld+json";
+    jsonLd.textContent = JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "ScholarlyArticle",
+      "headline": article.title,
+      "name": article.title,
+      ...(article.abstract && { "description": article.abstract.substring(0, 500) }),
+      ...(article.authors && {
+        "author": article.authors.split(",").map((a) => ({
+          "@type": "Person",
+          "name": a.trim(),
+        })),
+      }),
+      ...(article.published_at && { "datePublished": article.published_at.split("T")[0] }),
+      ...(article.doi && { "sameAs": `https://doi.org/${article.doi}` }),
+      ...(article.image_url && { "image": article.image_url }),
+      "isPartOf": {
+        "@type": "Periodical",
+        "name": "Yemeni Journal of Plastic, Reconstructive and Burn Surgery",
+        "issn": "3009-6316",
+      },
+      ...(article.volume && { "volumeNumber": article.volume }),
+      ...(article.issue && { "issueNumber": article.issue }),
+      "publisher": {
+        "@type": "Organization",
+        "name": "Yemeni Association of Plastic, Reconstructive and Burn Surgeons",
+      },
+      "url": window.location.href,
+      "isAccessibleForFree": true,
+    });
+    document.head.appendChild(jsonLd);
+
+    return () => {
+      metaTags.forEach((t) => t.remove());
+      jsonLd.remove();
+    };
   }, [article]);
 
   const handleSave = () => {
