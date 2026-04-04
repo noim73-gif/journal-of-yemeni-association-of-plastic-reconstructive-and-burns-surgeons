@@ -78,7 +78,8 @@ function TableOfContents({ article }: { article: Article }) {
 
   const availableSections = TOC_ITEMS.filter((item) => {
     if (item.id === "abstract") return !!article.abstract;
-    return !!(article as Record<string, unknown>)[item.id];
+    const key = item.id as keyof Article;
+    return !!article[key];
   });
 
   useEffect(() => {
