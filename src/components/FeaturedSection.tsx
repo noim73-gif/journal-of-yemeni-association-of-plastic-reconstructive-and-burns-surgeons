@@ -114,7 +114,7 @@ export function FeaturedSection() {
           )}
         </div>
 
-        <a href="#" className="mt-8 block md:hidden text-center text-primary font-medium hover:underline">
+        <a href="/articles" className="mt-8 block md:hidden text-center text-primary font-medium hover:underline">
           View All Articles →
         </a>
       </div>
