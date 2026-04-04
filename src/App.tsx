@@ -37,6 +37,8 @@ import OpenAccess from "./pages/OpenAccess";
 import Contact from "./pages/Contact";
 import FAQ from "./pages/FAQ";
 import BecomeReviewer from "./pages/BecomeReviewer";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import Terms from "./pages/Terms";
 import { toast } from "sonner";
 import { logger } from "@/lib/logger";
 
