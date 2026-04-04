@@ -140,5 +140,12 @@ export function ArticleTable({
         </TableBody>
       </Table>
     </div>
+    <AdminGalleyManager
+      articleId={galleyArticle?.id || ""}
+      articleTitle={galleyArticle?.title || ""}
+      open={!!galleyArticle}
+      onOpenChange={(open) => { if (!open) setGalleyArticle(null); }}
+    />
+    </>
   );
 }
