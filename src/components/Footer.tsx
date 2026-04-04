@@ -9,9 +9,7 @@ export const Footer = forwardRef<HTMLElement>((_, ref) => {
           {/* Brand */}
           <div className="lg:col-span-1">
             <div className="flex items-center gap-3 mb-4">
-              <div className="h-10 w-10 rounded-full bg-primary-foreground/20 flex items-center justify-center">
-                <span className="font-serif font-bold text-lg">J</span>
-              </div>
+              <img src={journalLogo} alt="YJPRBS Logo" className="h-10 w-auto brightness-0 invert" />
               <span className="font-serif font-semibold">YJPRBS</span>
             </div>
             <p className="text-primary-foreground/70 text-sm mb-4">The official journal of the Yemeni Association of Plastic, Reconstructive and Burn Surgeons, advancing the science and art of plastic surgery since 2011.</p>
