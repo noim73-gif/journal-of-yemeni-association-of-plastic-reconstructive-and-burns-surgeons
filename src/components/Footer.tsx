@@ -13,7 +13,7 @@ export const Footer = forwardRef<HTMLElement>((_, ref) => {
               <span className="font-serif font-semibold">YJPRBS</span>
             </div>
             <p className="text-primary-foreground/70 text-sm mb-4">The official journal of the Yemeni Association of Plastic, Reconstructive and Burn Surgeons, advancing the science and art of plastic surgery since 2011.</p>
-            <p className="text-primary-foreground/80 text-xs font-medium mb-4 tracking-wide">eISSN: XXXX-XXXX</p>
+            <p className="text-primary-foreground/80 text-xs font-medium mb-4 tracking-wide">eISSN: 3009-6316</p>
           </div>
 
           {/* Quick Links */}
@@ -66,7 +66,11 @@ export const Footer = forwardRef<HTMLElement>((_, ref) => {
         </div>
 
         <div className="border-t border-primary-foreground/20 mt-10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-primary-foreground/60">
-          <p>© 2026 Yemeni Journal of Plastic, Reconstructive & Burn Surgery. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} Yemeni Journal of Plastic, Reconstructive & Burn Surgery. All rights reserved.</p>
+          <div className="flex gap-4">
+            <a href="/privacy-policy" className="hover:text-accent transition-colors">Privacy Policy</a>
+            <a href="/terms" className="hover:text-accent transition-colors">Terms of Use</a>
+          </div>
         </div>
       </div>
     </footer>;

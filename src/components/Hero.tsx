@@ -41,7 +41,7 @@ export function Hero() {
           <div className="grid grid-cols-3 gap-8 mt-12 pt-8 border-t border-primary-foreground/20 max-w-lg">
             <div>
               <div className="font-serif text-3xl font-bold text-accent">eISSN</div>
-              <div className="text-sm text-primary-foreground/70">XXXX-XXXX</div>
+              <div className="text-sm text-primary-foreground/70">3009-6316</div>
             </div>
             <div>
               <div className="font-serif text-3xl font-bold text-accent">Double</div>

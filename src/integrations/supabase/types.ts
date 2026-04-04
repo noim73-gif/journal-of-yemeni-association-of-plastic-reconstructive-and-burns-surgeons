@@ -200,6 +200,7 @@ export type Database = {
           submission_id: string | null
           title: string
           updated_at: string
+          view_count: number
           volume: string | null
         }
         Insert: {
@@ -229,6 +230,7 @@ export type Database = {
           submission_id?: string | null
           title: string
           updated_at?: string
+          view_count?: number
           volume?: string | null
         }
         Update: {
@@ -258,6 +260,7 @@ export type Database = {
           submission_id?: string | null
           title?: string
           updated_at?: string
+          view_count?: number
           volume?: string | null
         }
         Relationships: [
@@ -955,6 +958,10 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      increment_article_views: {
+        Args: { article_id: string }
+        Returns: undefined
       }
     }
     Enums: {

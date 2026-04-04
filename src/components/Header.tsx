@@ -73,7 +73,11 @@ export function Header() {
     await signOut();
     navigate("/");
   };
-  return <header className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
+  return <>
+    <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[60] focus:bg-primary focus:text-primary-foreground focus:px-4 focus:py-2 focus:rounded">
+      Skip to content
+    </a>
+    <header className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
@@ -81,7 +85,7 @@ export function Header() {
             <img src={journalLogo} alt="YJPRBS Logo" className="h-10 w-auto" />
             <div className="hidden sm:block">
               <h1 className="font-serif text-lg font-semibold text-foreground leading-tight">YJPRBS</h1>
-              <span className="text-[10px] text-muted-foreground tracking-wide">eISSN: XXXX-XXXX</span>
+              <span className="text-[10px] text-muted-foreground tracking-wide">eISSN: 3009-6316</span>
             </div>
           </Link>
 
@@ -102,7 +106,7 @@ export function Header() {
 
           {/* Actions */}
           <div className="flex items-center gap-2">
-            <Button variant="ghost" size="icon" className="text-muted-foreground" onClick={() => setSearchOpen(true)}>
+            <Button variant="ghost" size="icon" className="text-muted-foreground" onClick={() => setSearchOpen(true)} aria-label="Search articles">
               <Search className="h-5 w-5" />
             </Button>
             <SearchDialog open={searchOpen} onOpenChange={setSearchOpen} />
@@ -151,7 +155,7 @@ export function Header() {
                   </Button>}
               </>}
             
-            <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+            <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setMobileMenuOpen(!mobileMenuOpen)} aria-label="Toggle menu" aria-expanded={mobileMenuOpen}>
               {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </Button>
           </div>
@@ -192,5 +196,6 @@ export function Header() {
             </div>
           </nav>}
       </div>
-    </header>;
+    </header>
+  </>;
 }

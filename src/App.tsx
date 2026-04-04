@@ -37,6 +37,8 @@ import OpenAccess from "./pages/OpenAccess";
 import Contact from "./pages/Contact";
 import FAQ from "./pages/FAQ";
 import BecomeReviewer from "./pages/BecomeReviewer";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import Terms from "./pages/Terms";
 import { toast } from "sonner";
 import { logger } from "@/lib/logger";
 
@@ -100,6 +102,9 @@ function AppContent() {
           <Route path="/faq" element={<FAQ />} />
           <Route path="/become-reviewer" element={<BecomeReviewer />} />
           <Route path="/editorial-board" element={<EditorialBoard />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/terms" element={<Terms />} />
+          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
