@@ -170,6 +170,12 @@ export default function ArticlePage() {
     fetchArticle();
   }, [id, user, addToHistory]);
 
+  // Track article view
+  useEffect(() => {
+    if (!id || loading || error) return;
+    supabase.rpc("increment_article_views", { article_id: id }).catch(() => {});
+  }, [id, loading, error]);
+
   useEffect(() => {
     if (!id) return;
     supabase
