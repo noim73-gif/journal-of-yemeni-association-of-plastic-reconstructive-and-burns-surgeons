@@ -13,7 +13,7 @@ export const Footer = forwardRef<HTMLElement>((_, ref) => {
               <span className="font-serif font-semibold">YJPRBS</span>
             </div>
             <p className="text-primary-foreground/70 text-sm mb-4">The official journal of the Yemeni Association of Plastic, Reconstructive and Burn Surgeons, advancing the science and art of plastic surgery since 2011.</p>
-            <p className="text-primary-foreground/80 text-xs font-medium mb-4 tracking-wide">eISSN: XXXX-XXXX</p>
+            <p className="text-primary-foreground/80 text-xs font-medium mb-4 tracking-wide">eISSN: 3009-6316</p>
           </div>
 
           {/* Quick Links */}
