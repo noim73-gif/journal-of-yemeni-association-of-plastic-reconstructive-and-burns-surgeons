@@ -102,6 +102,9 @@ function AppContent() {
           <Route path="/faq" element={<FAQ />} />
           <Route path="/become-reviewer" element={<BecomeReviewer />} />
           <Route path="/editorial-board" element={<EditorialBoard />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/terms" element={<Terms />} />
+          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

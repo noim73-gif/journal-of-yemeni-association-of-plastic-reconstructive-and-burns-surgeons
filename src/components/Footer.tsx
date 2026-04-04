@@ -67,6 +67,10 @@ export const Footer = forwardRef<HTMLElement>((_, ref) => {
 
         <div className="border-t border-primary-foreground/20 mt-10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-primary-foreground/60">
           <p>© {new Date().getFullYear()} Yemeni Journal of Plastic, Reconstructive & Burn Surgery. All rights reserved.</p>
+          <div className="flex gap-4">
+            <a href="/privacy-policy" className="hover:text-accent transition-colors">Privacy Policy</a>
+            <a href="/terms" className="hover:text-accent transition-colors">Terms of Use</a>
+          </div>
         </div>
       </div>
     </footer>;
