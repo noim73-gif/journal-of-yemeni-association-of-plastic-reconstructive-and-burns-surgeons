@@ -44,6 +44,8 @@ export interface ArticleInput {
   volume?: string;
   issue?: string;
   published_at?: string | null;
+  submission_id?: string;
+  keywords?: string[];
 }
 
 export function useArticles() {
