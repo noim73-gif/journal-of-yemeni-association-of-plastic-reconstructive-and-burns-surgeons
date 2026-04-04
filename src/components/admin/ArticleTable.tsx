@@ -1,5 +1,8 @@
+import { useState } from "react";
 import { Article } from "@/hooks/useArticles";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { AdminGalleyManager } from "./AdminGalleyManager";
 import { Badge } from "@/components/ui/badge";
 import {
   Table,
