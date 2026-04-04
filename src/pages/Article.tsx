@@ -173,7 +173,7 @@ export default function ArticlePage() {
   // Track article view
   useEffect(() => {
     if (!id || loading || error) return;
-    supabase.rpc("increment_article_views", { article_id: id }).catch(() => {});
+    supabase.rpc("increment_article_views", { article_id: id }).then(() => {}).catch(() => {});
   }, [id, loading, error]);
 
   useEffect(() => {
