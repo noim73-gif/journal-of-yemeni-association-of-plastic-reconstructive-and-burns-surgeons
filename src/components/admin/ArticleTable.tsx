@@ -37,7 +37,10 @@ export function ArticleTable({
   onPublish,
   onUnpublish,
 }: ArticleTableProps) {
+  const [galleyArticle, setGalleyArticle] = useState<Article | null>(null);
+
   return (
+    <>
     <div className="rounded-lg border border-border overflow-hidden">
       <Table>
         <TableHeader>
