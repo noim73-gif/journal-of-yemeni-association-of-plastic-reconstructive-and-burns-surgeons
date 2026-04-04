@@ -1,4 +1,3 @@
-import { corsHeaders } from "https://deno.land/x/edge_cors@0.1.0/src/cors.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.1";
 
 const corsHead = {
