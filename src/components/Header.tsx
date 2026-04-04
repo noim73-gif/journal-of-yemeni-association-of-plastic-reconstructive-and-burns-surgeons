@@ -106,7 +106,7 @@ export function Header() {
 
           {/* Actions */}
           <div className="flex items-center gap-2">
-            <Button variant="ghost" size="icon" className="text-muted-foreground" onClick={() => setSearchOpen(true)}>
+            <Button variant="ghost" size="icon" className="text-muted-foreground" onClick={() => setSearchOpen(true)} aria-label="Search articles">
               <Search className="h-5 w-5" />
             </Button>
             <SearchDialog open={searchOpen} onOpenChange={setSearchOpen} />
