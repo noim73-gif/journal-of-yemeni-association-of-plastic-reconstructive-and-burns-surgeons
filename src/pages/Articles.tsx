@@ -74,7 +74,23 @@ export default function Articles() {
     });
   }, [articles]);
 
-  // Get unique volumes
+  // Auto-resolve ?issue=current to the latest volume/issue
+  useEffect(() => {
+    if (currentIssueResolved || loading || articles.length === 0) return;
+    if (searchParams.get("issue") === "current") {
+      const latest = volumeIssueOptions[0];
+      if (latest) {
+        const params = new URLSearchParams(searchParams);
+        params.set("volume", latest.volume);
+        params.set("issue", latest.issue);
+        params.set("page", "1");
+        setSearchParams(params, { replace: true });
+      }
+      setCurrentIssueResolved(true);
+    }
+  }, [articles, loading, volumeIssueOptions, searchParams, currentIssueResolved, setSearchParams]);
+
+
   const volumes = useMemo(() => {
     const vols = new Set<string>();
     articles.forEach((article) => {
