@@ -82,7 +82,7 @@ export function Header() {
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3">
-            <img src={journalLogo} alt="YJPRBS Logo" className="h-10 w-auto" />
+            <img src={journalLogo} alt="YJPRBS Logo" className="h-12 w-auto sm:h-14" />
             <div className="hidden sm:block">
               <h1 className="font-serif text-lg font-semibold text-foreground leading-tight">YJPRBS</h1>
               <span className="text-[10px] text-muted-foreground tracking-wide">eISSN: 3009-6316</span>
