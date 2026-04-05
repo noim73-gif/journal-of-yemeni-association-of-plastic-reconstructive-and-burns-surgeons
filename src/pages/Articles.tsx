@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { Link, useSearchParams } from "react-router-dom";
 import { Search, Filter, Calendar, User, Tag, ChevronLeft, ChevronRight, BookOpen } from "lucide-react";
