@@ -14,7 +14,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { CitationExport } from "@/components/article/CitationExport";
 import { useAdmin } from "@/hooks/useAdmin";
 import { useReadingHistory } from "@/hooks/useReadingHistory";
-import { ArrowLeft, Calendar, User, BookOpen, Share2, Bookmark, Loader2, ExternalLink, FileCode2, Download, List } from "lucide-react";
+import { ArrowLeft, Calendar, User, BookOpen, Share2, Bookmark, Loader2, ExternalLink, FileCode2, Download, List, Eye, Search } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { useSavedArticles } from "@/hooks/useSavedArticles";
@@ -41,6 +41,9 @@ interface Article {
   keywords: string[] | null;
   pages: string | null;
   article_number: number | null;
+  view_count: number;
+  received_at: string | null;
+  accepted_at: string | null;
 }
 
 const SANITIZE_OPTIONS = {
@@ -344,9 +347,13 @@ export default function ArticlePage() {
       <div className="min-h-screen bg-background flex flex-col">
         <Header />
         <main className="flex-1 flex items-center justify-center">
-          <div className="text-center">
+          <div className="text-center max-w-md mx-auto px-4">
             <h1 className="text-2xl font-serif font-bold mb-4">{error || "Article not found"}</h1>
-            <Link to="/"><Button><ArrowLeft className="mr-2 h-4 w-4" />Back to Home</Button></Link>
+            <p className="text-muted-foreground mb-6">The article you're looking for may have been removed or doesn't exist.</p>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <Link to="/articles"><Button><ArrowLeft className="mr-2 h-4 w-4" />Browse Articles</Button></Link>
+              <Link to="/"><Button variant="outline">Back to Home</Button></Link>
+            </div>
           </div>
         </main>
         <Footer />
@@ -391,6 +398,12 @@ export default function ArticlePage() {
                 {article.pages && (
                   <span className="text-xs opacity-70">Pages: {article.pages}</span>
                 )}
+                {article.view_count > 0 && (
+                  <div className="flex items-center gap-1 text-xs opacity-70">
+                    <Eye className="h-3.5 w-3.5" />
+                    <span>{article.view_count.toLocaleString()} views</span>
+                  </div>
+                )}
               </div>
 
               {/* Keywords */}
@@ -413,6 +426,21 @@ export default function ArticlePage() {
                     <span className="opacity-70">DOI:</span><span>{article.doi}</span>
                     <ExternalLink className="h-3 w-3 opacity-70" />
                   </a>
+                </div>
+              )}
+
+              {/* Article Timeline */}
+              {(article.received_at || article.accepted_at || article.published_at) && (
+                <div className="mt-3 flex flex-wrap gap-x-6 gap-y-1 text-xs opacity-70">
+                  {article.received_at && (
+                    <span>Received: {format(new Date(article.received_at), "MMMM d, yyyy")}</span>
+                  )}
+                  {article.accepted_at && (
+                    <span>Accepted: {format(new Date(article.accepted_at), "MMMM d, yyyy")}</span>
+                  )}
+                  {article.published_at && (
+                    <span>Published: {format(new Date(article.published_at), "MMMM d, yyyy")}</span>
+                  )}
                 </div>
               )}
             </div>

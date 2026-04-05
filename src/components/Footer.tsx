@@ -1,4 +1,5 @@
 import { forwardRef } from "react";
+import { Link } from "react-router-dom";
 import journalLogo from "@/assets/journal-logo.png";
 import { Mail, Phone, MapPin } from "lucide-react";
 
@@ -20,9 +21,9 @@ export const Footer = forwardRef<HTMLElement>((_, ref) => {
           <div>
             <h4 className="font-semibold mb-4">Quick Links</h4>
             <ul className="space-y-3 text-sm text-primary-foreground/70">
-              <li><a href="/articles" className="hover:text-accent transition-colors">Current Issue</a></li>
-              <li><a href="/archive" className="hover:text-accent transition-colors">Archive</a></li>
-              <li><a href="/editorial-board" className="hover:text-accent transition-colors">Editorial Board</a></li>
+              <li><Link to="/articles?issue=current" className="hover:text-accent transition-colors">Current Issue</Link></li>
+              <li><Link to="/archive" className="hover:text-accent transition-colors">Archive</Link></li>
+              <li><Link to="/editorial-board" className="hover:text-accent transition-colors">Editorial Board</Link></li>
             </ul>
           </div>
 
@@ -30,13 +31,13 @@ export const Footer = forwardRef<HTMLElement>((_, ref) => {
           <div>
             <h4 className="font-semibold mb-4">For Authors</h4>
             <ul className="space-y-3 text-sm text-primary-foreground/70">
-              <li><a href="/submit" className="hover:text-accent transition-colors">Submit Manuscript</a></li>
-              <li><a href="/author-guidelines" className="hover:text-accent transition-colors">Author Guidelines</a></li>
-              <li><a href="/peer-review" className="hover:text-accent transition-colors">Peer Review Process</a></li>
-              <li><a href="/publication-ethics" className="hover:text-accent transition-colors">Publication Ethics</a></li>
-              <li><a href="/open-access" className="hover:text-accent transition-colors">Open Access Policy</a></li>
-              <li><a href="/faq" className="hover:text-accent transition-colors">FAQ for Authors</a></li>
-              <li><a href="/become-reviewer" className="hover:text-accent transition-colors">Become a Reviewer</a></li>
+              <li><Link to="/submit" className="hover:text-accent transition-colors">Submit Manuscript</Link></li>
+              <li><Link to="/author-guidelines" className="hover:text-accent transition-colors">Author Guidelines</Link></li>
+              <li><Link to="/peer-review" className="hover:text-accent transition-colors">Peer Review Process</Link></li>
+              <li><Link to="/publication-ethics" className="hover:text-accent transition-colors">Publication Ethics</Link></li>
+              <li><Link to="/open-access" className="hover:text-accent transition-colors">Open Access Policy</Link></li>
+              <li><Link to="/faq" className="hover:text-accent transition-colors">FAQ for Authors</Link></li>
+              <li><Link to="/become-reviewer" className="hover:text-accent transition-colors">Become a Reviewer</Link></li>
             </ul>
           </div>
 
@@ -57,9 +58,9 @@ export const Footer = forwardRef<HTMLElement>((_, ref) => {
                 <span>Yemeni - Sana'a</span>
               </li>
               <li className="mt-4">
-                <a href="/contact" className="hover:text-accent transition-colors">
+                <Link to="/contact" className="hover:text-accent transition-colors">
                   Contact Us →
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -68,8 +69,8 @@ export const Footer = forwardRef<HTMLElement>((_, ref) => {
         <div className="border-t border-primary-foreground/20 mt-10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-primary-foreground/60">
           <p>© {new Date().getFullYear()} Yemeni Journal of Plastic, Reconstructive & Burn Surgery. All rights reserved.</p>
           <div className="flex gap-4">
-            <a href="/privacy-policy" className="hover:text-accent transition-colors">Privacy Policy</a>
-            <a href="/terms" className="hover:text-accent transition-colors">Terms of Use</a>
+            <Link to="/privacy-policy" className="hover:text-accent transition-colors">Privacy Policy</Link>
+            <Link to="/terms" className="hover:text-accent transition-colors">Terms of Use</Link>
           </div>
         </div>
       </div>

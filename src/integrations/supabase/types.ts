@@ -175,6 +175,7 @@ export type Database = {
       articles: {
         Row: {
           abstract: string | null
+          accepted_at: string | null
           article_number: number | null
           authors: string | null
           category: string | null
@@ -194,6 +195,7 @@ export type Database = {
           methods: string | null
           pages: string | null
           published_at: string | null
+          received_at: string | null
           references: string | null
           results: string | null
           review_status: string | null
@@ -205,6 +207,7 @@ export type Database = {
         }
         Insert: {
           abstract?: string | null
+          accepted_at?: string | null
           article_number?: number | null
           authors?: string | null
           category?: string | null
@@ -224,6 +227,7 @@ export type Database = {
           methods?: string | null
           pages?: string | null
           published_at?: string | null
+          received_at?: string | null
           references?: string | null
           results?: string | null
           review_status?: string | null
@@ -235,6 +239,7 @@ export type Database = {
         }
         Update: {
           abstract?: string | null
+          accepted_at?: string | null
           article_number?: number | null
           authors?: string | null
           category?: string | null
@@ -254,6 +259,7 @@ export type Database = {
           methods?: string | null
           pages?: string | null
           published_at?: string | null
+          received_at?: string | null
           references?: string | null
           results?: string | null
           review_status?: string | null

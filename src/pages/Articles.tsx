@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { Link, useSearchParams } from "react-router-dom";
 import { Search, Filter, Calendar, User, Tag, ChevronLeft, ChevronRight, BookOpen } from "lucide-react";
@@ -31,6 +31,7 @@ export default function Articles() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [currentIssueResolved, setCurrentIssueResolved] = useState(false);
 
   // Get current page from URL params
   const currentPage = parseInt(searchParams.get("page") || "1", 10);
@@ -73,7 +74,23 @@ export default function Articles() {
     });
   }, [articles]);
 
-  // Get unique volumes
+  // Auto-resolve ?issue=current to the latest volume/issue
+  useEffect(() => {
+    if (currentIssueResolved || loading || articles.length === 0) return;
+    if (searchParams.get("issue") === "current") {
+      const latest = volumeIssueOptions[0];
+      if (latest) {
+        const params = new URLSearchParams(searchParams);
+        params.set("volume", latest.volume);
+        params.set("issue", latest.issue);
+        params.set("page", "1");
+        setSearchParams(params, { replace: true });
+      }
+      setCurrentIssueResolved(true);
+    }
+  }, [articles, loading, volumeIssueOptions, searchParams, currentIssueResolved, setSearchParams]);
+
+
   const volumes = useMemo(() => {
     const vols = new Set<string>();
     articles.forEach((article) => {

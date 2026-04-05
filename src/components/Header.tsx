@@ -11,7 +11,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSepara
 
 const navItems = [{
   label: "Current Issue",
-  href: "/articles",
+  href: "/articles?issue=current",
   isRoute: true
 }, {
   label: "Articles",
