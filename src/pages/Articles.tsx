@@ -31,6 +31,7 @@ export default function Articles() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [currentIssueResolved, setCurrentIssueResolved] = useState(false);
 
   // Get current page from URL params
   const currentPage = parseInt(searchParams.get("page") || "1", 10);
