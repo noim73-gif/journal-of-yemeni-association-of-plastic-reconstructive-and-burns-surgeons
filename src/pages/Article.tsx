@@ -398,6 +398,12 @@ export default function ArticlePage() {
                 {article.pages && (
                   <span className="text-xs opacity-70">Pages: {article.pages}</span>
                 )}
+                {article.view_count > 0 && (
+                  <div className="flex items-center gap-1 text-xs opacity-70">
+                    <Eye className="h-3.5 w-3.5" />
+                    <span>{article.view_count.toLocaleString()} views</span>
+                  </div>
+                )}
               </div>
 
               {/* Keywords */}
