@@ -41,6 +41,9 @@ interface Article {
   keywords: string[] | null;
   pages: string | null;
   article_number: number | null;
+  view_count: number;
+  received_at: string | null;
+  accepted_at: string | null;
 }
 
 const SANITIZE_OPTIONS = {
