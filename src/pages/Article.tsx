@@ -347,9 +347,13 @@ export default function ArticlePage() {
       <div className="min-h-screen bg-background flex flex-col">
         <Header />
         <main className="flex-1 flex items-center justify-center">
-          <div className="text-center">
+          <div className="text-center max-w-md mx-auto px-4">
             <h1 className="text-2xl font-serif font-bold mb-4">{error || "Article not found"}</h1>
-            <Link to="/"><Button><ArrowLeft className="mr-2 h-4 w-4" />Back to Home</Button></Link>
+            <p className="text-muted-foreground mb-6">The article you're looking for may have been removed or doesn't exist.</p>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <Link to="/articles"><Button><ArrowLeft className="mr-2 h-4 w-4" />Browse Articles</Button></Link>
+              <Link to="/"><Button variant="outline">Back to Home</Button></Link>
+            </div>
           </div>
         </main>
         <Footer />
