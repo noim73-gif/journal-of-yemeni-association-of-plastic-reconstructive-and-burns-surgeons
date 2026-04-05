@@ -428,6 +428,21 @@ export default function ArticlePage() {
                   </a>
                 </div>
               )}
+
+              {/* Article Timeline */}
+              {(article.received_at || article.accepted_at || article.published_at) && (
+                <div className="mt-3 flex flex-wrap gap-x-6 gap-y-1 text-xs opacity-70">
+                  {article.received_at && (
+                    <span>Received: {format(new Date(article.received_at), "MMMM d, yyyy")}</span>
+                  )}
+                  {article.accepted_at && (
+                    <span>Accepted: {format(new Date(article.accepted_at), "MMMM d, yyyy")}</span>
+                  )}
+                  {article.published_at && (
+                    <span>Published: {format(new Date(article.published_at), "MMMM d, yyyy")}</span>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </div>
