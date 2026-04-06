@@ -21,6 +21,9 @@ export interface Article {
   volume: string | null;
   issue: string | null;
   doi: string | null;
+  pages: string | null;
+  article_number: number | null;
+  view_count: number;
   published_at: string | null;
   created_at: string;
   updated_at: string;
