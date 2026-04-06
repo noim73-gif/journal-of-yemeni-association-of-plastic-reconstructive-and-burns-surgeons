@@ -1,88 +1,70 @@
 
 
-# Expert Evaluation: YJPRBS Journal Website (April 2026)
+# Comparison: IJPS (Screenshot) vs YJPRBS — Gap Analysis & Improvement Plan
 
-## Overall Assessment
+## What the Screenshot Shows
 
-The website has matured significantly — ISSN is correctly displayed, broken links are fixed, JSON-LD structured data exists, citation meta tags are injected, and the editorial workflow follows OJS conventions. However, several issues remain that affect professional credibility and indexing readiness.
+The screenshot is from the **Indian Journal of Plastic Surgery (IJPS)** — a well-established, Thieme-hosted academic journal. Key features visible:
 
----
-
-## Critical Issues
-
-### 1. index.html Still Shows Wrong Journal Name
-`index.html` title says "Journal of Plastic & Reconstructive Surgery | JPRS" with description referencing "since 1946" and author "JPRS". OG tags also reference "JPRS". This is the wrong journal — it should say YJPRBS with the correct description. Every search engine sees this as the primary metadata.
-
-**Files**: `index.html`
-
-### 2. "Current Issue" Nav Links to Generic /articles
-Both "Current Issue" and "Articles" in the header nav point to `/articles`. "Current Issue" should link to `/articles?issue=current` or filter to the latest published issue automatically.
-
-**Files**: `Header.tsx`, potentially `Articles.tsx`
+1. **Volume/Issue header** prominently displayed at the top ("Volume 57, Issue 6")
+2. **Articles grouped by type** (Original Articles, Review Articles, Case Reports, etc.) with section headings
+3. **Inline expandable abstracts** — each article shows a clickable "Abstract" toggle without leaving the page
+4. **Author affiliations** shown below author names
+5. **Action icons per article**: PDF download, HTML view, citation export, share — all inline
+6. **"How to Cite" section** visible per article
+7. **Clean text-based layout** — no large images per article in the listing; compact, information-dense
+8. **DOI displayed** as a clickable link per article
+9. **Page numbers** shown per article (e.g., "pp. 456-462")
 
 ---
 
-## High Priority
+## Key Gaps in YJPRBS
 
-### 3. No favicon
-The site uses no custom favicon — browsers show a generic icon, which hurts brand recognition in tabs, bookmarks, and search results.
-
-**Files**: `index.html`, add favicon asset
-
-### 4. Footer Uses `<a href>` Instead of React Router `<Link>`
-All footer links use plain `<a>` tags which cause full page reloads. Should use React Router `<Link>` for internal routes.
-
-**Files**: `Footer.tsx`
-
-### 5. No "Article Not Found" Helpful Navigation
-When visiting `/article/invalid-uuid`, the page shows a basic error but lacks a back button, search suggestion, or link to browse articles.
-
-**Files**: `Article.tsx`
-
-### 6. OG Image Is Generic Lovable Placeholder
-`index.html` line 13 and 17 reference `https://lovable.dev/opengraph-image-p98pqg.png` — should use the journal's own logo or a branded OG image.
-
-**Files**: `index.html`
+| Feature | IJPS (Screenshot) | YJPRBS (Current) |
+|---------|-------------------|-------------------|
+| Articles grouped by category/type | Yes, clear section headings | No — flat list with category badges |
+| Inline abstract expand/collapse | Yes, toggle per article | No — abstract is truncated 2-line clamp, must click into article |
+| Per-article action buttons (PDF, cite, share) | Yes, icon row per article | No — actions only on article detail page |
+| Author affiliations | Shown per article | Not stored or displayed |
+| "How to Cite" inline | Yes | No — only on article detail page |
+| Compact text-only listing | Yes — no images in list | Image-heavy cards take lots of space |
+| Current issue header banner | Clear "Volume X, Issue Y" banner | Generic "Browse Articles" heading |
+| Article type section grouping | "Original Articles", "Review Articles", etc. | No grouping |
 
 ---
 
-## Medium Priority
+## Recommended Improvements
 
-### 7. Article View Count Not Displayed
-The `view_count` column exists and is incremented, but the count is never shown to readers on the article page.
+### 1. Group Articles by Category on the Articles Page
+In `Articles.tsx`, when filtering by a specific volume/issue, group articles under headings like "Original Articles", "Review Articles", "Case Reports" instead of a flat list.
 
-**Files**: `Article.tsx`
+### 2. Add Inline Abstract Expand/Collapse
+Each article card in the listing should have a small "Abstract" toggle button that expands the full abstract without navigating away. Uses a simple `useState` toggle per card.
 
-### 8. No "Received / Accepted / Published" Date Display
-Academic articles should show submission received date, acceptance date, and publication date. Only `published_at` is displayed currently.
+### 3. Add Per-Article Quick Action Buttons
+Add small icon buttons to each article card: PDF download, Share, Cite — similar to the IJPS layout. These appear below the abstract in the listing.
 
-**Files**: `Article.tsx` (display), database (may need `received_at`, `accepted_at` columns on `articles` table)
+### 4. Show Current Issue Banner
+When viewing `?issue=current` or a specific volume/issue, display a prominent header showing "Volume X, Issue Y" with the issue date, instead of the generic "Browse Articles" title.
 
-### 9. No Email Notification on Submission
-The `send-submission-notification` edge function exists but it's unclear if it's wired to the submission flow.
+### 5. Compact Text-Only Listing Option
+Add a toggle between the current image-card view and a compact text-only view (like IJPS). The compact view removes images and shows a denser, more academic listing format.
+
+### 6. Show Pages and DOI More Prominently
+Display page numbers (already in DB as `pages`) and DOI as clickable links in the article listing, not just inside the detail page.
 
 ---
 
-## Recommended Implementation Plan
+## Technical Details
 
-### Phase 1: Credibility & SEO (Quick Wins)
-| Change | File(s) |
-|--------|---------|
-| Fix index.html title, description, OG tags to YJPRBS | `index.html` |
-| Fix "Current Issue" nav to filter latest issue | `Header.tsx`, `Articles.tsx` |
-| Convert footer `<a>` to React Router `<Link>` | `Footer.tsx` |
-| Add journal logo as favicon | `index.html`, add `public/favicon.png` |
+| Change | File(s) | Approach |
+|--------|---------|----------|
+| Group articles by category | `Articles.tsx` | `useMemo` to group `filteredArticles` by `category`, render with section headings |
+| Inline abstract toggle | `Articles.tsx` | Add `expandedAbstracts` state (Set of IDs), toggle button per card |
+| Per-article action buttons | `Articles.tsx` | Add PDF/Share/Cite icon buttons below abstract in each card |
+| Current issue banner | `Articles.tsx` | Detect `selectedVolume !== "all"` and show styled banner with volume/issue info |
+| Compact view toggle | `Articles.tsx` | Add `viewMode` state ("cards" / "compact"), render different layouts |
+| Show pages/DOI in listing | `Articles.tsx` | Already available in data, just display in article card |
 
-### Phase 2: Article Page Polish
-| Change | File(s) |
-|--------|---------|
-| Show view count on article page | `Article.tsx` |
-| Improve "Article Not Found" with navigation links | `Article.tsx` |
-| Replace generic OG image with journal branding | `index.html` |
-
-### Phase 3: Data Completeness
-| Change | File(s) |
-|--------|---------|
-| Add received/accepted dates to articles table & display | DB migration + `Article.tsx` |
-| Verify submission notification edge function is wired | `Submit.tsx` |
+No database changes needed. All improvements are frontend-only in `Articles.tsx`.
 
