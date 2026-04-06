@@ -5,21 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 
-interface ArticleData {
-  id: string;
-  title: string;
-  abstract: string | null;
-  authors: string | null;
-  category: string | null;
-  doi: string | null;
-  volume: string | null;
-  issue: string | null;
-  pages: string | null;
-  published_at: string | null;
-  image_url: string | null;
-  view_count: number;
-  article_number: number | null;
-}
+import type { Article } from "@/hooks/useArticles";
+
+type ArticleData = Pick<Article, "id" | "title" | "abstract" | "authors" | "category" | "doi" | "volume" | "issue" | "pages" | "published_at" | "image_url" | "view_count" | "article_number">;
 
 interface ArticleListItemProps {
   article: ArticleData;
