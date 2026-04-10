@@ -408,10 +408,10 @@ export default function Auth() {
         <div className="w-full max-w-md space-y-8">
           <div className="text-center">
             <div className="h-14 w-14 rounded-full bg-primary flex items-center justify-center mx-auto mb-4">
-              <span className="font-serif text-primary-foreground font-bold text-2xl">J</span>
+              <span className="font-serif text-primary-foreground font-bold text-xl">YJ</span>
             </div>
             <h1 className="font-serif text-2xl font-bold text-foreground">
-              Journal of Plastic & Reconstructive Surgery
+              Yemeni Journal of Plastic, Reconstructive & Burn Surgery
             </h1>
             <p className="text-muted-foreground mt-2">
               Sign in to save articles and track your reading history
@@ -618,7 +618,7 @@ export default function Auth() {
                       disabled={loading}
                     />
                     <Label htmlFor="accept-eula" className="text-sm font-normal cursor-pointer">
-                      I accept the <a href="/publication-ethics" className="text-primary underline hover:no-underline">End User License Agreement</a>
+                      I accept the <a href="/terms" className="text-primary underline hover:no-underline">End User License Agreement</a>
                     </Label>
                   </div>
                   <div className="flex items-center gap-2">
@@ -629,7 +629,7 @@ export default function Auth() {
                       disabled={loading}
                     />
                     <Label htmlFor="accept-privacy" className="text-sm font-normal cursor-pointer">
-                      I accept the <a href="/publication-ethics" className="text-primary underline hover:no-underline">Privacy Policy</a>
+                      I accept the <a href="/privacy-policy" className="text-primary underline hover:no-underline">Privacy Policy</a>
                     </Label>
                   </div>
                   {errors.agreements && (

@@ -28,7 +28,7 @@ export function Hero() {
           </p>
 
           <div className="flex flex-wrap gap-4">
-            <Button variant="hero" size="lg" onClick={() => navigate("/articles")}>
+            <Button variant="hero" size="lg" onClick={() => navigate("/articles?issue=current")}>
               Read Current Issue
               <ArrowRight className="ml-2 h-5 w-5" />
             </Button>

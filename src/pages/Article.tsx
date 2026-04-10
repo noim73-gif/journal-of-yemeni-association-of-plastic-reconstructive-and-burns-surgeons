@@ -173,9 +173,12 @@ export default function ArticlePage() {
     fetchArticle();
   }, [id, user, addToHistory]);
 
-  // Track article view
+  // Track article view (debounced per session)
   useEffect(() => {
     if (!id || loading || error) return;
+    const viewedKey = `yjprbs_viewed_${id}`;
+    if (sessionStorage.getItem(viewedKey)) return;
+    sessionStorage.setItem(viewedKey, "1");
     supabase.rpc("increment_article_views", { article_id: id } as any).then(() => {});
   }, [id, loading, error]);
 
