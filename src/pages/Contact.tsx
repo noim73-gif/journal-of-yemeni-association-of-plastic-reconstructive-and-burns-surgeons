@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -73,16 +74,33 @@ const Contact = () => {
 
     setIsSubmitting(true);
     
-    // Simulate submission - in production, this would send to an edge function
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    toast({
-      title: "Message Sent",
-      description: "Thank you for contacting us. We'll respond within 2-3 business days.",
-    });
-    
-    setFormData({ name: "", email: "", subject: "", message: "" });
-    setIsSubmitting(false);
+    try {
+      const { error: dbError } = await supabase
+        .from("contact_submissions" as any)
+        .insert({
+          name: result.data.name,
+          email: result.data.email,
+          subject: result.data.subject,
+          message: result.data.message,
+        });
+
+      if (dbError) throw dbError;
+
+      toast({
+        title: "Message Sent",
+        description: "Thank you for contacting us. We'll respond within 2-3 business days.",
+      });
+      
+      setFormData({ name: "", email: "", subject: "", message: "" });
+    } catch (err) {
+      toast({
+        title: "Error",
+        description: "Failed to send message. Please try again or email us directly.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -321,10 +339,10 @@ const Contact = () => {
                   Manuscript inquiries
                 </p>
                 <a 
-                  href="mailto:submissions@jyms.edu.ye" 
+                  href="mailto:YemeniAPRBSurgeons@gmail.com?subject=Manuscript%20Submission%20Inquiry" 
                   className="text-sm text-primary hover:underline"
                 >
-                  submissions@jyms.edu.ye
+                  YemeniAPRBSurgeons@gmail.com
                 </a>
               </CardContent>
             </Card>
@@ -339,10 +357,10 @@ const Contact = () => {
                   Editorial decisions
                 </p>
                 <a 
-                  href="mailto:editor@jyms.edu.ye" 
+                  href="mailto:YemeniAPRBSurgeons@gmail.com?subject=Editorial%20Decision%20Inquiry" 
                   className="text-sm text-primary hover:underline"
                 >
-                  editor@jyms.edu.ye
+                  YemeniAPRBSurgeons@gmail.com
                 </a>
               </CardContent>
             </Card>
@@ -357,10 +375,10 @@ const Contact = () => {
                   Website & system issues
                 </p>
                 <a 
-                  href="mailto:support@jyms.edu.ye" 
+                  href="mailto:YemeniAPRBSurgeons@gmail.com?subject=Technical%20Support" 
                   className="text-sm text-primary hover:underline"
                 >
-                  support@jyms.edu.ye
+                  YemeniAPRBSurgeons@gmail.com
                 </a>
               </CardContent>
             </Card>
@@ -375,10 +393,10 @@ const Contact = () => {
                   Report misconduct
                 </p>
                 <a 
-                  href="mailto:ethics@jyms.edu.ye" 
+                  href="mailto:YemeniAPRBSurgeons@gmail.com?subject=Ethics%20Report" 
                   className="text-sm text-primary hover:underline"
                 >
-                  ethics@jyms.edu.ye
+                  YemeniAPRBSurgeons@gmail.com
                 </a>
               </CardContent>
             </Card>
