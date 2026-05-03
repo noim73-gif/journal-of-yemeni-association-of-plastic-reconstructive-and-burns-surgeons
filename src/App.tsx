@@ -1,6 +1,5 @@
-import { useEffect } from "react";
+import { useEffect, lazy, Suspense } from "react";
 import { Toaster } from "@/components/ui/toaster";
-import EditorialBoard from "./pages/EditorialBoard";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -8,39 +7,49 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
-import Dashboard from "./pages/Dashboard";
-import Profile from "./pages/Profile";
 import Article from "./pages/Article";
 import Articles from "./pages/Articles";
-import Archive from "./pages/Archive";
 import NotFound from "./pages/NotFound";
-import PublicProfile from "./pages/PublicProfile";
 import { AdminLayout } from "./components/admin/AdminLayout";
-import AdminDashboard from "./pages/admin/AdminDashboard";
-import AdminArticles from "./pages/admin/AdminArticles";
-import AdminUsers from "./pages/admin/AdminUsers";
-import AdminReviews from "./pages/admin/AdminReviews";
-import AdminAnalytics from "./pages/admin/AdminAnalytics";
-import AdminSettings from "./pages/admin/AdminSettings";
-import AdminSubmissions from "./pages/admin/AdminSubmissions";
-import AdminEditorialBoard from "./pages/admin/AdminEditorialBoard";
-import AdminReviewerApplications from "./pages/admin/AdminReviewerApplications";
-import AdminWorkflow from "./pages/admin/AdminWorkflow";
-import AdminIssues from "./pages/admin/AdminIssues";
-import ReviewerDashboard from "./pages/ReviewerDashboard";
-import Submit from "./pages/Submit";
-import AuthorGuidelines from "./pages/AuthorGuidelines";
-import About from "./pages/About";
-import PeerReview from "./pages/PeerReview";
-import PublicationEthics from "./pages/PublicationEthics";
-import OpenAccess from "./pages/OpenAccess";
-import Contact from "./pages/Contact";
-import FAQ from "./pages/FAQ";
-import BecomeReviewer from "./pages/BecomeReviewer";
-import PrivacyPolicy from "./pages/PrivacyPolicy";
-import Terms from "./pages/Terms";
+import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { logger } from "@/lib/logger";
+
+// Lazy-loaded pages
+const Dashboard = lazy(() => import("./pages/Dashboard"));
+const Profile = lazy(() => import("./pages/Profile"));
+const Archive = lazy(() => import("./pages/Archive"));
+const PublicProfile = lazy(() => import("./pages/PublicProfile"));
+const ReviewerDashboard = lazy(() => import("./pages/ReviewerDashboard"));
+const Submit = lazy(() => import("./pages/Submit"));
+const AuthorGuidelines = lazy(() => import("./pages/AuthorGuidelines"));
+const About = lazy(() => import("./pages/About"));
+const PeerReview = lazy(() => import("./pages/PeerReview"));
+const PublicationEthics = lazy(() => import("./pages/PublicationEthics"));
+const OpenAccess = lazy(() => import("./pages/OpenAccess"));
+const Contact = lazy(() => import("./pages/Contact"));
+const FAQ = lazy(() => import("./pages/FAQ"));
+const BecomeReviewer = lazy(() => import("./pages/BecomeReviewer"));
+const EditorialBoard = lazy(() => import("./pages/EditorialBoard"));
+const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
+const Terms = lazy(() => import("./pages/Terms"));
+const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard"));
+const AdminArticles = lazy(() => import("./pages/admin/AdminArticles"));
+const AdminUsers = lazy(() => import("./pages/admin/AdminUsers"));
+const AdminReviews = lazy(() => import("./pages/admin/AdminReviews"));
+const AdminAnalytics = lazy(() => import("./pages/admin/AdminAnalytics"));
+const AdminSettings = lazy(() => import("./pages/admin/AdminSettings"));
+const AdminSubmissions = lazy(() => import("./pages/admin/AdminSubmissions"));
+const AdminEditorialBoard = lazy(() => import("./pages/admin/AdminEditorialBoard"));
+const AdminReviewerApplications = lazy(() => import("./pages/admin/AdminReviewerApplications"));
+const AdminWorkflow = lazy(() => import("./pages/admin/AdminWorkflow"));
+const AdminIssues = lazy(() => import("./pages/admin/AdminIssues"));
+
+const LazyFallback = () => (
+  <div className="min-h-screen flex items-center justify-center">
+    <Loader2 className="h-8 w-8 animate-spin text-primary" />
+  </div>
+);
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -69,45 +78,46 @@ function AppContent() {
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/auth" element={<Auth />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/profile/*" element={<Profile />} />
-          <Route path="/submit" element={<Submit />} />
-          <Route path="/reviewer" element={<ReviewerDashboard />} />
-          <Route path="/admin" element={<AdminLayout />}>
-            <Route index element={<AdminDashboard />} />
-            <Route path="workflow" element={<AdminWorkflow />} />
-            <Route path="articles" element={<AdminArticles />} />
-            <Route path="reviews" element={<AdminReviews />} />
-            <Route path="submissions" element={<AdminSubmissions />} />
-            <Route path="issues" element={<AdminIssues />} />
-            <Route path="users" element={<AdminUsers />} />
-            <Route path="reviewer-applications" element={<AdminReviewerApplications />} />
-            <Route path="editorial-board" element={<AdminEditorialBoard />} />
-            <Route path="analytics" element={<AdminAnalytics />} />
-            <Route path="settings" element={<AdminSettings />} />
-          </Route>
-          <Route path="/articles" element={<Articles />} />
-          <Route path="/archive" element={<Archive />} />
-          <Route path="/article/:id" element={<Article />} />
-          <Route path="/u/:username" element={<PublicProfile />} />
-          <Route path="/author-guidelines" element={<AuthorGuidelines />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/peer-review" element={<PeerReview />} />
-          <Route path="/publication-ethics" element={<PublicationEthics />} />
-          <Route path="/open-access" element={<OpenAccess />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/faq" element={<FAQ />} />
-          <Route path="/become-reviewer" element={<BecomeReviewer />} />
-          <Route path="/editorial-board" element={<EditorialBoard />} />
-          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-          <Route path="/terms" element={<Terms />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <Suspense fallback={<LazyFallback />}>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/auth" element={<Auth />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/profile/*" element={<Profile />} />
+            <Route path="/submit" element={<Submit />} />
+            <Route path="/reviewer" element={<ReviewerDashboard />} />
+            <Route path="/admin" element={<AdminLayout />}>
+              <Route index element={<AdminDashboard />} />
+              <Route path="workflow" element={<AdminWorkflow />} />
+              <Route path="articles" element={<AdminArticles />} />
+              <Route path="reviews" element={<AdminReviews />} />
+              <Route path="submissions" element={<AdminSubmissions />} />
+              <Route path="issues" element={<AdminIssues />} />
+              <Route path="users" element={<AdminUsers />} />
+              <Route path="reviewer-applications" element={<AdminReviewerApplications />} />
+              <Route path="editorial-board" element={<AdminEditorialBoard />} />
+              <Route path="analytics" element={<AdminAnalytics />} />
+              <Route path="settings" element={<AdminSettings />} />
+            </Route>
+            <Route path="/articles" element={<Articles />} />
+            <Route path="/archive" element={<Archive />} />
+            <Route path="/article/:id" element={<Article />} />
+            <Route path="/u/:username" element={<PublicProfile />} />
+            <Route path="/author-guidelines" element={<AuthorGuidelines />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/peer-review" element={<PeerReview />} />
+            <Route path="/publication-ethics" element={<PublicationEthics />} />
+            <Route path="/open-access" element={<OpenAccess />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/faq" element={<FAQ />} />
+            <Route path="/become-reviewer" element={<BecomeReviewer />} />
+            <Route path="/editorial-board" element={<EditorialBoard />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/terms" element={<Terms />} />
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Suspense>
       </BrowserRouter>
     </>
   );
