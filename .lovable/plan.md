@@ -1,144 +1,115 @@
 
 
-# Comprehensive Audit: YJPRBS Journal Platform
+# Comprehensive Audit: YJPRBS Journal Platform (April 2026)
 
 ## Final Scores
 
 | Area | Score | Assessment |
 |------|-------|------------|
-| **UX** | 6.5/10 | Solid flows for core journeys but significant friction in onboarding, no Google OAuth, contact form is fake |
-| **UI** | 7/10 | Clean, professional design with good typography; inconsistencies on Auth page (still shows "J" circle, wrong journal name) |
-| **Performance** | 7/10 | Good architecture (React Query caching, lazy data fetching); no code-splitting, no image optimization |
-| **Business Model** | 3/10 | No monetization, no subscription system, no APC workflow, no analytics beyond basic view counts |
-| **Technical Quality** | 6/10 | Well-structured codebase but 4 active security vulnerabilities, contact form is a no-op, DOI prefix is placeholder |
+| **UX** | 7/10 | Core journeys work well; saved articles not clickable, no Google OAuth, 10+ field signup creates friction |
+| **UI** | 7.5/10 | Professional, consistent design; Auth page uses generic "YJ" circle instead of actual journal logo |
+| **Performance** | 6.5/10 | No route-level code splitting — all 30+ pages in one bundle; no image lazy loading |
+| **Business Model** | 3/10 | Zero monetization, no APC workflow, no subscription, no analytics beyond view counts |
+| **Technical Quality** | 6.5/10 | Well-structured code but DOI prefix is fake (`10.1234/jprs`), admin dashboard lacks operational metrics |
 
 ---
 
-## 1. Critical Issues (Must Fix Immediately)
+## Critical Issues
 
-### HIGH: Auth Page Shows Wrong Branding (Lines 410-415)
-The Auth page still shows a circle with "J" and says "Journal of Plastic & Reconstructive Surgery" instead of the YJPRBS logo and correct name. This is the first impression for every new user.
-**File**: `src/pages/Auth.tsx` lines 410-415
+### 1. DOI Prefix is Still Fake
+Every article displays `10.1234/jprs.2026.xxxxx` — a placeholder DOI that is invalid. This undermines academic credibility and indexing. The `generate_article_doi()` DB function needs updating once you register with CrossRef/DataCite, but the display should at least note it's provisional or hide it until a real prefix is configured.
 
-### HIGH: Contact Form Does Nothing
-`Contact.tsx` line 77: `await new Promise(resolve => setTimeout(resolve, 1000))` -- the form simulates sending but actually discards all messages. No database storage, no email notification.
-**File**: `src/pages/Contact.tsx`
+### 2. No Google OAuth
+The sign-up form requires 10+ fields (name, email, password, profession, specialty, country, city, phone, postal code, ID number). Adding Google sign-in would reduce friction dramatically and is natively supported.
 
-### HIGH: Security Vulnerabilities (4 Findings)
-1. **Editorial board member emails publicly exposed** -- the `email` column is readable by anyone via the `is_active = true` SELECT policy
-2. **Reviewer applications insertable without authentication** -- the INSERT policy is `WITH CHECK (true)`, allowing spam flooding
-3. **Leaked password protection disabled** -- passwords are not checked against the HIBP database
-4. **Potential privilege escalation on user_roles** -- needs explicit restrictive policy for non-admin inserts
+### 3. Saved Articles Not Clickable
+In `Dashboard.tsx`, saved articles and reading history items display title/author but have no `onClick` or `<Link>` to navigate to the article. Users see their saved articles but cannot click through to read them.
 
-### HIGH: DOI Prefix is Placeholder
-`generate_article_doi()` function uses `10.1234/jprs` -- this is a fake DOI prefix. Every generated DOI is invalid. The journal needs to register with CrossRef/DataCite for a real prefix.
+### 4. Admin Dashboard Only Shows Article Stats
+`AdminDashboard.tsx` only queries the `articles` table. Missing: total users, total submissions, pending reviews, recent registrations, contact form messages. An admin running a journal needs operational metrics.
 
-### HIGH: Department Contact Emails Are Fake
-`Contact.tsx` lists `submissions@jyms.edu.ye`, `editor@jyms.edu.ye`, `support@jyms.edu.ye`, `ethics@jyms.edu.ye` -- these appear to be placeholder domains. The real email is `YemeniAPRBSurgeons@gmail.com`.
+### 5. Reviewer Cannot Download Manuscripts
+`ReviewerDashboard.tsx` line 115-118: `handleViewSubmission` only fetches `abstract, keywords, category` — not `manuscript_url`. Reviewers cannot access the actual manuscript PDF, which breaks the core review workflow.
+
+### 6. No Code Splitting
+`App.tsx` eagerly imports all 30+ page components. First load downloads everything including admin, reviewer, and static pages that most users never visit. Should use `React.lazy()`.
 
 ---
 
-## 2. High Priority Issues
+## High Priority Issues
 
-### Privacy Policy Links to Wrong Page
-Auth page line 632: "Privacy Policy" checkbox links to `/publication-ethics` instead of `/privacy-policy`.
+### 7. Auth Page Uses Generic Circle Instead of Logo
+Line 410: Shows a `"YJ"` text circle instead of the actual `journal-logo.png` that the Header and Footer already use. Inconsistent branding.
 
-### EULA Links to Wrong Page
-Auth page line 621: "End User License Agreement" also links to `/publication-ethics`. There is no actual EULA page.
+### 8. No Email Notification on Submission Status Change
+When admin changes a submission status (accepted/rejected/revision), the author receives no email. They must manually check the dashboard.
 
-### No Google OAuth
-The sign-up form requires 10+ fields. Adding Google sign-in would drastically reduce friction and increase registrations. The platform supports it natively.
+### 9. No "Contact Messages" in Admin
+The `contact_submissions` table was created but there's no admin page to view/manage incoming contact form messages.
 
-### Hero "Read Current Issue" Links to Generic `/articles`
-Hero button at line 31 navigates to `/articles` instead of `/articles?issue=current`, missing the current-issue filter that was specifically built.
-
-### OG Image Uses favicon.png (Tiny Logo)
-`index.html` line 14: `og:image` points to `/favicon.png` which is a tiny icon. Social shares will look unprofessional. Need a proper 1200x630px OG image.
-
-### View Count Increments on Every Page Load
-`Article.tsx` line 179: `increment_article_views` fires on every render with no session/cookie debounce. Refreshing the page inflates counts.
+### 10. No Dark Mode Toggle
+Tailwind `dark:` classes exist throughout but there's no user-facing toggle to switch themes.
 
 ---
 
-## 3. Medium Priority Issues
+## Medium Priority Issues
 
-### No Route-Level Code Splitting
-All 30+ pages are bundled together. First load downloads everything. Should use `React.lazy()` for admin, reviewer, profile, and static pages.
-
-### Admin Dashboard Only Shows Article Stats
-`AdminDashboard.tsx` only queries `articles`. Missing: user count, submission count, pending reviews count, recent registrations. An admin dashboard should show operational metrics.
-
-### No Bulk Actions in Admin
-Admin tables (Users, Submissions, Articles) have no bulk select/action capability. Managing 100+ items requires clicking one by one.
-
-### Reviewer Cannot Access Manuscript Files
-Reviewer dashboard shows submission abstract but the reviewer cannot download the actual manuscript PDF. The `handleViewSubmission` function only fetches `abstract, keywords, category` -- not the manuscript file URL.
-
-### No Email Notification to Authors on Status Change
-When admin changes submission status, no notification is sent to the author. Authors must manually check the dashboard.
-
-### Saved Articles Link to Article by ID but Don't Navigate
-Dashboard saved articles show article info but clicking doesn't navigate to the article page. Missing `onClick` or `Link` wrapper.
-
-### No Dark Mode Toggle
-The app uses Tailwind's `dark:` classes but there's no toggle for users to switch themes.
-
----
-
-## 4. Low Priority / Polish
-
-- No loading skeleton on Profile page (shows spinner)
-- Archive page exists but may duplicate Articles page functionality
-- No article print stylesheet
+- No bulk actions in admin tables (users, submissions, articles)
+- No loading skeletons on Dashboard or Profile pages
+- Archive page may duplicate Articles page functionality
 - No cookie consent banner
-- PublicProfile page exists but doctor profiles aren't publicly viewable due to RLS
-- No social media links in footer
-- `SearchDialog` exists but scope/effectiveness unclear
 - No "Back to Top" button on long pages
+- No social media links in footer
+- `editorial_board_members.email` column is still publicly readable (the RLS policy restricts to `is_active = true` but still exposes email — need a DB view or column-level exclusion)
 
 ---
 
-## 5. Improvement Roadmap
+## Improvement Plan
 
-### Phase 1: Quick Wins (Can implement now)
+### Phase 1: Critical Fixes (implement now)
 
-| Fix | Files | Effort |
-|-----|-------|--------|
-| Fix Auth page branding (logo + correct name) | `Auth.tsx` | 5 min |
-| Fix Privacy Policy/EULA links on Auth page | `Auth.tsx` lines 621, 632 | 2 min |
-| Fix Hero button to use `?issue=current` | `Hero.tsx` line 31 | 1 min |
-| Remove fake department emails from Contact page | `Contact.tsx` | 5 min |
-| Wire contact form to database + email notification | `Contact.tsx` + DB migration | 30 min |
-| Enable leaked password protection | Auth config tool | 1 min |
-| Fix reviewer_applications INSERT policy | DB migration | 5 min |
-| Remove email column from editorial board public view | DB migration | 5 min |
-| Add restrictive policy to user_roles | DB migration | 5 min |
-| Debounce article view counter (session-based) | `Article.tsx` | 10 min |
+| Fix | Details |
+|-----|---------|
+| Make saved articles & history clickable | Wrap items in `Dashboard.tsx` with `<Link to={/article/${id}}>` |
+| Use actual logo on Auth page | Replace `"YJ"` circle with `<img src={journalLogo}>` in `Auth.tsx` |
+| Add Google OAuth | Configure Google provider + add "Sign in with Google" button on Auth page |
+| Enrich Admin Dashboard | Add stats cards for total users, submissions, pending reviews, contact messages |
+| Add Admin Contact Messages page | New `/admin/contact` route displaying `contact_submissions` table |
+| Fix reviewer manuscript access | Include `manuscript_url` in `handleViewSubmission` query + add download button |
+| Add route-level code splitting | Wrap admin, reviewer, profile, and static pages with `React.lazy()` + `Suspense` |
 
-### Phase 2: Mid-Term (1-2 weeks)
+### Phase 2: UX & Engagement (mid-term)
 
 | Feature | Impact |
 |---------|--------|
-| Add Google OAuth to Auth page | Major UX improvement, higher registration rate |
-| Real contact form with database + email | Professional credibility |
-| Add code splitting with React.lazy | Faster initial load |
-| Enrich Admin Dashboard with user/submission/review metrics | Better operational visibility |
-| Allow reviewers to download manuscripts | Core workflow completion |
-| Send email on submission status change | Author retention |
-| Create proper OG image (1200x630) | Social sharing quality |
-| Make saved articles clickable in Dashboard | Basic UX fix |
+| Email notification on submission status change | Author retention |
+| Dark mode toggle in header | User preference |
+| Bulk actions in admin tables | Operational efficiency |
+| Hide/label DOI as provisional until real prefix | Academic credibility |
+| Loading skeletons instead of spinners | Perceived performance |
 
-### Phase 3: Advanced (Scale Features)
+### Phase 3: Scale & Monetization
 
 | Feature | Impact |
 |---------|--------|
-| Register real DOI prefix with CrossRef | Academic legitimacy |
+| Register real DOI prefix | Academic legitimacy |
 | APC (Article Processing Charge) workflow | Monetization |
-| Automated reviewer matching by specialty | Editorial efficiency |
-| Altmetrics integration | Research impact visibility |
-| ORCID login integration | Academic identity standard |
-| Multi-language support (Arabic/English) | Audience reach |
-| Article version history/preprint support | Academic workflow |
-| Email newsletter for new issues | Engagement/retention |
-| Cookie consent + GDPR compliance | Legal requirement |
+| ORCID login integration | Academic identity |
+| Multi-language support (Arabic/English) | Regional reach |
+| Cookie consent + GDPR | Legal compliance |
+
+---
+
+## Technical Details
+
+| Change | Files Affected |
+|--------|---------------|
+| Clickable saved articles | `Dashboard.tsx` — wrap article cards with `<Link>` |
+| Auth logo | `Auth.tsx` line 410 — replace div with `<img src={journalLogo}>` |
+| Google OAuth | Auth config tool + `Auth.tsx` — add Google button |
+| Admin dashboard enrichment | `AdminDashboard.tsx` — add queries to `profiles`, `submissions`, `submission_reviews`, `contact_submissions` |
+| Admin contact page | New `src/pages/admin/AdminContactMessages.tsx` + route in `App.tsx` + sidebar link |
+| Reviewer manuscript download | `ReviewerDashboard.tsx` line 117 — add `manuscript_url` to select, add download button |
+| Code splitting | `App.tsx` — convert static imports to `React.lazy()` with `<Suspense>` fallback |
+| Editorial board email protection | DB migration — create a view excluding email column, or drop email from public SELECT policy |
 
