@@ -61,7 +61,7 @@ export default function ReviewerDashboard() {
   const [selectedArticleReview, setSelectedArticleReview] = useState<Review | null>(null);
   const [selectedSubmissionReview, setSelectedSubmissionReview] = useState<SubmissionReview | null>(null);
   const [articleContent, setArticleContent] = useState<string>("");
-  const [submissionContent, setSubmissionContent] = useState<{ abstract: string; keywords: string; category: string }>({ abstract: "", keywords: "", category: "" });
+  const [submissionContent, setSubmissionContent] = useState<{ abstract: string; keywords: string; category: string; manuscript_url: string | null }>({ abstract: "", keywords: "", category: "", manuscript_url: null });
   const [isReviewDialogOpen, setIsReviewDialogOpen] = useState(false);
   const [reviewType, setReviewType] = useState<"article" | "submission">("article");
   const [recommendation, setRecommendation] = useState<string>("");
@@ -114,7 +114,7 @@ export default function ReviewerDashboard() {
     
     const { data } = await supabase
       .from("submissions")
-      .select("abstract, keywords, category")
+      .select("abstract, keywords, category, manuscript_url")
       .eq("id", review.submission_id)
       .single();
     
@@ -122,6 +122,7 @@ export default function ReviewerDashboard() {
       abstract: data?.abstract || "",
       keywords: data?.keywords || "",
       category: data?.category || "",
+      manuscript_url: data?.manuscript_url || null,
     });
 
     if (review.status === "pending") {
@@ -493,10 +494,30 @@ export default function ReviewerDashboard() {
               <h3 className="font-medium mb-2">Abstract</h3>
               <p className="text-sm text-muted-foreground whitespace-pre-wrap">{submissionContent.abstract}</p>
             </div>
-            <p className="text-sm text-muted-foreground italic">
-              Note: For submissions, reviewers evaluate based on the abstract and metadata. 
-              Full manuscript access is provided separately.
-            </p>
+            {submissionContent.manuscript_url ? (
+              <Button
+                variant="outline"
+                className="gap-2"
+                onClick={async () => {
+                  if (!submissionContent.manuscript_url) return;
+                  const { data } = await supabase.storage
+                    .from("manuscripts")
+                    .createSignedUrl(submissionContent.manuscript_url, 3600);
+                  if (data?.signedUrl) {
+                    window.open(data.signedUrl, "_blank");
+                  } else {
+                    toast.error("Could not generate download link");
+                  }
+                }}
+              >
+                <FileText className="h-4 w-4" />
+                Download Manuscript
+              </Button>
+            ) : (
+              <p className="text-sm text-muted-foreground italic">
+                No manuscript file attached to this submission.
+              </p>
+            )}
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setSelectedSubmissionReview(null)}>
