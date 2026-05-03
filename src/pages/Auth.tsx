@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft, Loader2, Mail, CheckCircle2, Shield, KeyRound, Eye, EyeOff } from "lucide-react";
 import { z } from "zod";
+import journalLogo from "@/assets/journal-logo.png";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -407,9 +408,7 @@ export default function Auth() {
       <main className="flex-1 flex items-center justify-center p-4">
         <div className="w-full max-w-md space-y-8">
           <div className="text-center">
-            <div className="h-14 w-14 rounded-full bg-primary flex items-center justify-center mx-auto mb-4">
-              <span className="font-serif text-primary-foreground font-bold text-xl">YJ</span>
-            </div>
+            <img src={journalLogo} alt="YJPRBS Logo" className="h-16 w-auto mx-auto mb-4 rounded bg-white/90 p-1" />
             <h1 className="font-serif text-2xl font-bold text-foreground">
               Yemeni Journal of Plastic, Reconstructive & Burn Surgery
             </h1>
