@@ -6,6 +6,7 @@ import { useReadingHistory } from "@/hooks/useReadingHistory";
 import { useSubmissions } from "@/hooks/useSubmissions";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { Link } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -102,9 +103,10 @@ export default function Dashboard() {
               ) : (
                 <div className="space-y-4">
                   {savedArticles.map((article) => (
-                    <div
+                    <Link
+                      to={`/article/${article.article_id}`}
                       key={article.id}
-                      className="flex gap-4 p-4 bg-card rounded-lg border border-border"
+                      className="flex gap-4 p-4 bg-card rounded-lg border border-border hover:border-primary/50 transition-colors block"
                     >
                       {article.article_image && (
                         <img
@@ -129,12 +131,12 @@ export default function Dashboard() {
                       <Button
                         variant="ghost"
                         size="icon"
-                        onClick={() => unsaveArticle(article.article_id)}
+                        onClick={(e) => { e.preventDefault(); unsaveArticle(article.article_id); }}
                         className="text-muted-foreground hover:text-destructive"
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>
-                    </div>
+                    </Link>
                   ))}
                 </div>
               )}
@@ -157,9 +159,10 @@ export default function Dashboard() {
               ) : (
                 <div className="space-y-4">
                   {history.map((item) => (
-                    <div
+                    <Link
+                      to={`/article/${item.article_id}`}
                       key={item.id}
-                      className="flex gap-4 p-4 bg-card rounded-lg border border-border"
+                      className="flex gap-4 p-4 bg-card rounded-lg border border-border hover:border-primary/50 transition-colors block"
                     >
                       {item.article_image && (
                         <img
@@ -181,7 +184,7 @@ export default function Dashboard() {
                           Read {formatDistanceToNow(new Date(item.read_at), { addSuffix: true })}
                         </p>
                       </div>
-                    </div>
+                    </Link>
                   ))}
                 </div>
               )}
