@@ -1,11 +1,45 @@
 import { useArticles } from "@/hooks/useArticles";
 import { StatsCard } from "@/components/admin/StatsCard";
 import { SubmissionChart } from "@/components/admin/SubmissionChart";
-import { FileText, CheckCircle, Clock, Star, Loader2 } from "lucide-react";
+import { FileText, CheckCircle, Clock, Star, Loader2, Users, Send, ClipboardCheck, Mail } from "lucide-react";
 import { format, subMonths, parseISO } from "date-fns";
+import { supabase } from "@/integrations/supabase/client";
+import { useQuery } from "@tanstack/react-query";
 
 export default function AdminDashboard() {
   const { articles, loading } = useArticles();
+
+  const { data: userCount = 0 } = useQuery({
+    queryKey: ["admin-user-count"],
+    queryFn: async () => {
+      const { count } = await supabase.from("profiles").select("*", { count: "exact", head: true });
+      return count || 0;
+    },
+  });
+
+  const { data: submissionCount = 0 } = useQuery({
+    queryKey: ["admin-submission-count"],
+    queryFn: async () => {
+      const { count } = await supabase.from("submissions").select("*", { count: "exact", head: true });
+      return count || 0;
+    },
+  });
+
+  const { data: pendingReviewCount = 0 } = useQuery({
+    queryKey: ["admin-pending-reviews"],
+    queryFn: async () => {
+      const { count } = await supabase.from("submission_reviews").select("*", { count: "exact", head: true }).eq("status", "pending");
+      return count || 0;
+    },
+  });
+
+  const { data: contactCount = 0 } = useQuery({
+    queryKey: ["admin-contact-count"],
+    queryFn: async () => {
+      const { count } = await supabase.from("contact_submissions").select("*", { count: "exact", head: true }).eq("status", "new");
+      return count || 0;
+    },
+  });
 
   if (loading) {
     return (
@@ -52,7 +86,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
         <StatsCard
           title="Total Articles"
           value={articles.length}
@@ -79,6 +113,36 @@ export default function AdminDashboard() {
           value={featuredArticles.length}
           description="Highlighted articles"
           icon={Star}
+          variant="info"
+        />
+      </div>
+
+      {/* Operational Stats */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <StatsCard
+          title="Registered Users"
+          value={userCount}
+          description="Total accounts"
+          icon={Users}
+        />
+        <StatsCard
+          title="Submissions"
+          value={submissionCount}
+          description="Total manuscripts"
+          icon={Send}
+        />
+        <StatsCard
+          title="Pending Reviews"
+          value={pendingReviewCount}
+          description="Awaiting reviewer action"
+          icon={ClipboardCheck}
+          variant="warning"
+        />
+        <StatsCard
+          title="New Messages"
+          value={contactCount}
+          description="Unread contact forms"
+          icon={Mail}
           variant="info"
         />
       </div>
