@@ -462,15 +462,17 @@ export default function ArticlePage() {
 
             <div className="flex-1 max-w-3xl">
               {/* Actions Bar */}
-              <div className="flex items-center justify-between mb-8 pb-4 border-b border-border flex-wrap gap-2">
-                <ArticleLikeButton articleId={article.id} />
-                <div className="flex items-center gap-2 flex-wrap">
+              <div className="flex items-center justify-between mb-8 pb-4 border-b border-border flex-wrap gap-3">
+                <div className="flex items-center gap-2">
                   {/* Download PDF - always available */}
                   {galleys.length === 0 && (
-                    <Button variant="outline" size="sm" onClick={handleDownloadPdf}>
+                    <Button variant="default" size="sm" onClick={handleDownloadPdf}>
                       <Download className="h-4 w-4 mr-2" />Download PDF
                     </Button>
                   )}
+                </div>
+                <div className="flex items-center gap-1 flex-wrap">
+                  <ArticleLikeButton articleId={article.id} />
                   <Button variant="ghost" size="sm" onClick={handleShare}>
                     <Share2 className="h-4 w-4 mr-2" />Share
                   </Button>
@@ -488,9 +490,10 @@ export default function ArticlePage() {
                 </div>
               </div>
 
-              {/* Galley Downloads */}
+              {/* Galley Downloads & Citation in one row */}
+              <div className="mb-8 flex flex-wrap items-start gap-4">
               {galleys.length > 0 && (
-                <div className="mb-8 flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-2">
                   {galleys.map((galley) => (
                     <a key={galley.id} href={galley.file_url} target="_blank" rel="noopener noreferrer">
                       <Button variant="outline" size="sm">
@@ -501,9 +504,8 @@ export default function ArticlePage() {
                   ))}
                 </div>
               )}
-
-              {/* Citation Export */}
-              <div className="mb-8"><CitationExport article={article} /></div>
+              <CitationExport article={article} />
+              </div>
 
               {/* Academic Structured Sections */}
               {hasAcademicSections ? (

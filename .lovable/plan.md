@@ -1,115 +1,97 @@
 
+# Design Evaluation: YJPRBS Journal Website
 
-# Comprehensive Audit: YJPRBS Journal Platform (April 2026)
+## Overall Design Score: 7.5/10
 
-## Final Scores
-
-| Area | Score | Assessment |
-|------|-------|------------|
-| **UX** | 7/10 | Core journeys work well; saved articles not clickable, no Google OAuth, 10+ field signup creates friction |
-| **UI** | 7.5/10 | Professional, consistent design; Auth page uses generic "YJ" circle instead of actual journal logo |
-| **Performance** | 6.5/10 | No route-level code splitting — all 30+ pages in one bundle; no image lazy loading |
-| **Business Model** | 3/10 | Zero monetization, no APC workflow, no subscription, no analytics beyond view counts |
-| **Technical Quality** | 6.5/10 | Well-structured code but DOI prefix is fake (`10.1234/jprs`), admin dashboard lacks operational metrics |
+The site has a professional, clean editorial aesthetic with a strong color system (deep navy + warm coral) and excellent typography pairing (Playfair Display + Source Sans 3). It looks like a credible academic journal. However, several design issues reduce polish and user experience compared to top-tier medical journal websites (NEJM, The Lancet, IJPS by Thieme).
 
 ---
 
-## Critical Issues
+## What Works Well
 
-### 1. DOI Prefix is Still Fake
-Every article displays `10.1234/jprs.2026.xxxxx` — a placeholder DOI that is invalid. This undermines academic credibility and indexing. The `generate_article_doi()` DB function needs updating once you register with CrossRef/DataCite, but the display should at least note it's provisional or hide it until a real prefix is configured.
-
-### 2. No Google OAuth
-The sign-up form requires 10+ fields (name, email, password, profession, specialty, country, city, phone, postal code, ID number). Adding Google sign-in would reduce friction dramatically and is natively supported.
-
-### 3. Saved Articles Not Clickable
-In `Dashboard.tsx`, saved articles and reading history items display title/author but have no `onClick` or `<Link>` to navigate to the article. Users see their saved articles but cannot click through to read them.
-
-### 4. Admin Dashboard Only Shows Article Stats
-`AdminDashboard.tsx` only queries the `articles` table. Missing: total users, total submissions, pending reviews, recent registrations, contact form messages. An admin running a journal needs operational metrics.
-
-### 5. Reviewer Cannot Download Manuscripts
-`ReviewerDashboard.tsx` line 115-118: `handleViewSubmission` only fetches `abstract, keywords, category` — not `manuscript_url`. Reviewers cannot access the actual manuscript PDF, which breaks the core review workflow.
-
-### 6. No Code Splitting
-`App.tsx` eagerly imports all 30+ page components. First load downloads everything including admin, reviewer, and static pages that most users never visit. Should use `React.lazy()`.
+- **Color palette**: Navy + coral is distinctive, authoritative, and warm — perfect for a medical journal
+- **Typography**: Playfair Display for headings with Source Sans 3 for body is an excellent serif/sans-serif pairing
+- **Hero section**: Strong visual hierarchy, clear CTAs, the eISSN/review/OA stats strip is professional
+- **Sticky header**: Clean, functional, good responsive behavior
+- **Article page**: Full-width hero image with overlaid metadata is visually striking
+- **Quick Links section**: Well-designed cards with hover elevation effects
 
 ---
 
-## High Priority Issues
+## Design Issues to Fix
 
-### 7. Auth Page Uses Generic Circle Instead of Logo
-Line 410: Shows a `"YJ"` text circle instead of the actual `journal-logo.png` that the Header and Footer already use. Inconsistent branding.
+### 1. Hero Section — Right Side is Empty (HIGH)
+The hero takes the full viewport width but all content is pushed to the left `max-w-4xl`. The right ~40% of the screen on desktop is empty dark navy space. Professional journals use this space for a cover image, abstract preview, or graphical abstract.
 
-### 8. No Email Notification on Submission Status Change
-When admin changes a submission status (accepted/rejected/revision), the author receives no email. They must manually check the dashboard.
+**Fix**: Add a journal cover image, featured article preview card, or a decorative medical illustration on the right side of the hero using a 2-column grid layout.
 
-### 9. No "Contact Messages" in Admin
-The `contact_submissions` table was created but there's no admin page to view/manage incoming contact form messages.
+### 2. Homepage Feels Sparse Between Sections (HIGH)
+Large vertical gaps between Featured Research, Recent Issues, and Quick Links create a disconnected feeling. The `py-16 md:py-24` padding is generous but makes the page feel stretched thin, especially when there are few articles.
 
-### 10. No Dark Mode Toggle
-Tailwind `dark:` classes exist throughout but there's no user-facing toggle to switch themes.
+**Fix**: Reduce section padding to `py-12 md:py-16`. Add a visible section divider or subtle background color alternation to create rhythm.
 
----
+### 3. Article Cards Lack Visual Density (MEDIUM)
+The compact view list items show title, author, DOI, and date but have no visual weight. Compared to IJPS or PubMed, they feel flat. The action buttons (Abstract, Cite, Share, Full Text) are the same muted color and blend together.
 
-## Medium Priority Issues
+**Fix**: Add a thin left border accent color by category. Make the "Full Text" button more prominent (filled variant). Add article type badges (Original Article, Review, Case Report) with distinct colors.
 
-- No bulk actions in admin tables (users, submissions, articles)
-- No loading skeletons on Dashboard or Profile pages
-- Archive page may duplicate Articles page functionality
-- No cookie consent banner
-- No "Back to Top" button on long pages
-- No social media links in footer
-- `editorial_board_members.email` column is still publicly readable (the RLS policy restricts to `is_active = true` but still exposes email — need a DB view or column-level exclusion)
+### 4. No Visual Breadcrumb on Interior Pages (MEDIUM)
+Pages like Articles, About, Author Guidelines have different header banner styles — some have a gradient header, some don't. There's no breadcrumb navigation for orientation.
 
----
+**Fix**: Add a consistent breadcrumb component below the header on all interior pages (e.g., `Home > Articles > Otoplasty`).
 
-## Improvement Plan
+### 5. Footer "For Authors" Column is Too Long (LOW)
+The footer has 7 links in the "For Authors" column vs 3 in "Quick Links". This creates visual imbalance. The footer also lacks social media icons.
 
-### Phase 1: Critical Fixes (implement now)
+**Fix**: Split "For Authors" into two sub-groups or move some links to Quick Links. Add social media icons (Twitter/X, LinkedIn, ResearchGate).
 
-| Fix | Details |
-|-----|---------|
-| Make saved articles & history clickable | Wrap items in `Dashboard.tsx` with `<Link to={/article/${id}}>` |
-| Use actual logo on Auth page | Replace `"YJ"` circle with `<img src={journalLogo}>` in `Auth.tsx` |
-| Add Google OAuth | Configure Google provider + add "Sign in with Google" button on Auth page |
-| Enrich Admin Dashboard | Add stats cards for total users, submissions, pending reviews, contact messages |
-| Add Admin Contact Messages page | New `/admin/contact` route displaying `contact_submissions` table |
-| Fix reviewer manuscript access | Include `manuscript_url` in `handleViewSubmission` query + add download button |
-| Add route-level code splitting | Wrap admin, reviewer, profile, and static pages with `React.lazy()` + `Suspense` |
+### 6. Mobile Header Missing Logo Text (LOW)
+On mobile, only the logo image shows — the "YJPRBS" text and eISSN are hidden (`hidden sm:block`). This is fine for space, but the logo image alone is small and hard to recognize.
 
-### Phase 2: UX & Engagement (mid-term)
+**Fix**: Show the "YJPRBS" text on mobile too (just hide the eISSN). Change to `hidden xs:block` or always show the name.
 
-| Feature | Impact |
-|---------|--------|
-| Email notification on submission status change | Author retention |
-| Dark mode toggle in header | User preference |
-| Bulk actions in admin tables | Operational efficiency |
-| Hide/label DOI as provisional until real prefix | Academic credibility |
-| Loading skeletons instead of spinners | Perceived performance |
+### 7. Article Page — Action Bar Needs Better Hierarchy (MEDIUM)
+The Like, Download PDF, and Share buttons sit in a horizontal row but "Download PDF" (the primary action for researchers) doesn't stand out. The "Cite this Article" button below is visually disconnected.
 
-### Phase 3: Scale & Monetization
+**Fix**: Create a unified action toolbar with "Download PDF" as the primary (filled) button and Cite, Share, Like as secondary actions in the same row.
 
-| Feature | Impact |
-|---------|--------|
-| Register real DOI prefix | Academic legitimacy |
-| APC (Article Processing Charge) workflow | Monetization |
-| ORCID login integration | Academic identity |
-| Multi-language support (Arabic/English) | Regional reach |
-| Cookie consent + GDPR | Legal compliance |
+### 8. No Dark Mode Toggle (LOW)
+Dark mode CSS variables are fully defined but there's no user-facing toggle to switch themes. Academic researchers often prefer dark mode for extended reading.
+
+**Fix**: Add a sun/moon toggle button in the header next to the search icon.
 
 ---
 
-## Technical Details
+## Recommended Improvements
 
-| Change | Files Affected |
-|--------|---------------|
-| Clickable saved articles | `Dashboard.tsx` — wrap article cards with `<Link>` |
-| Auth logo | `Auth.tsx` line 410 — replace div with `<img src={journalLogo}>` |
-| Google OAuth | Auth config tool + `Auth.tsx` — add Google button |
-| Admin dashboard enrichment | `AdminDashboard.tsx` — add queries to `profiles`, `submissions`, `submission_reviews`, `contact_submissions` |
-| Admin contact page | New `src/pages/admin/AdminContactMessages.tsx` + route in `App.tsx` + sidebar link |
-| Reviewer manuscript download | `ReviewerDashboard.tsx` line 117 — add `manuscript_url` to select, add download button |
-| Code splitting | `App.tsx` — convert static imports to `React.lazy()` with `<Suspense>` fallback |
-| Editorial board email protection | DB migration — create a view excluding email column, or drop email from public SELECT policy |
+### Phase 1: Layout & Hierarchy Fixes
 
+| Change | Files | Impact |
+|--------|-------|--------|
+| Add cover image/illustration to hero right side | `Hero.tsx` | Major — first impression |
+| Add breadcrumb component to interior pages | New `Breadcrumb` usage in page layouts | Navigation clarity |
+| Reduce section spacing on homepage | `FeaturedSection.tsx`, `RecentIssues.tsx`, `QuickLinks.tsx` | Visual cohesion |
+| Improve article page action bar hierarchy | `Article.tsx` | Researcher usability |
+| Add category color badges to article list items | `ArticleListItem.tsx` | Visual scanning |
+
+### Phase 2: Polish & Delight
+
+| Change | Files | Impact |
+|--------|-------|--------|
+| Add dark mode toggle | `Header.tsx` + new ThemeToggle component | User preference |
+| Balance footer columns + add social icons | `Footer.tsx` | Professional completeness |
+| Show "YJPRBS" text on mobile header | `Header.tsx` | Brand recognition |
+| Add subtle section dividers on homepage | `Index.tsx` or section components | Visual rhythm |
+| Improve "Recent Issues" cards with better cover placeholders | `IssueCard.tsx` | Visual appeal |
+
+### Technical Details
+
+| File | Change |
+|------|--------|
+| `Hero.tsx` | Convert to 2-column grid: content left, cover/visual right |
+| `ArticleListItem.tsx` | Add `border-l-4` with category-based color mapping |
+| `Article.tsx` | Merge cite/share/PDF into single toolbar with primary/secondary variants |
+| `Header.tsx` | Remove `hidden sm:block` from YJPRBS text; add ThemeToggle |
+| `Footer.tsx` | Restructure grid, add social icons row |
+| New: `src/components/ThemeToggle.tsx` | Toggle between light/dark using `document.documentElement.classList` |
+| `FeaturedSection.tsx`, `RecentIssues.tsx`, `QuickLinks.tsx` | Change `py-16 md:py-24` to `py-12 md:py-16` |

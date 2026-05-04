@@ -1,6 +1,7 @@
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import journalCover from "@/assets/journal-cover.jpg";
 
 export function Hero() {
   const navigate = useNavigate();
@@ -11,7 +12,8 @@ export function Hero() {
       <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTM2IDM0djItSDI0di0yaDEyek0zNiAyNHYySDI0di0yaDEyeiIvPjwvZz48L2c+PC9zdmc+')] opacity-30" />
 
       <div className="container mx-auto px-4 py-16 md:py-24 relative">
-        <div className="max-w-4xl">
+        <div className="grid lg:grid-cols-2 gap-10 items-center">
+        <div className="max-w-2xl">
           <div className="inline-block mb-6">
             <span className="bg-accent/20 text-accent-foreground px-4 py-1.5 rounded-full text-sm font-medium">
               Open Access · Peer Reviewed
@@ -38,7 +40,7 @@ export function Hero() {
           </div>
 
           {/* Stats */}
-          <div className="grid grid-cols-3 gap-8 mt-12 pt-8 border-t border-primary-foreground/20 max-w-lg">
+          <div className="grid grid-cols-3 gap-8 mt-10 pt-8 border-t border-primary-foreground/20 max-w-lg">
             <div>
               <div className="font-serif text-3xl font-bold text-accent">eISSN</div>
               <div className="text-sm text-primary-foreground/70">3009-6316</div>
@@ -52,6 +54,21 @@ export function Hero() {
               <div className="text-sm text-primary-foreground/70">Open Access</div>
             </div>
           </div>
+        </div>
+
+        {/* Journal Cover Image */}
+        <div className="hidden lg:flex justify-center">
+          <div className="relative">
+            <div className="absolute -inset-4 bg-accent/20 rounded-2xl blur-2xl" />
+            <img
+              src={journalCover}
+              alt="YJPRBS Current Issue Cover"
+              className="relative w-64 xl:w-72 rounded-lg shadow-elegant-lg border-2 border-white/10 hover:scale-[1.02] transition-transform duration-500"
+              width={640}
+              height={896}
+            />
+          </div>
+        </div>
         </div>
       </div>
     </section>
