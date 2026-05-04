@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Menu, X, Search, User, LogOut, Bookmark, Settings, Send, UserCircle, ClipboardCheck } from "lucide-react";
 import { SearchDialog } from "@/components/SearchDialog";
 import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { useAuth } from "@/hooks/useAuth";
 import { useAdmin } from "@/hooks/useAdmin";
 import { supabase } from "@/integrations/supabase/client";
@@ -83,9 +84,9 @@ export function Header() {
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3">
             <img src={journalLogo} alt="YJPRBS Logo" className="h-12 w-auto sm:h-14" />
-            <div className="hidden sm:block">
+            <div>
               <h1 className="font-serif text-lg font-semibold text-foreground leading-tight">YJPRBS</h1>
-              <span className="text-[10px] text-muted-foreground tracking-wide">eISSN: 3009-6316</span>
+              <span className="hidden sm:block text-[10px] text-muted-foreground tracking-wide">eISSN: 3009-6316</span>
             </div>
           </Link>
 
@@ -110,6 +111,7 @@ export function Header() {
               <Search className="h-5 w-5" />
             </Button>
             <SearchDialog open={searchOpen} onOpenChange={setSearchOpen} />
+            <ThemeToggle />
             
             {!loading && <>
                 {user ? <DropdownMenu>
