@@ -103,7 +103,7 @@ export function RecentIssues() {
   const defaultCover = "https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=400&q=80";
 
   return (
-    <section id="current-issue" className="py-16 md:py-24">
+    <section id="current-issue" className="py-12 md:py-16">
       <div className="container mx-auto px-4">
         <div className="flex items-end justify-between mb-10">
           <div>

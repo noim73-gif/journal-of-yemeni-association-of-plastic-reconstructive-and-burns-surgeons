@@ -28,7 +28,7 @@ export function FeaturedSection() {
 
   if (loading) {
     return (
-      <section id="articles" className="py-16 md:py-24 bg-muted/30">
+       <section id="articles" className="py-12 md:py-16 bg-muted/30">
         <div className="container mx-auto px-4">
           <div className="mb-10">
             <Skeleton className="h-10 w-64 mb-2" />
@@ -51,7 +51,7 @@ export function FeaturedSection() {
   }
 
   return (
-    <section id="articles" className="py-16 md:py-24 bg-muted/30">
+    <section id="articles" className="py-12 md:py-16 bg-muted/30">
       <div className="container mx-auto px-4">
         <div className="flex items-end justify-between mb-10">
           <div>

@@ -30,7 +30,7 @@ const links = [
 
 export const QuickLinks = forwardRef<HTMLElement>((_, ref) => {
   return (
-    <section ref={ref} id="authors" className="py-16 md:py-24 bg-secondary">
+    <section ref={ref} id="authors" className="py-12 md:py-16 bg-secondary">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
           <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground mb-2">
