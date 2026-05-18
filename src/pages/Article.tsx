@@ -156,6 +156,7 @@ export default function ArticlePage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [galleys, setGalleys] = useState<{ id: string; label: string; file_url: string; file_type: string }[]>([]);
+  const bodyRef = useRef<HTMLDivElement>(null);
 
   usePageTitle(article?.title || "Article");
 
@@ -478,7 +479,10 @@ export default function ArticlePage() {
               </aside>
             )}
 
-            <div className="flex-1 max-w-3xl">
+            <div className="flex-1 max-w-3xl" ref={bodyRef}>
+              {/* Article metrics */}
+              <ArticleMetrics articleId={article.id} viewCount={article.view_count} />
+
               {/* Actions Bar */}
               <div className="flex items-center justify-between mb-8 pb-4 border-b border-border flex-wrap gap-3">
                 <div className="flex items-center gap-2">
@@ -538,7 +542,13 @@ export default function ArticlePage() {
                   <AcademicSection id="methods" title="Methods" content={article.methods || ""} numbering="2." />
                   <AcademicSection id="results" title="Results" content={article.results || ""} numbering="3." />
                   <AcademicSection id="discussion" title="Discussion" content={article.discussion || ""} numbering="4." />
-                  <AcademicSection id="references" title="References" content={article.references || ""} numbering="5." />
+                  <AcademicSection
+                    id="references"
+                    title="References"
+                    content={article.references || ""}
+                    numbering="5."
+                    transform={linkifyReferences}
+                  />
                 </div>
               ) : (
                 <>
@@ -558,11 +568,23 @@ export default function ArticlePage() {
               )}
 
               <Separator className="my-12" />
+
+              {/* Related & same-issue articles */}
+              <RelatedArticles
+                currentArticleId={article.id}
+                category={article.category}
+                volume={article.volume}
+                issue={article.issue}
+              />
+
+              <Separator className="my-12" />
+
               <ArticleComments articleId={article.id} />
             </div>
           </div>
         </div>
       </main>
+      <FigureLightbox containerRef={bodyRef} />
       <Footer />
     </div>
   );
