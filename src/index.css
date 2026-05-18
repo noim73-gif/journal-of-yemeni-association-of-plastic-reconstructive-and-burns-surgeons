@@ -51,6 +51,21 @@ All colors MUST be HSL.
     --shadow-elegant: 0 8px 24px -4px hsl(215 50% 23% / 0.12);
     --shadow-elegant-lg: 0 16px 48px -8px hsl(215 50% 23% / 0.16);
 
+    /* Semantic article category accents (left-border swatches) */
+    --category-original: 217 91% 60%;
+    --category-case: 160 84% 39%;
+    --category-review: 270 70% 60%;
+    --category-reconstruction: 25 95% 55%;
+    --category-burns: 0 84% 60%;
+    --category-cosmetic: 330 81% 65%;
+    --category-editorial: 43 96% 56%;
+
+    /* Semantic editorial-status colors */
+    --status-success: 142 71% 38%;
+    --status-warning: 38 92% 50%;
+    --status-info: 199 89% 48%;
+    --status-neutral: 215 16% 47%;
+
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
     --sidebar-primary: 240 5.9% 10%;
@@ -94,6 +109,19 @@ All colors MUST be HSL.
     --shadow-soft: 0 2px 8px -2px hsl(0 0% 0% / 0.3);
     --shadow-elegant: 0 8px 24px -4px hsl(0 0% 0% / 0.4);
     --shadow-elegant-lg: 0 16px 48px -8px hsl(0 0% 0% / 0.5);
+
+    --category-original: 217 91% 65%;
+    --category-case: 160 70% 50%;
+    --category-review: 270 70% 70%;
+    --category-reconstruction: 25 90% 60%;
+    --category-burns: 0 80% 65%;
+    --category-cosmetic: 330 75% 70%;
+    --category-editorial: 43 90% 60%;
+
+    --status-success: 142 60% 50%;
+    --status-warning: 38 90% 60%;
+    --status-info: 199 85% 60%;
+    --status-neutral: 215 20% 65%;
 
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
