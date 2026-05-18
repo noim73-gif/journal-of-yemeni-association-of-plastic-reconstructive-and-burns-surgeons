@@ -32,12 +32,8 @@ export function RelatedArticles({ currentArticleId, category, volume, issue }: R
     let active = true;
     async function load() {
       try {
-        const queries: Promise<any>[] = [];
-
-        // Related by category
-        if (category) {
-          queries.push(
-            supabase
+        const relatedPromise = category
+          ? supabase
               .from("articles")
               .select("id, title, authors, category, image_url, published_at, volume, issue")
               .eq("category", category)
@@ -46,15 +42,11 @@ export function RelatedArticles({ currentArticleId, category, volume, issue }: R
               .lte("published_at", new Date().toISOString())
               .order("published_at", { ascending: false })
               .limit(3)
-          );
-        } else {
-          queries.push(Promise.resolve({ data: [] }));
-        }
+              .then((r) => r)
+          : Promise.resolve({ data: [] as RelatedArticle[] });
 
-        // From same issue
-        if (volume && issue) {
-          queries.push(
-            supabase
+        const issuePromise = (volume && issue)
+          ? supabase
               .from("articles")
               .select("id, title, authors, category, image_url, published_at, volume, issue")
               .eq("volume", volume)
@@ -64,12 +56,10 @@ export function RelatedArticles({ currentArticleId, category, volume, issue }: R
               .lte("published_at", new Date().toISOString())
               .order("article_number", { ascending: true })
               .limit(4)
-          );
-        } else {
-          queries.push(Promise.resolve({ data: [] }));
-        }
+              .then((r) => r)
+          : Promise.resolve({ data: [] as RelatedArticle[] });
 
-        const [relRes, issueRes] = await Promise.all(queries);
+        const [relRes, issueRes] = await Promise.all([relatedPromise, issuePromise]);
         if (!active) return;
         setRelated((relRes.data as RelatedArticle[]) || []);
         setSameIssue((issueRes.data as RelatedArticle[]) || []);
