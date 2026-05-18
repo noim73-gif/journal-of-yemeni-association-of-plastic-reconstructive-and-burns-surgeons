@@ -1,6 +1,7 @@
 import { FeaturedArticle } from "./FeaturedArticle";
 import { usePublishedArticles } from "@/hooks/useArticles";
 import { Skeleton } from "@/components/ui/skeleton";
+import { logger } from "@/lib/logger";
 
 // No fallback articles — show empty state when database is empty
 
@@ -47,7 +48,7 @@ export function FeaturedSection() {
 
   // Show fallback content on error instead of blocking UI
   if (error && featuredFromDb.length === 0) {
-    console.warn("Failed to load articles, showing fallback content:", error);
+    logger.error("Failed to load articles, showing fallback content:", error);
   }
 
   return (
