@@ -1,4 +1,5 @@
 import { Header } from "@/components/Header";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { Footer } from "@/components/Footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -34,6 +35,7 @@ export default function AuthorGuidelines() {
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <Header />
+      <Breadcrumbs items={[{ label: "Author Guidelines" }]} />
       <main className="flex-1">
         {/* Hero Section */}
         <section className="bg-gradient-to-b from-primary/10 to-background py-16">

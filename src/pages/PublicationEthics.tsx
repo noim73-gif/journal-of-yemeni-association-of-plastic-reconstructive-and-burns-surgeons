@@ -1,4 +1,5 @@
 import { Header } from "@/components/Header";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { Footer } from "@/components/Footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Shield, AlertTriangle, FileX, Users, Scale, BookOpen } from "lucide-react";
@@ -7,6 +8,7 @@ const PublicationEthics = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
+      <Breadcrumbs items={[{ label: "Publication Ethics" }]} />
       
       <main className="container mx-auto px-4 py-12">
         {/* Hero Section */}

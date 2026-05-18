@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Header } from "@/components/Header";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -169,6 +170,7 @@ export default function BecomeReviewer() {
     return (
       <div className="min-h-screen flex flex-col bg-background">
         <Header />
+      <Breadcrumbs items={[{ label: "Become a Reviewer" }]} />
         <main className="flex-1 container mx-auto px-4 py-12">
           <div className="max-w-2xl mx-auto text-center">
             <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">

@@ -3,6 +3,7 @@ import { usePageTitle } from "@/hooks/usePageTitle";
 import { useSearchParams } from "react-router-dom";
 import { Search, Filter, ChevronLeft, ChevronRight, BookOpen } from "lucide-react";
 import { Header } from "@/components/Header";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { Footer } from "@/components/Footer";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -191,6 +192,7 @@ export default function Articles() {
   return (
     <div className="min-h-screen bg-background">
       <Header />
+      <Breadcrumbs items={[{ label: "Articles" }]} />
 
       <main className="container mx-auto px-4 py-12">
         {/* Issue Banner or Generic Header */}

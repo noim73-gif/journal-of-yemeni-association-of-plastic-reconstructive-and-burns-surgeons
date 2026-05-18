@@ -1,4 +1,5 @@
 import { Header } from "@/components/Header";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { Footer } from "@/components/Footer";
 import { usePageTitle } from "@/hooks/usePageTitle";
 
@@ -8,6 +9,7 @@ export default function PrivacyPolicy() {
   return (
     <div className="min-h-screen bg-background">
       <Header />
+      <Breadcrumbs items={[{ label: "Privacy Policy" }]} />
       <main id="main-content" className="container mx-auto px-4 py-12 max-w-4xl">
         <h1 className="font-serif text-3xl md:text-4xl font-bold text-foreground mb-8">Privacy Policy</h1>
 
