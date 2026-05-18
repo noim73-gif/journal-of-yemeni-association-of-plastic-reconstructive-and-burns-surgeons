@@ -7,19 +7,19 @@ import { toast } from "sonner";
 
 import type { Article } from "@/hooks/useArticles";
 
-const CATEGORY_COLORS: Record<string, string> = {
-  "Original Article": "border-l-blue-500",
-  "Case Report": "border-l-emerald-500",
-  "Review": "border-l-purple-500",
-  "Reconstruction": "border-l-orange-500",
-  "Burns": "border-l-red-500",
-  "Cosmetic": "border-l-pink-500",
-  "Editorial": "border-l-amber-500",
+const CATEGORY_TOKENS: Record<string, string> = {
+  "Original Article": "hsl(var(--category-original))",
+  "Case Report": "hsl(var(--category-case))",
+  "Review": "hsl(var(--category-review))",
+  "Reconstruction": "hsl(var(--category-reconstruction))",
+  "Burns": "hsl(var(--category-burns))",
+  "Cosmetic": "hsl(var(--category-cosmetic))",
+  "Editorial": "hsl(var(--category-editorial))",
 };
 
-function getCategoryBorderColor(category: string | null): string {
-  if (!category) return "border-l-primary";
-  return CATEGORY_COLORS[category] || "border-l-primary";
+function getCategoryBorderStyle(category: string | null): React.CSSProperties {
+  const color = (category && CATEGORY_TOKENS[category]) || "hsl(var(--primary))";
+  return { borderLeftColor: color };
 }
 
 type ArticleData = Pick<Article, "id" | "title" | "abstract" | "authors" | "category" | "doi" | "volume" | "issue" | "pages" | "published_at" | "image_url" | "view_count" | "article_number">;
@@ -65,7 +65,10 @@ export function ArticleListItem({ article, viewMode }: ArticleListItemProps) {
 
   if (viewMode === "compact") {
     return (
-      <div className={`border-b border-border py-4 last:border-b-0 border-l-4 pl-4 ${getCategoryBorderColor(article.category)}`}>
+      <div
+        className="border-b border-border py-4 last:border-b-0 border-l-4 pl-4"
+        style={getCategoryBorderStyle(article.category)}
+      >
         <div className="flex flex-col gap-2">
           {/* Title as link */}
           <Link
@@ -161,7 +164,10 @@ export function ArticleListItem({ article, viewMode }: ArticleListItemProps) {
 
   // Cards view (original style with enhancements)
   return (
-    <div className={`bg-card rounded-lg border border-border overflow-hidden hover:shadow-lg transition-all duration-300 hover:border-primary/30 border-l-4 ${getCategoryBorderColor(article.category)}`}>
+    <div
+      className="bg-card rounded-lg border border-border overflow-hidden hover:shadow-lg transition-all duration-300 hover:border-primary/30 border-l-4"
+      style={getCategoryBorderStyle(article.category)}
+    >
       <Link to={`/article/${article.id}`} className="group block">
         <div className="flex flex-col md:flex-row">
           {/* Article Image */}
