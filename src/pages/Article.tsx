@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { useParams, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -10,11 +10,16 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { ArticleLikeButton } from "@/components/article/ArticleLikeButton";
 import { ArticleComments } from "@/components/article/ArticleComments";
+import { ArticleAuthors } from "@/components/article/ArticleAuthors";
+import { ArticleMetrics } from "@/components/article/ArticleMetrics";
+import { RelatedArticles } from "@/components/article/RelatedArticles";
+import { FigureLightbox } from "@/components/article/FigureLightbox";
+import { linkifyReferences } from "@/lib/linkifyReferences";
 import { useAuth } from "@/hooks/useAuth";
 import { CitationExport } from "@/components/article/CitationExport";
 import { useAdmin } from "@/hooks/useAdmin";
 import { useReadingHistory } from "@/hooks/useReadingHistory";
-import { ArrowLeft, Calendar, User, BookOpen, Share2, Bookmark, Loader2, ExternalLink, FileCode2, Download, List, Eye, Search } from "lucide-react";
+import { ArrowLeft, Calendar, BookOpen, Share2, Bookmark, Loader2, ExternalLink, FileCode2, Download, List, Eye } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { useSavedArticles } from "@/hooks/useSavedArticles";
@@ -51,8 +56,21 @@ const SANITIZE_OPTIONS = {
   ALLOWED_ATTR: ['href', 'src', 'alt', 'class', 'style', 'target', 'rel']
 };
 
-function AcademicSection({ id, title, content, numbering }: { id: string; title: string; content: string; numbering?: string }) {
+function AcademicSection({
+  id,
+  title,
+  content,
+  numbering,
+  transform,
+}: {
+  id: string;
+  title: string;
+  content: string;
+  numbering?: string;
+  transform?: (html: string) => string;
+}) {
   if (!content) return null;
+  const processed = transform ? transform(content) : content;
   return (
     <section id={id} className="mb-10 scroll-mt-24">
       <h2 className="font-serif text-xl md:text-2xl font-bold text-foreground mb-4 pb-2 border-b border-border">
@@ -61,7 +79,7 @@ function AcademicSection({ id, title, content, numbering }: { id: string; title:
       </h2>
       <div
         className="prose prose-lg max-w-none prose-headings:font-serif prose-headings:text-foreground prose-p:text-foreground prose-p:leading-relaxed prose-a:text-primary prose-blockquote:border-primary prose-blockquote:text-muted-foreground prose-li:text-foreground"
-        dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(content, SANITIZE_OPTIONS) }}
+        dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(processed, SANITIZE_OPTIONS) }}
       />
     </section>
   );
