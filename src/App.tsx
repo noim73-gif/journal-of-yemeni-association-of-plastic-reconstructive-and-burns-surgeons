@@ -11,6 +11,7 @@ import Article from "./pages/Article";
 import Articles from "./pages/Articles";
 import NotFound from "./pages/NotFound";
 import { AdminLayout } from "./components/admin/AdminLayout";
+import { MobileSubmitFab } from "@/components/MobileSubmitFab";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { logger } from "@/lib/logger";
@@ -118,6 +119,7 @@ function AppContent() {
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>
+        <MobileSubmitFab />
       </BrowserRouter>
     </>
   );

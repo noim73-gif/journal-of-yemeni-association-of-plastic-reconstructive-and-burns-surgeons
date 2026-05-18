@@ -2,6 +2,7 @@ import { useState } from "react";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { useNavigate } from "react-router-dom";
 import { Header } from "@/components/Header";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -62,6 +63,7 @@ export default function Submit() {
     return (
       <div className="min-h-screen bg-background">
         <Header />
+      <Breadcrumbs items={[{ label: "Submit Manuscript" }]} />
         <main className="container mx-auto px-4 py-16">
           <Card className="max-w-2xl mx-auto">
             <CardHeader className="text-center">

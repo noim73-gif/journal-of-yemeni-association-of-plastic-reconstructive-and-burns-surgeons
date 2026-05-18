@@ -40,18 +40,18 @@ export function Hero() {
           </div>
 
           {/* Stats */}
-          <div className="grid grid-cols-3 gap-8 mt-10 pt-8 border-t border-primary-foreground/20 max-w-lg">
+          <div className="grid grid-cols-3 gap-4 sm:gap-8 mt-10 pt-8 border-t border-primary-foreground/20 max-w-lg">
             <div>
-              <div className="font-serif text-3xl font-bold text-accent">eISSN</div>
-              <div className="text-sm text-primary-foreground/70">3009-6316</div>
+              <div className="font-serif text-xl sm:text-2xl md:text-3xl font-bold text-accent leading-tight">eISSN</div>
+              <div className="text-xs sm:text-sm text-primary-foreground/70">3009-6316</div>
             </div>
             <div>
-              <div className="font-serif text-3xl font-bold text-accent">Double</div>
-              <div className="text-sm text-primary-foreground/70">Blind Review</div>
+              <div className="font-serif text-xl sm:text-2xl md:text-3xl font-bold text-accent leading-tight">Double</div>
+              <div className="text-xs sm:text-sm text-primary-foreground/70">Blind Review</div>
             </div>
             <div>
-              <div className="font-serif text-3xl font-bold text-accent">OA</div>
-              <div className="text-sm text-primary-foreground/70">Open Access</div>
+              <div className="font-serif text-xl sm:text-2xl md:text-3xl font-bold text-accent leading-tight">OA</div>
+              <div className="text-xs sm:text-sm text-primary-foreground/70">Open Access</div>
             </div>
           </div>
         </div>
