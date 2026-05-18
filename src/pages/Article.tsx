@@ -405,7 +405,7 @@ export default function ArticlePage() {
               <h1 className="font-serif text-3xl md:text-4xl lg:text-5xl font-bold max-w-4xl mb-6">{article.title}</h1>
               <div className="flex flex-wrap items-center gap-4 text-sm opacity-80 mb-4">
                 {article.authors && (
-                  <div className="flex items-center gap-2"><User className="h-4 w-4" /><span>{article.authors}</span></div>
+                  <ArticleAuthors authors={article.authors} variant="hero" />
                 )}
                 {article.published_at && (
                   <div className="flex items-center gap-2"><Calendar className="h-4 w-4" /><span>{format(new Date(article.published_at), "MMMM d, yyyy")}</span></div>
