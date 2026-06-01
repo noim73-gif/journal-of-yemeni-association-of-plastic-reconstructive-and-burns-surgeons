@@ -179,13 +179,15 @@ export function useSubmissionDraft() {
         manuscript_url: next.manuscript_url,
         supplementary_url: next.supplementary_url,
         status: "draft",
-        metadata: {
-          authors: next.authors,
-          declarations: next.declarations,
-          step: next.step,
-          manuscript_name: next.manuscript_name,
-          supplementary_name: next.supplementary_name,
-        } as Record<string, unknown>,
+        metadata: JSON.parse(
+          JSON.stringify({
+            authors: next.authors,
+            declarations: next.declarations,
+            step: next.step,
+            manuscript_name: next.manuscript_name,
+            supplementary_name: next.supplementary_name,
+          })
+        ),
       };
 
       setSaving(true);
