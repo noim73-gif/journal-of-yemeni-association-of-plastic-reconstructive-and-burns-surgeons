@@ -3,7 +3,8 @@ import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
 import { IssueCard } from "./IssueCard";
-import { Skeleton } from "./ui/skeleton";
+import { SectionBand } from "./home/SectionBand";
+import { IssueCardSkeleton } from "./skeletons/IssueCardSkeleton";
 
 interface IssueData {
   volume: string;
@@ -100,61 +101,79 @@ export function RecentIssues() {
     return date.toLocaleDateString("en-US", { month: "long", year: "numeric" });
   };
 
-  const defaultCover = "https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=400&q=80";
+  // Programmatic gradient covers when no image is uploaded
+  const gradients = [
+    "linear-gradient(135deg, hsl(215 50% 23%), hsl(215 55% 18%))",
+    "linear-gradient(135deg, hsl(215 50% 23%), hsl(12 76% 61%))",
+    "linear-gradient(135deg, hsl(215 55% 18%), hsl(199 89% 48%))",
+    "linear-gradient(135deg, hsl(12 76% 61%), hsl(215 50% 23%))",
+  ];
 
   return (
-    <section id="current-issue" className="py-12 md:py-16">
-      <div className="container mx-auto px-4">
-        <div className="flex items-end justify-between mb-10">
-          <div>
-            <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground mb-2">
-              Recent Issues
-            </h2>
-            <p className="text-muted-foreground">
-              Browse our latest published editions
-            </p>
-          </div>
-          <Link to="/articles" className="hidden md:block text-primary font-medium hover:underline">
-            View Archive →
-          </Link>
-        </div>
-
-        {loading ? (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 lg:gap-8">
-            {[...Array(4)].map((_, i) => (
-              <div key={i} className="space-y-4">
-                <Skeleton className="aspect-[3/4] rounded-lg" />
-                <Skeleton className="h-4 w-20 mx-auto" />
-              </div>
-            ))}
-          </div>
-        ) : issues.length === 0 ? (
-          <p className="text-center text-muted-foreground py-12">
-            No published issues yet.
-          </p>
-        ) : (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 lg:gap-8">
-            {issues.map((issue) => (
-              <Link 
-                key={`${issue.volume}-${issue.issue}`} 
-                to={`/articles?volume=${issue.volume}&issue=${issue.issue}`}
-              >
-                <IssueCard
-                  volume={issue.volume}
-                  issue={issue.issue}
-                  date={formatDate(issue.latestDate)}
-                  coverImage={issue.coverImage || defaultCover}
-                  articleCount={issue.articleCount}
-                />
-              </Link>
-            ))}
-          </div>
-        )}
-
-        <Link to="/articles" className="mt-8 block md:hidden text-center text-primary font-medium hover:underline">
-          View Archive →
+    <SectionBand
+      id="current-issue"
+      alt
+      eyebrow="Archive"
+      title="Recent issues"
+      description="Browse our latest published editions, organized by volume and issue."
+      action={
+        <Link to="/archive" className="text-primary font-medium hover:underline whitespace-nowrap">
+          View full archive →
         </Link>
-      </div>
-    </section>
+      }
+    >
+      {loading ? (
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 lg:gap-8">
+          {[0, 1, 2, 3].map((i) => (
+            <IssueCardSkeleton key={i} />
+          ))}
+        </div>
+      ) : issues.length === 0 ? (
+        <p className="text-center text-muted-foreground py-12">No published issues yet.</p>
+      ) : (
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 lg:gap-8">
+          {issues.map((issue, idx) => {
+            const link = `/articles?volume=${issue.volume}&issue=${issue.issue}`;
+            if (issue.coverImage) {
+              return (
+                <Link key={`${issue.volume}-${issue.issue}`} to={link}>
+                  <IssueCard
+                    volume={issue.volume}
+                    issue={issue.issue}
+                    date={formatDate(issue.latestDate)}
+                    coverImage={issue.coverImage}
+                    articleCount={issue.articleCount}
+                  />
+                </Link>
+              );
+            }
+            // Programmatic cover
+            return (
+              <Link key={`${issue.volume}-${issue.issue}`} to={link} className="group cursor-pointer block">
+                <div
+                  className="relative aspect-[3/4] rounded-lg overflow-hidden shadow-soft group-hover:shadow-elegant transition-all duration-300 mb-4 flex flex-col justify-between p-5 text-primary-foreground"
+                  style={{ backgroundImage: gradients[idx % gradients.length] }}
+                >
+                  <div>
+                    <div className="text-[10px] tracking-[0.2em] uppercase opacity-80 font-semibold">
+                      YJPRBS
+                    </div>
+                    <div className="text-xs opacity-75 mt-1">{formatDate(issue.latestDate)}</div>
+                  </div>
+                  <div>
+                    <div className="font-serif text-4xl font-bold leading-none">Vol.{issue.volume}</div>
+                    <div className="font-serif text-xl mt-1">Issue {issue.issue}</div>
+                    <div className="w-10 h-0.5 bg-accent mt-3 group-hover:w-16 transition-all duration-300" />
+                  </div>
+                </div>
+                <div className="text-center text-sm text-muted-foreground">
+                  {issue.articleCount} Articles
+                </div>
+              </Link>
+            );
+          })}
+        </div>
+      )}
+    </SectionBand>
   );
 }
