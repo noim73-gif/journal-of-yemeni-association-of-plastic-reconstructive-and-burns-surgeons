@@ -1,69 +1,65 @@
 
-# Phase 3.1 — Submission Wizard with Draft Auto-Save
+# Phase 4 — Homepage Density & Visual Polish
 
-Convert the single long submission form into a 5-step wizard with progress tracking, per-step validation, COPE declarations, and dual-tier auto-save (localStorage instantly, database every ~8s and on step change).
+Transform the homepage from a sparse 3-section landing into a rich, editorial journal homepage that competes visually with NEJM, The Lancet, and JAMA. Focus is presentation-only — no schema changes, no new business logic beyond read-side queries.
 
-## Wizard structure
+## Current state (why it scores 6.5/10)
+
+Homepage today = `Hero` → single `FeaturedSection` rail → `RecentIssues` → `QuickLinks`. Loading states are blank, backgrounds are uniform, there is no social-proof strip, no "Most Read", no "Editor's Pick", no indexer wall, and issue covers are placeholder-only. First-time visitors cannot gauge scientific weight or freshness at a glance.
+
+## What ships in Phase 4
 
 ```text
-[1] Authors & Title  →  [2] Files  →  [3] Metadata  →  [4] Cover Letter & Declarations  →  [5] Review & Submit
+Hero
+ ↓
+Impact Strip           (NEW — 4 KPIs: articles, authors, countries, avg. review days)
+ ↓
+Featured Section       (existing — add skeleton loader)
+ ↓
+Editor's Pick          (NEW — single large card, curated by is_main_featured fallback)
+ ↓
+Most Read (30 days)    (NEW — 3-column grid, ordered by view_count desc, alt bg)
+ ↓
+Recent Issues          (existing — add issue-cover thumbnails + skeleton)
+ ↓
+Indexed In             (NEW — logo wall: Crossref, DOAJ, Google Scholar, ROAD, WorldCat)
+ ↓
+QuickLinks             (existing — alt background)
 ```
 
-| Step | Fields | Required to advance |
-|---|---|---|
-| 1. Authors & Title | `title`, `authors` (multi-row: name, affiliation, email, ORCID, corresponding flag) | Title + ≥1 author with name |
-| 2. Files | manuscript file, supplementary file (optional), file-type & size validation | Manuscript present |
-| 3. Metadata | `category`, `keywords`, `abstract` (with live word count, max 300) | Category + abstract |
-| 4. Cover Letter & Declarations | `cover_letter` + COPE checkboxes: conflict-of-interest, ethics approval, patient consent, authorship contributions, not-published-elsewhere | All 5 declarations checked |
-| 5. Review & Submit | Read-only summary of all fields + final Submit button | — |
+Alternating section backgrounds (`bg-background` ↔ `bg-secondary/30`) create vertical rhythm so the page reads as distinct editorial bands instead of one flat scroll.
 
-Header shows a `<Stepper>` (1·2·3·4·5) with completed checkmarks; clicking a previously visited step jumps back.
-
-## Auto-save behavior
-
-- **localStorage** (`yjprbs:submission-draft:<userId>`) — debounced 800ms on any field change. Survives reload/closed tab.
-- **Database** — `submissions` row with `status='draft'`. Written:
-  - First write when user enters Step 2 (so we have an ID for file uploads)
-  - Debounced 8s during editing
-  - Immediately on step change and on `beforeunload`
-- **Resume**: on mount, fetch latest `status='draft'` row for user; if newer than localStorage, hydrate from DB, else from localStorage.
-- **"Draft saved Xs ago"** indicator next to the stepper.
-- **Discard draft** button on Step 1.
-
-## Final submit
-
-- Sets `status='pending'`, writes `metadata.declarations = {...}` and `metadata.authors = [...]` (structured authors array), clears localStorage key, fires existing `send-submission-notification`.
-
-## Files to add / change
+## New / changed files
 
 | File | Change |
 |---|---|
-| `src/pages/Submit.tsx` | Replace body with `<SubmissionWizard />` shell + auth/sign-in guard |
-| `src/components/submit/SubmissionWizard.tsx` | NEW — orchestrator: state, autosave hooks, stepper, footer nav (Back / Save & Exit / Continue / Submit) |
-| `src/components/submit/Stepper.tsx` | NEW — visual stepper with completed/active/locked states |
-| `src/components/submit/StepAuthors.tsx` | NEW — title + dynamic authors array (add/remove rows, ORCID + corresponding) |
-| `src/components/submit/StepFiles.tsx` | NEW — reuses current dropzone UI, adds per-file validation messages |
-| `src/components/submit/StepMetadata.tsx` | NEW — category, keywords (chip input), abstract with word counter |
-| `src/components/submit/StepDeclarations.tsx` | NEW — cover letter + COPE checkboxes |
-| `src/components/submit/StepReview.tsx` | NEW — read-only summary cards |
-| `src/hooks/useSubmissionDraft.tsx` | NEW — manages localStorage + DB draft, debounce, resume, `saveNow()`, `discard()` |
-| `src/hooks/useSubmissions.tsx` | Add `saveDraft(input, draftId?)` (insert/update with `status='draft'`) and `submitDraft(draftId, input)` (update with `status='pending'`) |
+| `src/components/home/ImpactStrip.tsx` | NEW — 4 stat tiles with count-up animation. Numbers pulled from a single Supabase RPC-less query batch (articles count, distinct authors from `articles.authors`, hard-coded country count, avg review days from `submissions` timestamps). Skeleton on load. |
+| `src/components/home/EditorsPick.tsx` | NEW — one hero-sized card: cover image left, title + abstract snippet + author + category badge right. Query: latest `is_main_featured=true` article, fallback to newest featured. |
+| `src/components/home/MostRead.tsx` | NEW — 3-column card grid (1-col mobile). Query: top 3 articles by `view_count` in last 30 days (or all-time if column missing). "Trending" flame icon on rank #1. |
+| `src/components/home/IndexedIn.tsx` | NEW — grayscale SVG/text logo wall of indexing bodies: Crossref, DOAJ, Google Scholar, ROAD, WorldCat, ORCID. Hover → color. Links open in new tab. |
+| `src/components/home/SectionBand.tsx` | NEW — wrapper that applies alternating background + consistent vertical padding + optional eyebrow heading (small caps serif label above the H2). Replaces ad-hoc `<section>` markup across new components. |
+| `src/components/skeletons/ArticleCardSkeleton.tsx` | NEW — shimmer skeleton matching FeaturedArticle card shape. |
+| `src/components/skeletons/IssueCardSkeleton.tsx` | NEW — shimmer skeleton matching IssueCard shape. |
+| `src/components/FeaturedSection.tsx` | Wrap in `SectionBand`, render 3 `ArticleCardSkeleton` while `loading`. |
+| `src/components/RecentIssues.tsx` | Wrap in `SectionBand` (alt bg), render skeletons while loading. Add cover thumbnail slot: use `issue.cover_image_url` if present, else programmatic gradient tile with volume/issue number in serif type. |
+| `src/pages/Index.tsx` | New section order (see diagram above). Add JSON-LD `WebSite` + `SearchAction` block for site-wide search box in Google results. |
+| `src/index.css` | Add `@keyframes shimmer` + `.animate-shimmer` utility for skeleton loaders. Add `--gradient-cover-1..4` tokens for programmatic issue covers. |
 
-## Database migration (one migration)
+## Data queries (read-only, no schema changes)
 
-- Update RLS policy `Users can update pending submissions` → `Users can update own draft or pending submissions` so `status IN ('draft','pending')` is updatable by author. (UPDATE-only; no schema columns added — declarations and structured authors live in existing `metadata jsonb`.)
-- Add index `idx_submissions_user_draft` on `(user_id, status, updated_at desc)` to speed draft lookup.
+- `MostRead`: `select id,title,slug,authors,category,cover_image_url,view_count from articles where published_at is not null order by view_count desc nulls last limit 3`. If `view_count` column doesn't exist, fall back to newest 3 by `published_at`.
+- `EditorsPick`: `select ... from articles where is_main_featured = true order by published_at desc limit 1`.
+- `ImpactStrip`: parallel `head:true, count:'exact'` queries on `articles`, `profiles`, and a `submissions` derived stat.
+- All three wrapped in `useQuery` with 5-min `staleTime` (already global default).
 
-## Out of scope (later phases)
+## Design tokens used
 
-- Admin/reviewer dashboard reskin (Phase 3.2)
-- Notifications center (Phase 3.3)
-- Multi-file figure uploads as separate rows (current single supplementary file kept)
+Existing navy `--primary` + coral `--accent`. No new color tokens. `Playfair Display` for section eyebrows and stat numbers, `Source Sans 3` for body — already loaded.
 
-## Technical notes
+## Out of scope (deferred to later phases)
 
-- Author rows stored as React state array; serialized to `metadata.authors` JSON; legacy `authors` text column kept as `"Name1; Name2; ..."` for backward compatibility with article rendering.
-- Word count uses `text.trim().split(/\s+/).filter(Boolean).length`.
-- Debounce via a small `useDebouncedCallback` inline (no new dep).
-- Validation per step prevents `Continue` button enablement; failed validation shows inline field errors.
-- Mobile: stepper collapses to "Step 2 of 5 · Files" with progress bar.
+- CrossRef "cited-by" API integration (Phase 6)
+- Framer-motion page transitions (Phase 4.2)
+- Dark-mode audit of new components (verified visually only, no separate audit pass)
+- Real ORCID/Crossref badges (Phase 6)
+- Issue cover uploads UI in admin (Phase 4.2) — covers use `cover_image_url` if already set, else programmatic gradient tile

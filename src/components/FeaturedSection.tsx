@@ -1,14 +1,14 @@
 import { FeaturedArticle } from "./FeaturedArticle";
 import { usePublishedArticles } from "@/hooks/useArticles";
-import { Skeleton } from "@/components/ui/skeleton";
 import { logger } from "@/lib/logger";
+import { SectionBand } from "./home/SectionBand";
+import { ArticleCardSkeleton } from "./skeletons/ArticleCardSkeleton";
 
 // No fallback articles — show empty state when database is empty
 
 export function FeaturedSection() {
   const { articles, loading, error } = usePublishedArticles();
 
-  // Get featured articles from database
   const featuredFromDb = articles.filter(a => a.is_featured || a.is_main_featured);
   const displayArticles = featuredFromDb.map(article => ({
     id: article.id,
@@ -21,71 +21,60 @@ export function FeaturedSection() {
   }));
 
   if (!loading && displayArticles.length === 0) {
-    return null; // Hide section when no featured articles exist
+    return null;
   }
 
   const mainArticle = displayArticles.find(a => a.isMain) || displayArticles[0];
-  const otherArticles = displayArticles.filter(a => a.id !== mainArticle.id).slice(0, 3);
+  const otherArticles = mainArticle
+    ? displayArticles.filter(a => a.id !== mainArticle.id).slice(0, 3)
+    : [];
 
   if (loading) {
     return (
-       <section id="articles" className="py-12 md:py-16 bg-muted/30">
-        <div className="container mx-auto px-4">
-          <div className="mb-10">
-            <Skeleton className="h-10 w-64 mb-2" />
-            <Skeleton className="h-5 w-96" />
-          </div>
-          <Skeleton className="h-80 w-full rounded-xl mb-6" />
+      <SectionBand
+        id="articles"
+        eyebrow="Featured Research"
+        title="Groundbreaking studies"
+        description="Peer-reviewed work shaping the future of plastic surgery."
+      >
+        <div className="space-y-6">
+          <ArticleCardSkeleton large />
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            <Skeleton className="h-64 rounded-xl" />
-            <Skeleton className="h-64 rounded-xl" />
-            <Skeleton className="h-64 rounded-xl" />
+            <ArticleCardSkeleton />
+            <ArticleCardSkeleton />
+            <ArticleCardSkeleton />
           </div>
         </div>
-      </section>
+      </SectionBand>
     );
   }
 
-  // Show fallback content on error instead of blocking UI
   if (error && featuredFromDb.length === 0) {
     logger.error("Failed to load articles, showing fallback content:", error);
   }
 
   return (
-    <section id="articles" className="py-12 md:py-16 bg-muted/30">
-      <div className="container mx-auto px-4">
-        <div className="flex items-end justify-between mb-10">
-          <div>
-            <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground mb-2">
-              Featured Research
-            </h2>
-            <p className="text-muted-foreground">
-              Groundbreaking studies shaping the future of plastic surgery
-            </p>
-          </div>
-          <a href="/articles" className="hidden md:block text-primary font-medium hover:underline">
-            View All Articles →
-          </a>
-        </div>
-
-        <div className="grid gap-6 lg:gap-8">
-          {/* Main featured article */}
-          <FeaturedArticle {...mainArticle} isMain />
-
-          {/* Other articles grid */}
-          {otherArticles.length > 0 && (
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {otherArticles.map((article) => (
-                <FeaturedArticle key={article.id} {...article} isMain={false} />
-              ))}
-            </div>
-          )}
-        </div>
-
-        <a href="/articles" className="mt-8 block md:hidden text-center text-primary font-medium hover:underline">
-          View All Articles →
+    <SectionBand
+      id="articles"
+      eyebrow="Featured Research"
+      title="Groundbreaking studies"
+      description="Peer-reviewed work shaping the future of plastic surgery."
+      action={
+        <a href="/articles" className="text-primary font-medium hover:underline whitespace-nowrap">
+          View all articles →
         </a>
+      }
+    >
+      <div className="grid gap-6 lg:gap-8">
+        {mainArticle && <FeaturedArticle {...mainArticle} isMain />}
+        {otherArticles.length > 0 && (
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {otherArticles.map((article) => (
+              <FeaturedArticle key={article.id} {...article} isMain={false} />
+            ))}
+          </div>
+        )}
       </div>
-    </section>
+    </SectionBand>
   );
 }

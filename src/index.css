@@ -161,4 +161,26 @@ All colors MUST be HSL.
   .shadow-elegant-lg {
     box-shadow: var(--shadow-elegant-lg);
   }
+
+  .animate-shimmer {
+    position: relative;
+    overflow: hidden;
+    background-color: hsl(var(--muted));
+  }
+  .animate-shimmer::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      hsl(var(--foreground) / 0.06),
+      transparent
+    );
+    animation: shimmer 1.6s infinite;
+  }
+  @keyframes shimmer {
+    100% { transform: translateX(100%); }
+  }
+  .animate-shimmer::after { transform: translateX(-100%); }
 }
