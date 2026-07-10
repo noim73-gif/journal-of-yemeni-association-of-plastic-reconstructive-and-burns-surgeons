@@ -51,9 +51,7 @@ export function ArticleMetrics({ articleId, viewCount }: ArticleMetricsProps) {
             <div className="font-serif text-xl font-semibold text-foreground leading-tight tabular-nums">
               {value === null ? "—" : value.toLocaleString()}
             </div>
-            <div className="text-[11px] uppercase tracking-wider text-muted-foreground">
-              {label}
-            </div>
+            <div className="text-overline">{label}</div>
           </div>
         </div>
       ))}

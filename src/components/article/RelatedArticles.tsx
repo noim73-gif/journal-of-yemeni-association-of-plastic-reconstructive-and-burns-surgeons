@@ -110,8 +110,8 @@ function Section({
   return (
     <section>
       <div className="mb-5">
-        <h3 className="font-serif text-xl md:text-2xl font-bold text-foreground">{title}</h3>
-        <p className="text-sm text-muted-foreground mt-1">{subtitle}</p>
+        <h3 className="text-h3 text-foreground">{title}</h3>
+        <p className="text-body-sm mt-1">{subtitle}</p>
       </div>
       <div className="grid sm:grid-cols-2 gap-4">
         {articles.map((a) => (
@@ -134,13 +134,13 @@ function Section({
               )}
             </div>
             <div className="min-w-0 flex-1">
-              <h4 className="font-serif font-semibold text-sm text-foreground line-clamp-2 group-hover:text-primary transition-colors">
+              <h4 className="font-serif font-semibold text-base leading-snug text-foreground line-clamp-2 group-hover:text-primary transition-colors">
                 {a.title}
               </h4>
               {a.authors && (
-                <p className="text-xs text-muted-foreground line-clamp-1 mt-1">{a.authors}</p>
+                <p className="text-caption line-clamp-1 mt-1">{a.authors}</p>
               )}
-              <div className="flex items-center gap-3 text-[11px] text-muted-foreground mt-2">
+              <div className="flex items-center gap-3 text-caption mt-2">
                 {a.published_at && (
                   <span className="inline-flex items-center gap-1">
                     <Calendar className="h-3 w-3" />

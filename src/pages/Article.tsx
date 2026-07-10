@@ -73,12 +73,12 @@ function AcademicSection({
   const processed = transform ? transform(content) : content;
   return (
     <section id={id} className="mb-10 scroll-mt-24">
-      <h2 className="font-serif text-xl md:text-2xl font-bold text-foreground mb-4 pb-2 border-b border-border">
+      <h2 className="text-h3 text-foreground mb-4 pb-2 border-b border-border">
         {numbering && <span className="text-muted-foreground mr-2">{numbering}</span>}
         {title}
       </h2>
       <div
-        className="prose prose-lg max-w-none prose-headings:font-serif prose-headings:text-foreground prose-p:text-foreground prose-p:leading-relaxed prose-a:text-primary prose-blockquote:border-primary prose-blockquote:text-muted-foreground prose-li:text-foreground"
+        className="prose prose-lg max-w-none prose-headings:font-serif prose-headings:text-foreground prose-p:text-foreground prose-p:leading-relaxed prose-p:text-base prose-a:text-primary prose-blockquote:border-primary prose-blockquote:text-muted-foreground prose-li:text-foreground"
         dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(processed, SANITIZE_OPTIONS) }}
       />
     </section>
@@ -126,14 +126,14 @@ function TableOfContents({ article }: { article: Article }) {
 
   return (
     <nav className="hidden lg:block sticky top-24 space-y-1">
-      <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3 flex items-center gap-1.5">
+      <h3 className="text-overline mb-3 flex items-center gap-1.5">
         <List className="h-3.5 w-3.5" /> Table of Contents
       </h3>
       {availableSections.map((item) => (
         <a
           key={item.id}
           href={`#${item.id}`}
-          className={`block text-sm py-1 px-2 rounded transition-colors ${
+          className={`block text-sm font-sans py-1 px-2 rounded transition-colors ${
             activeId === item.id
               ? "text-primary font-medium bg-primary/5"
               : "text-muted-foreground hover:text-foreground"
@@ -370,8 +370,8 @@ export default function ArticlePage() {
         <Header />
         <main className="flex-1 flex items-center justify-center">
           <div className="text-center max-w-md mx-auto px-4">
-            <h1 className="text-2xl font-serif font-bold mb-4">{error || "Article not found"}</h1>
-            <p className="text-muted-foreground mb-6">The article you're looking for may have been removed or doesn't exist.</p>
+            <h1 className="text-h1 mb-4">{error || "Article not found"}</h1>
+            <p className="text-body-sm mb-6">The article you're looking for may have been removed or doesn't exist.</p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Link to="/articles"><Button><ArrowLeft className="mr-2 h-4 w-4" />Browse Articles</Button></Link>
               <Link to="/"><Button variant="outline">Back to Home</Button></Link>
@@ -403,8 +403,8 @@ export default function ArticlePage() {
             </Link>
             <div className={article.image_url ? "text-white" : ""}>
               {article.category && <Badge variant="featured" className="mb-4">{article.category}</Badge>}
-              <h1 className="font-serif text-3xl md:text-4xl lg:text-5xl font-bold max-w-4xl mb-6">{article.title}</h1>
-              <div className="flex flex-wrap items-center gap-4 text-sm opacity-80 mb-4">
+              <h1 className="text-h1 max-w-4xl mb-6">{article.title}</h1>
+              <div className="flex flex-wrap items-center gap-4 text-meta !text-current opacity-80 mb-4">
                 {article.authors && (
                   <ArticleAuthors authors={article.authors} variant="hero" />
                 )}
@@ -415,13 +415,13 @@ export default function ArticlePage() {
                   <div className="flex items-center gap-2"><BookOpen className="h-4 w-4" /><span>Vol. {article.volume}, Issue {article.issue}</span></div>
                 )}
                 {article.article_number && (
-                  <span className="text-xs opacity-70">Article #{article.article_number}</span>
+                  <span className="text-caption !text-current opacity-70">Article #{article.article_number}</span>
                 )}
                 {article.pages && (
-                  <span className="text-xs opacity-70">Pages: {article.pages}</span>
+                  <span className="text-caption !text-current opacity-70">Pages: {article.pages}</span>
                 )}
                 {article.view_count > 0 && (
-                  <div className="flex items-center gap-1 text-xs opacity-70">
+                  <div className="text-caption !text-current opacity-70 flex items-center gap-1">
                     <Eye className="h-3.5 w-3.5" />
                     <span>{article.view_count.toLocaleString()} views</span>
                   </div>
@@ -453,7 +453,7 @@ export default function ArticlePage() {
 
               {/* Article Timeline */}
               {(article.received_at || article.accepted_at || article.published_at) && (
-                <div className="mt-3 flex flex-wrap gap-x-6 gap-y-1 text-xs opacity-70">
+                <div className="mt-3 flex flex-wrap gap-x-6 gap-y-1 text-caption !text-current opacity-70">
                   {article.received_at && (
                     <span>Received: {format(new Date(article.received_at), "MMMM d, yyyy")}</span>
                   )}
@@ -534,8 +534,8 @@ export default function ArticlePage() {
                 <div className="space-y-2">
                   {article.abstract && (
                     <section id="abstract" className="mb-10 bg-muted/50 rounded-lg p-6 border border-border scroll-mt-24">
-                      <h2 className="font-serif text-xl md:text-2xl font-bold text-foreground mb-4">Abstract</h2>
-                      <p className="text-muted-foreground leading-relaxed whitespace-pre-line">{article.abstract}</p>
+                      <h2 className="text-h3 text-foreground mb-4">Abstract</h2>
+                      <p className="text-body whitespace-pre-line">{article.abstract}</p>
                     </section>
                   )}
                   <AcademicSection id="introduction" title="Introduction" content={article.introduction || ""} numbering="1." />
@@ -554,8 +554,8 @@ export default function ArticlePage() {
                 <>
                   {article.abstract && (
                     <div className="mb-8">
-                      <h2 className="font-serif text-xl font-semibold mb-3">Abstract</h2>
-                      <p className="text-muted-foreground leading-relaxed">{article.abstract}</p>
+                      <h2 className="text-h3 mb-3">Abstract</h2>
+                      <p className="text-body">{article.abstract}</p>
                     </div>
                   )}
                   {article.content && (

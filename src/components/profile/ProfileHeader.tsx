@@ -99,11 +99,11 @@ export function ProfileHeader({ profile, userRoles, onAvatarUpload, isOwnProfile
         {/* Info */}
         <div className="flex-1 space-y-3">
           <div>
-            <h1 className="text-2xl md:text-3xl font-serif font-bold">
+            <h1 className="text-h1 !text-primary-foreground">
               {profile?.full_name || "Complete Your Profile"}
             </h1>
             {profile?.bio && (
-              <p className="mt-2 text-primary-foreground/80 max-w-2xl line-clamp-2">
+              <p className="mt-2 text-body-sm !text-primary-foreground/80 max-w-2xl line-clamp-2">
                 {profile.bio}
               </p>
             )}
@@ -140,16 +140,16 @@ export function ProfileHeader({ profile, userRoles, onAvatarUpload, isOwnProfile
 
           {/* Location */}
           {(profile?.city || profile?.country) && (
-            <p className="text-sm text-primary-foreground/70">
+            <p className="text-meta !text-primary-foreground/70">
               📍 {[profile.city, profile.country].filter(Boolean).join(", ")}
             </p>
           )}
         </div>
 
         {/* Member Since */}
-        <div className="text-right text-sm text-primary-foreground/70">
-          <p>Member since</p>
-          <p className="font-medium text-primary-foreground">
+        <div className="text-right">
+          <p className="text-overline !text-primary-foreground/70">Member since</p>
+          <p className="text-meta font-medium !text-primary-foreground">
             {profile?.created_at
               ? new Date(profile.created_at).toLocaleDateString("en-US", {
                   month: "long",
