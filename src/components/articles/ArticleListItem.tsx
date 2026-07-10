@@ -73,25 +73,25 @@ export function ArticleListItem({ article, viewMode }: ArticleListItemProps) {
           {/* Title as link */}
           <Link
             to={`/article/${article.id}`}
-            className="font-serif text-base lg:text-lg font-semibold text-foreground hover:text-primary transition-colors"
+            className="text-h4 text-foreground hover:text-primary transition-colors"
           >
             {article.title}
           </Link>
 
           {/* Category badge */}
           {article.category && (
-            <Badge variant="secondary" className="w-fit text-[10px] uppercase tracking-wider font-semibold">
+            <Badge variant="secondary" className="w-fit text-overline !text-secondary-foreground">
               {article.category}
             </Badge>
           )}
 
           {/* Authors */}
           {article.authors && (
-            <p className="text-sm text-muted-foreground">{article.authors}</p>
+            <p className="text-meta italic">{article.authors}</p>
           )}
 
           {/* Meta row: DOI, pages, views */}
-          <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
+          <div className="flex flex-wrap items-center gap-3 text-caption">
             {article.doi && (
               <span className="font-mono text-primary">
                 DOI: {article.doi}
@@ -191,48 +191,46 @@ export function ArticleListItem({ article, viewMode }: ArticleListItemProps) {
           <div className="flex-1 p-6">
             <div className="flex flex-wrap items-center gap-3 mb-3">
               {article.doi && (
-                <span className="text-xs font-mono text-primary bg-primary/10 px-2 py-1 rounded">
+                <span className="text-caption font-mono !text-primary bg-primary/10 px-2 py-1 rounded">
                   DOI: {article.doi}
                 </span>
               )}
               {article.category && (
                 <div className="flex items-center gap-1">
                   <Tag className="h-3 w-3 text-accent" />
-                  <span className="text-xs font-medium text-accent uppercase tracking-wide">
-                    {article.category}
-                  </span>
+                  <span className="text-overline !text-accent">{article.category}</span>
                 </div>
               )}
               {article.volume && article.issue && (
-                <span className="text-xs text-muted-foreground">
+                <span className="text-caption">
                   Vol. {article.volume}, Issue {article.issue}
                 </span>
               )}
               {article.pages && (
-                <span className="text-xs text-muted-foreground">
+                <span className="text-caption">
                   pp. {article.pages}
                 </span>
               )}
             </div>
 
-            <h3 className="font-serif text-lg lg:text-xl font-semibold text-foreground mb-2 group-hover:text-primary transition-colors">
+            <h3 className="text-h4 text-foreground mb-2 group-hover:text-primary transition-colors">
               {article.title}
             </h3>
 
             {article.authors && (
-              <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
+              <div className="flex items-center gap-2 text-meta italic mb-3">
                 <User className="h-3 w-3 flex-shrink-0" />
                 <span>{article.authors}</span>
               </div>
             )}
 
             {article.abstract && !showAbstract && (
-              <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
+              <p className="text-body-sm line-clamp-2 mb-3">
                 {article.abstract}
               </p>
             )}
 
-            <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
+            <div className="flex flex-wrap items-center gap-3 text-caption">
               {article.published_at && (
                 <span className="flex items-center gap-1">
                   <Calendar className="h-3 w-3" />

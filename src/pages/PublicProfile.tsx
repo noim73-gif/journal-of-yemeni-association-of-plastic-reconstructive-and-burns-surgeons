@@ -155,8 +155,8 @@ export default function PublicProfile() {
           <Card className="text-center py-16">
             <CardContent>
               <User className="h-16 w-16 mx-auto mb-4 text-muted-foreground opacity-50" />
-              <h1 className="text-2xl font-serif font-bold mb-2">Profile Not Found</h1>
-              <p className="text-muted-foreground mb-6">
+              <h1 className="text-h1 mb-2">Profile Not Found</h1>
+              <p className="text-body-sm mb-6">
                 The profile you're looking for doesn't exist or is not public.
               </p>
               <Button asChild>
@@ -196,17 +196,17 @@ export default function PublicProfile() {
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex-1 pb-2">
-                  <h1 className="text-2xl font-serif font-bold">{profile?.full_name}</h1>
-                  <p className="text-muted-foreground">@{profile?.username}</p>
+                  <h1 className="text-h1">{profile?.full_name}</h1>
+                  <p className="text-meta">@{profile?.username}</p>
                 </div>
               </div>
               
               {profile?.bio && (
-                <p className="mt-4 text-muted-foreground">{profile.bio}</p>
+                <p className="mt-4 text-body-sm">{profile.bio}</p>
               )}
 
               {(profile?.city || profile?.country) && (
-                <div className="flex items-center gap-2 mt-3 text-sm text-muted-foreground">
+                <div className="flex items-center gap-2 mt-3 text-meta">
                   <MapPin className="h-4 w-4" />
                   <span>
                     {[profile?.city, profile?.country].filter(Boolean).join(", ")}
@@ -224,7 +224,7 @@ export default function PublicProfile() {
                   <div className="p-2 bg-primary/10 rounded-lg">
                     <Stethoscope className="h-5 w-5 text-primary" />
                   </div>
-                  <CardTitle className="font-serif">Professional Profile</CardTitle>
+                  <CardTitle className="text-h4">Professional Profile</CardTitle>
                 </div>
               </CardHeader>
               <CardContent className="pt-6">
@@ -233,8 +233,8 @@ export default function PublicProfile() {
                     <div className="flex items-start gap-3">
                       <Stethoscope className="h-5 w-5 text-muted-foreground mt-0.5" />
                       <div>
-                        <p className="text-sm text-muted-foreground">Specialty</p>
-                        <p className="font-medium">{doctorProfile.specialty}</p>
+                        <p className="text-overline">Specialty</p>
+                        <p className="text-body font-medium">{doctorProfile.specialty}</p>
                       </div>
                     </div>
                   )}
@@ -243,8 +243,8 @@ export default function PublicProfile() {
                     <div className="flex items-start gap-3">
                       <GraduationCap className="h-5 w-5 text-muted-foreground mt-0.5" />
                       <div>
-                        <p className="text-sm text-muted-foreground">Academic Degree</p>
-                        <p className="font-medium">{doctorProfile.academic_degree}</p>
+                        <p className="text-overline">Academic Degree</p>
+                        <p className="text-body font-medium">{doctorProfile.academic_degree}</p>
                       </div>
                     </div>
                   )}
@@ -253,8 +253,8 @@ export default function PublicProfile() {
                     <div className="flex items-start gap-3">
                       <GraduationCap className="h-5 w-5 text-muted-foreground mt-0.5" />
                       <div>
-                        <p className="text-sm text-muted-foreground">University</p>
-                        <p className="font-medium">{doctorProfile.university}</p>
+                        <p className="text-overline">University</p>
+                        <p className="text-body font-medium">{doctorProfile.university}</p>
                       </div>
                     </div>
                   )}
@@ -263,8 +263,8 @@ export default function PublicProfile() {
                     <div className="flex items-start gap-3">
                       <Building2 className="h-5 w-5 text-muted-foreground mt-0.5" />
                       <div>
-                        <p className="text-sm text-muted-foreground">Workplace</p>
-                        <p className="font-medium">{doctorProfile.hospital}</p>
+                        <p className="text-overline">Workplace</p>
+                        <p className="text-body font-medium">{doctorProfile.hospital}</p>
                       </div>
                     </div>
                   )}
@@ -273,8 +273,8 @@ export default function PublicProfile() {
                     <div className="flex items-start gap-3">
                       <Award className="h-5 w-5 text-muted-foreground mt-0.5" />
                       <div>
-                        <p className="text-sm text-muted-foreground">Experience</p>
-                        <p className="font-medium">{doctorProfile.years_of_experience} years</p>
+                        <p className="text-overline">Experience</p>
+                        <p className="text-body font-medium">{doctorProfile.years_of_experience} years</p>
                       </div>
                     </div>
                   )}
@@ -283,8 +283,8 @@ export default function PublicProfile() {
                     <div className="flex items-start gap-3">
                       <Languages className="h-5 w-5 text-muted-foreground mt-0.5" />
                       <div>
-                        <p className="text-sm text-muted-foreground">Languages</p>
-                        <p className="font-medium">{doctorProfile.spoken_languages.join(", ")}</p>
+                        <p className="text-overline">Languages</p>
+                        <p className="text-body font-medium">{doctorProfile.spoken_languages.join(", ")}</p>
                       </div>
                     </div>
                   )}
@@ -295,7 +295,7 @@ export default function PublicProfile() {
                   <div className="mt-6 pt-6 border-t">
                     <div className="flex items-center gap-2 mb-3">
                       <Search className="h-5 w-5 text-muted-foreground" />
-                      <p className="font-medium">Research Interests</p>
+                      <p className="text-h5">Research Interests</p>
                     </div>
                     <div className="flex flex-wrap gap-2">
                       {doctorProfile.research_interests.map((interest) => (
@@ -310,7 +310,7 @@ export default function PublicProfile() {
                 {/* Academic IDs */}
                 {(doctorProfile.orcid_id || doctorProfile.google_scholar_id) && (
                   <div className="mt-6 pt-6 border-t">
-                    <p className="font-medium mb-3">Academic Profiles</p>
+                    <p className="text-h5 mb-3">Academic Profiles</p>
                     <div className="flex flex-wrap gap-3">
                       {doctorProfile.orcid_id && (
                         <Button variant="outline" size="sm" asChild>
@@ -351,7 +351,7 @@ export default function PublicProfile() {
                   <div className="p-2 bg-primary/10 rounded-lg">
                     <FileText className="h-5 w-5 text-primary" />
                   </div>
-                  <CardTitle className="font-serif">Published Articles</CardTitle>
+                  <CardTitle className="text-h4">Published Articles</CardTitle>
                   <Badge variant="secondary" className="ml-auto">
                     {articles.length} {articles.length === 1 ? "article" : "articles"}
                   </Badge>
@@ -374,15 +374,15 @@ export default function PublicProfile() {
                           />
                         )}
                         <div className="flex-1 min-w-0">
-                          <h3 className="font-medium group-hover:text-primary transition-colors line-clamp-2">
+                          <h3 className="text-h5 group-hover:text-primary transition-colors line-clamp-2">
                             {article.title}
                           </h3>
                           {article.abstract && (
-                            <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
+                            <p className="text-body-sm mt-1 line-clamp-2">
                               {article.abstract}
                             </p>
                           )}
-                          <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
+                          <div className="flex items-center gap-3 mt-2 text-caption">
                             {article.published_at && (
                               <span className="flex items-center gap-1">
                                 <Calendar className="h-3 w-3" />
@@ -390,7 +390,7 @@ export default function PublicProfile() {
                               </span>
                             )}
                             {article.category && (
-                              <Badge variant="outline" className="text-xs">
+                              <Badge variant="outline" className="text-caption">
                                 {article.category}
                               </Badge>
                             )}
@@ -404,7 +404,7 @@ export default function PublicProfile() {
                 {/* Pagination */}
                 {totalPages > 1 && (
                   <div className="flex items-center justify-between mt-6 pt-4 border-t">
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-meta">
                       Showing {(currentPage - 1) * ARTICLES_PER_PAGE + 1}-
                       {Math.min(currentPage * ARTICLES_PER_PAGE, articles.length)} of {articles.length}
                     </p>

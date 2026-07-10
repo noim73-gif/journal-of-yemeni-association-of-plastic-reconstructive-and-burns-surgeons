@@ -162,9 +162,7 @@ export function CitationExport({ article }: { article: CitationArticle }) {
       {selectedFormat && citation && (
         <div className="bg-muted/50 border border-border rounded-lg p-4">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-              {selectedFormat} Format
-            </span>
+            <span className="text-overline">{selectedFormat} Format</span>
             <div className="flex gap-1">
               <Button variant="ghost" size="sm" onClick={handleCopy} className="h-7 px-2">
                 <Copy className="h-3.5 w-3.5 mr-1" />
@@ -176,7 +174,7 @@ export function CitationExport({ article }: { article: CitationArticle }) {
               </Button>
             </div>
           </div>
-          <p className="text-sm text-foreground font-mono whitespace-pre-wrap break-words leading-relaxed">
+          <p className="text-sm font-mono text-foreground whitespace-pre-wrap break-words leading-relaxed">
             {citation}
           </p>
         </div>

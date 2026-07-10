@@ -36,8 +36,8 @@ export function ArticleAuthors({ authors, variant = "inline" }: ArticleAuthorsPr
               key={i}
               className={
                 isHero
-                  ? "text-sm font-medium"
-                  : "text-sm text-foreground inline-flex items-center gap-1"
+                  ? "text-meta !text-current font-medium"
+                  : "text-meta !text-foreground inline-flex items-center gap-1"
               }
             >
               <span>{name}</span>

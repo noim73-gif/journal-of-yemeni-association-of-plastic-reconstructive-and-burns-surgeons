@@ -40,7 +40,7 @@ export function ArticleComments({ articleId }: ArticleCommentsProps) {
     <div className="space-y-6">
       <div className="flex items-center gap-2">
         <MessageSquare className="h-5 w-5 text-primary" />
-        <h3 className="font-serif text-xl font-semibold">
+        <h3 className="text-h4">
           Comments ({comments.length})
         </h3>
       </div>
@@ -67,7 +67,7 @@ export function ArticleComments({ articleId }: ArticleCommentsProps) {
         </form>
       ) : (
         <div className="bg-muted/50 rounded-lg p-4 text-center">
-          <p className="text-muted-foreground">
+          <p className="text-body-sm">
             <a href="/auth" className="text-primary hover:underline">
               Sign in
             </a>{" "}
@@ -82,7 +82,7 @@ export function ArticleComments({ articleId }: ArticleCommentsProps) {
           <Loader2 className="h-6 w-6 animate-spin text-primary" />
         </div>
       ) : comments.length === 0 ? (
-        <div className="text-center py-8 text-muted-foreground">
+        <div className="text-center py-8 text-body-sm">
           No comments yet. Be the first to share your thoughts!
         </div>
       ) : (
@@ -101,16 +101,16 @@ export function ArticleComments({ articleId }: ArticleCommentsProps) {
                   </Avatar>
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
-                      <span className="font-medium text-sm">
+                      <span className="text-meta !text-foreground">
                         {comment.user_name}
                       </span>
-                      <span className="text-xs text-muted-foreground">
+                      <span className="text-caption">
                         {formatDistanceToNow(new Date(comment.created_at), {
                           addSuffix: true,
                         })}
                       </span>
                     </div>
-                    <p className="text-sm text-foreground whitespace-pre-wrap">
+                    <p className="text-body-sm !text-foreground whitespace-pre-wrap">
                       {comment.content}
                     </p>
                   </div>
