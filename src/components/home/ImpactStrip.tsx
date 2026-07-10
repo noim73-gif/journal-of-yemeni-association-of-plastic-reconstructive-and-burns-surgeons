@@ -41,13 +41,11 @@ function Stat({
   return (
     <div className="flex flex-col items-center text-center px-4 py-6">
       <Icon className="h-6 w-6 text-accent mb-3" strokeWidth={1.5} />
-      <div className="font-serif text-3xl md:text-4xl font-bold text-primary-foreground tabular-nums">
+      <div className="text-stat text-primary-foreground">
         {loading ? "—" : display.toLocaleString()}
         {!loading && suffix ? <span className="text-accent">{suffix}</span> : null}
       </div>
-      <div className="text-xs md:text-sm uppercase tracking-wider text-primary-foreground/70 mt-2">
-        {label}
-      </div>
+      <div className="text-overline !text-primary-foreground/70 mt-2">{label}</div>
     </div>
   );
 }

@@ -184,3 +184,95 @@ All colors MUST be HSL.
   }
   .animate-shimmer::after { transform: translateX(-100%); }
 }
+
+@layer components {
+  /* ============================================================
+     Typography scale — YJPRBS
+     Use these semantic classes across pages/cards for consistency.
+     Never hand-tune font-size/leading on ad-hoc components.
+     ============================================================ */
+
+  /* Display — hero titles only */
+  .text-display {
+    @apply font-serif font-bold tracking-tight leading-[1.05]
+           text-4xl sm:text-5xl lg:text-6xl;
+  }
+
+  /* Page titles (h1 on subpages) */
+  .text-h1 {
+    @apply font-serif font-bold tracking-tight leading-[1.1]
+           text-3xl sm:text-4xl lg:text-5xl;
+  }
+
+  /* Section titles */
+  .text-h2 {
+    @apply font-serif font-bold tracking-tight leading-tight
+           text-2xl sm:text-3xl md:text-4xl;
+  }
+
+  /* Featured/large card titles */
+  .text-h3 {
+    @apply font-serif font-semibold leading-snug
+           text-xl sm:text-2xl md:text-[1.6rem];
+  }
+
+  /* Standard card titles */
+  .text-h4 {
+    @apply font-serif font-semibold leading-snug
+           text-lg sm:text-xl;
+  }
+
+  /* Small headings / tile titles */
+  .text-h5 {
+    @apply font-sans font-semibold leading-snug
+           text-base sm:text-lg;
+  }
+
+  /* Eyebrow / kicker above titles */
+  .text-eyebrow {
+    @apply font-serif font-semibold uppercase tracking-[0.18em]
+           text-xs text-accent;
+  }
+
+  /* Overline — tiny label above meta groups */
+  .text-overline {
+    @apply font-sans font-semibold uppercase tracking-[0.2em]
+           text-[10px] text-muted-foreground;
+  }
+
+  /* Lead paragraph under hero/section titles */
+  .text-lead {
+    @apply font-sans font-normal leading-relaxed
+           text-lg sm:text-xl text-muted-foreground;
+  }
+
+  /* Default body */
+  .text-body {
+    @apply font-sans font-normal leading-relaxed
+           text-base text-foreground;
+  }
+
+  /* Secondary body / card descriptions */
+  .text-body-sm {
+    @apply font-sans font-normal leading-relaxed
+           text-sm text-muted-foreground;
+  }
+
+  /* Meta rows — authors, dates, counts */
+  .text-meta {
+    @apply font-sans font-medium leading-normal
+           text-sm text-muted-foreground;
+  }
+
+  /* Captions — figure captions, footnotes */
+  .text-caption {
+    @apply font-sans font-normal leading-normal
+           text-xs text-muted-foreground;
+  }
+
+  /* Stat numeral — big serif metric */
+  .text-stat {
+    @apply font-serif font-bold tabular-nums leading-none
+           text-3xl md:text-4xl;
+  }
+}

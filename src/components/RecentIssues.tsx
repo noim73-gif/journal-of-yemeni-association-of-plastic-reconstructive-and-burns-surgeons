@@ -155,20 +155,18 @@ export function RecentIssues() {
                   style={{ backgroundImage: gradients[idx % gradients.length] }}
                 >
                   <div>
-                    <div className="text-[10px] tracking-[0.2em] uppercase opacity-80 font-semibold">
-                      YJPRBS
+                    <div className="text-overline !text-primary-foreground/90">YJPRBS</div>
+                    <div className="text-caption !text-primary-foreground/75 mt-1">
+                      {formatDate(issue.latestDate)}
                     </div>
-                    <div className="text-xs opacity-75 mt-1">{formatDate(issue.latestDate)}</div>
                   </div>
                   <div>
                     <div className="font-serif text-4xl font-bold leading-none">Vol.{issue.volume}</div>
-                    <div className="font-serif text-xl mt-1">Issue {issue.issue}</div>
+                    <div className="font-serif text-xl mt-1 leading-tight">Issue {issue.issue}</div>
                     <div className="w-10 h-0.5 bg-accent mt-3 group-hover:w-16 transition-all duration-300" />
                   </div>
                 </div>
-                <div className="text-center text-sm text-muted-foreground">
-                  {issue.articleCount} Articles
-                </div>
+                <div className="text-meta text-center">{issue.articleCount} Articles</div>
               </Link>
             );
           })}

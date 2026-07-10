@@ -58,27 +58,25 @@ export function EditorsPick() {
               ) : (
                 <div className="absolute inset-0 bg-gradient-to-br from-primary to-primary-dark" />
               )}
-              <div className="absolute top-4 left-4 flex items-center gap-1.5 bg-accent text-accent-foreground px-3 py-1.5 rounded-full text-xs font-semibold shadow-elegant">
+              <div className="absolute top-4 left-4 flex items-center gap-1.5 bg-accent text-accent-foreground px-3 py-1.5 rounded-full text-caption !text-accent-foreground font-semibold shadow-elegant">
                 <Award className="h-3.5 w-3.5" strokeWidth={2.5} />
                 Editor's Pick
               </div>
             </div>
             <div className="md:col-span-3 p-6 md:p-10 flex flex-col justify-center">
               {article.category && (
-                <Badge variant="secondary" className="w-fit mb-4 uppercase tracking-wider text-[10px]">
+                <Badge variant="secondary" className="w-fit mb-4 text-overline !text-secondary-foreground">
                   {article.category}
                 </Badge>
               )}
-              <h3 className="font-serif text-2xl md:text-3xl font-semibold text-card-foreground mb-4 group-hover:text-primary transition-colors leading-tight">
+              <h3 className="text-h3 md:text-[2rem] text-card-foreground mb-4 group-hover:text-primary transition-colors">
                 {article.title}
               </h3>
               {article.authors && (
-                <p className="text-sm text-muted-foreground mb-4 italic">{article.authors}</p>
+                <p className="text-meta italic mb-4">{article.authors}</p>
               )}
               {article.abstract && (
-                <p className="text-muted-foreground line-clamp-3 mb-6 leading-relaxed">
-                  {article.abstract}
-                </p>
+                <p className="text-body-sm line-clamp-3 mb-6">{article.abstract}</p>
               )}
               <span className="inline-flex items-center text-primary font-semibold text-sm group/link">
                 Read the full study

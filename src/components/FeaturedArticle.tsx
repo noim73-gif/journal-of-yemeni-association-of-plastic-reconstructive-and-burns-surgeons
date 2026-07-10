@@ -35,12 +35,12 @@ export const FeaturedArticle = React.forwardRef<HTMLElement, FeaturedArticleProp
             </div>
             <div className="p-6 md:p-8 flex flex-col justify-center">
               <Badge variant="featured" className="w-fit mb-4">{category}</Badge>
-              <h3 className="font-serif text-xl md:text-2xl font-semibold text-card-foreground mb-3 group-hover:text-primary transition-colors">
+              <h3 className="text-h3 text-card-foreground mb-3 group-hover:text-primary transition-colors">
                 {title}
               </h3>
-              <p className="text-sm text-muted-foreground mb-3">{authors}</p>
-              <p className="text-muted-foreground line-clamp-3 mb-4">{abstract}</p>
-              <LinkWrapper to={articleLink} href={articleLink} className="inline-flex items-center text-primary font-medium text-sm group/link">
+              <p className="text-meta italic mb-3">{authors}</p>
+              <p className="text-body-sm line-clamp-3 mb-4">{abstract}</p>
+              <LinkWrapper to={articleLink} href={articleLink} className="inline-flex items-center text-primary font-semibold text-sm group/link">
                 Read Article
                 <ArrowRight className="ml-1 h-4 w-4 group-hover/link:translate-x-1 transition-transform" />
               </LinkWrapper>
@@ -64,11 +64,11 @@ export const FeaturedArticle = React.forwardRef<HTMLElement, FeaturedArticleProp
         </div>
         <div className="p-5">
           <Badge variant="secondary" className="mb-3">{category}</Badge>
-          <h3 className="font-serif text-lg font-semibold text-card-foreground mb-2 group-hover:text-primary transition-colors line-clamp-2">
+          <h3 className="text-h4 text-card-foreground mb-2 group-hover:text-primary transition-colors line-clamp-2">
             {title}
           </h3>
-          <p className="text-sm text-muted-foreground mb-3">{authors}</p>
-          <LinkWrapper to={articleLink} href={articleLink} className="inline-flex items-center text-primary font-medium text-sm group/link">
+          <p className="text-meta italic mb-3">{authors}</p>
+          <LinkWrapper to={articleLink} href={articleLink} className="inline-flex items-center text-primary font-semibold text-sm group/link">
             Read Article
             <ArrowRight className="ml-1 h-4 w-4 group-hover/link:translate-x-1 transition-transform" />
           </LinkWrapper>

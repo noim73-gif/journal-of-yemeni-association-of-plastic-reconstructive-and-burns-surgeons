@@ -36,17 +36,13 @@ export function SectionBand({
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-10">
             <div>
               {eyebrow && (
-                <div className="text-xs font-semibold tracking-[0.18em] uppercase text-accent mb-2 font-serif">
-                  {eyebrow}
-                </div>
+                <div className="text-eyebrow mb-2">{eyebrow}</div>
               )}
               {title && (
-                <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground mb-2">
-                  {title}
-                </h2>
+                <h2 className="text-h2 text-foreground mb-2">{title}</h2>
               )}
               {description && (
-                <p className="text-muted-foreground max-w-2xl">{description}</p>
+                <p className="text-body-sm max-w-2xl">{description}</p>
               )}
             </div>
             {action && <div className="shrink-0">{action}</div>}
