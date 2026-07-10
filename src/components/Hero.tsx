@@ -20,12 +20,12 @@ export function Hero() {
             </span>
           </div>
 
-          <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold text-primary-foreground mb-6 leading-tight">
+          <h1 className="text-display text-primary-foreground mb-6">
             Yemeni Journal of Plastic, Reconstructive and Burn Surgery
             <span className="block text-accent text-center font-thin">YJPRBS</span>
           </h1>
 
-          <p className="text-lg md:text-xl text-primary-foreground/80 mb-8 max-w-2xl leading-relaxed">
+          <p className="text-lead text-primary-foreground/80 mb-8 max-w-2xl">
             The official Journal of Yemeni Association of Plastic, Reconstructive and Burn Surgeons.
           </p>
 
@@ -42,16 +42,16 @@ export function Hero() {
           {/* Stats */}
           <div className="grid grid-cols-3 gap-4 sm:gap-8 mt-10 pt-8 border-t border-primary-foreground/20 max-w-lg">
             <div>
-              <div className="font-serif text-xl sm:text-2xl md:text-3xl font-bold text-accent leading-tight">eISSN</div>
-              <div className="text-xs sm:text-sm text-primary-foreground/70">3009-6316</div>
+              <div className="text-stat text-accent">eISSN</div>
+              <div className="text-caption text-primary-foreground/70">3009-6316</div>
             </div>
             <div>
-              <div className="font-serif text-xl sm:text-2xl md:text-3xl font-bold text-accent leading-tight">Double</div>
-              <div className="text-xs sm:text-sm text-primary-foreground/70">Blind Review</div>
+              <div className="text-stat text-accent">Double</div>
+              <div className="text-caption text-primary-foreground/70">Blind Review</div>
             </div>
             <div>
-              <div className="font-serif text-xl sm:text-2xl md:text-3xl font-bold text-accent leading-tight">OA</div>
-              <div className="text-xs sm:text-sm text-primary-foreground/70">Open Access</div>
+              <div className="text-stat text-accent">OA</div>
+              <div className="text-caption text-primary-foreground/70">Open Access</div>
             </div>
           </div>
         </div>

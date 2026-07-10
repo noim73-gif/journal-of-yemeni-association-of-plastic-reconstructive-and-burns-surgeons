@@ -17,14 +17,14 @@ export function IssueCard({ volume, issue, date, coverImage, articleCount }: Iss
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
         <div className="absolute bottom-0 left-0 right-0 p-4">
-          <div className="text-white/80 text-sm mb-1">{date}</div>
-          <div className="text-white font-serif font-semibold">
+          <div className="text-caption !text-white/80 mb-1">{date}</div>
+          <div className="text-white font-serif font-semibold text-base">
             Vol. {volume}, Issue {issue}
           </div>
         </div>
       </div>
       <div className="text-center">
-        <span className="text-sm text-muted-foreground">{articleCount} Articles</span>
+        <span className="text-meta">{articleCount} Articles</span>
       </div>
     </article>
   );

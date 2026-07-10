@@ -53,11 +53,11 @@ export function MostRead() {
                   ) : (
                     <div className="absolute inset-0 bg-gradient-to-br from-primary/80 to-accent/40" />
                   )}
-                  <div className="absolute top-3 left-3 bg-background/95 backdrop-blur text-primary font-serif text-lg font-bold w-9 h-9 rounded-full flex items-center justify-center shadow-soft">
+                  <div className="absolute top-3 left-3 bg-background/95 backdrop-blur text-primary font-serif text-lg font-bold tabular-nums w-9 h-9 rounded-full flex items-center justify-center shadow-soft">
                     {idx + 1}
                   </div>
                   {idx === 0 && (
-                    <div className="absolute top-3 right-3 flex items-center gap-1 bg-accent text-accent-foreground px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">
+                    <div className="absolute top-3 right-3 flex items-center gap-1 bg-accent text-accent-foreground px-2.5 py-1 rounded-full text-overline !text-accent-foreground">
                       <Flame className="h-3 w-3" />
                       Hot
                     </div>
@@ -65,14 +65,12 @@ export function MostRead() {
                 </div>
                 <div className="p-5 flex-1 flex flex-col">
                   {article.category && (
-                    <div className="text-[10px] font-semibold tracking-wider uppercase text-accent mb-2">
-                      {article.category}
-                    </div>
+                    <div className="text-overline !text-accent mb-2">{article.category}</div>
                   )}
-                  <h3 className="font-serif text-lg font-semibold text-card-foreground mb-3 group-hover:text-primary transition-colors line-clamp-3 flex-1">
+                  <h3 className="text-h4 text-card-foreground mb-3 group-hover:text-primary transition-colors line-clamp-3 flex-1">
                     {article.title}
                   </h3>
-                  <div className="flex items-center justify-between text-xs text-muted-foreground pt-3 border-t border-border/50">
+                  <div className="text-caption flex items-center justify-between pt-3 border-t border-border/50">
                     <span className="truncate mr-2 italic">{article.authors || "—"}</span>
                     <span className="flex items-center gap-1 shrink-0">
                       <Eye className="h-3 w-3" />

@@ -33,10 +33,9 @@ export const QuickLinks = forwardRef<HTMLElement>((_, ref) => {
     <section ref={ref} id="authors" className="py-12 md:py-16 bg-secondary">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground mb-2">
-            For Authors & Reviewers
-          </h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
+          <div className="text-eyebrow mb-2">Get Involved</div>
+          <h2 className="text-h2 text-foreground mb-3">For Authors & Reviewers</h2>
+          <p className="text-body-sm max-w-2xl mx-auto">
             Resources to help you contribute to advancing plastic surgery research
           </p>
         </div>
@@ -51,10 +50,10 @@ export const QuickLinks = forwardRef<HTMLElement>((_, ref) => {
               <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
                 <link.icon className="h-6 w-6 text-primary" />
               </div>
-              <h3 className="font-semibold text-card-foreground mb-2 group-hover:text-primary transition-colors">
+              <h3 className="text-h5 text-card-foreground mb-2 group-hover:text-primary transition-colors">
                 {link.title}
               </h3>
-              <p className="text-sm text-muted-foreground">{link.description}</p>
+              <p className="text-body-sm">{link.description}</p>
             </a>
           ))}
         </div>
