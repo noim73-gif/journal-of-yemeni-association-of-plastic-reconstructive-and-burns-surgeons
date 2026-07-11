@@ -36,7 +36,7 @@ export function Stepper({ steps, current, maxReached, onJump }: StepperProps) {
               >
                 <span
                   className={cn(
-                    "flex h-8 w-8 items-center justify-center rounded-full border text-sm font-semibold transition-colors",
+                    "flex h-8 w-8 items-center justify-center rounded-full border text-body-sm font-semibold transition-colors",
                     completed && "bg-primary text-primary-foreground border-primary",
                     active && "border-primary text-primary",
                     !completed && !active && "border-border text-muted-foreground"
@@ -46,7 +46,7 @@ export function Stepper({ steps, current, maxReached, onJump }: StepperProps) {
                 </span>
                 <span
                   className={cn(
-                    "text-sm font-medium",
+                    "text-body-sm font-medium",
                     active ? "text-foreground" : "text-muted-foreground"
                   )}
                 >
@@ -67,11 +67,11 @@ export function Stepper({ steps, current, maxReached, onJump }: StepperProps) {
       </ol>
       {/* Mobile */}
       <div className="md:hidden">
-        <div className="flex items-center justify-between text-sm">
-          <span className="font-medium text-foreground">
+        <div className="flex items-center justify-between text-body-sm">
+          <span className="text-overline text-foreground">
             Step {current} of {steps.length}
           </span>
-          <span className="text-muted-foreground">{currentStep?.label}</span>
+          <span className="text-meta">{currentStep?.label}</span>
         </div>
         <div className="mt-2 h-1.5 w-full rounded-full bg-muted overflow-hidden">
           <div

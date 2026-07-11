@@ -21,7 +21,7 @@ export default function Submit() {
         <main className="container mx-auto px-4 py-16">
           <Card className="max-w-2xl mx-auto">
             <CardHeader className="text-center">
-              <CardTitle className="font-serif text-2xl">Sign In Required</CardTitle>
+            <CardTitle className="text-h3">Sign In Required</CardTitle>
               <CardDescription>
                 Please sign in to submit a manuscript
               </CardDescription>
@@ -45,8 +45,8 @@ export default function Submit() {
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-3xl mx-auto">
           <div className="mb-6">
-            <h1 className="font-serif text-3xl font-bold mb-2">Submit Manuscript</h1>
-            <p className="text-muted-foreground">
+            <h1 className="text-h1 mb-2">Submit Manuscript</h1>
+            <p className="text-body-sm text-muted-foreground">
               A guided five-step submission. Your progress is saved automatically — you
               can pause and return at any time.
             </p>
