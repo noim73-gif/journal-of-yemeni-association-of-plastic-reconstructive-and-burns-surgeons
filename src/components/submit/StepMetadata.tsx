@@ -69,7 +69,7 @@ export function StepMetadata({ draft, update }: Props) {
           onChange={(e) => update({ keywords: e.target.value })}
           placeholder="e.g., breast reconstruction, microsurgery, outcomes"
         />
-        <p className="text-xs text-muted-foreground">
+        <p className="text-caption text-muted-foreground">
           Separate keywords with commas.
         </p>
       </div>
@@ -78,7 +78,7 @@ export function StepMetadata({ draft, update }: Props) {
         <div className="flex items-center justify-between">
           <Label htmlFor="abstract">Abstract *</Label>
           <span
-            className={`text-xs ${over ? "text-destructive" : "text-muted-foreground"}`}
+            className={`text-caption ${over ? "text-destructive" : "text-muted-foreground"}`}
           >
             {wc} / {ABSTRACT_MAX_WORDS} words
           </span>

@@ -73,8 +73,8 @@ export function StepDeclarations({ draft, update }: Props) {
                 className="mt-0.5"
               />
               <div className="space-y-0.5">
-                <div className="text-sm font-medium">{d.label}</div>
-                <div className="text-xs text-muted-foreground">{d.help}</div>
+                <div className="text-body-sm font-medium">{d.label}</div>
+                <div className="text-caption text-muted-foreground">{d.help}</div>
               </div>
             </label>
           ))}

@@ -9,10 +9,8 @@ interface Props {
 function Row({ label, value }: { label: string; value: React.ReactNode }) {
   return (
     <div className="grid grid-cols-3 gap-2 py-2 border-b last:border-b-0">
-      <div className="text-xs uppercase tracking-wide text-muted-foreground">
-        {label}
-      </div>
-      <div className="col-span-2 text-sm">{value}</div>
+      <div className="text-overline text-muted-foreground">{label}</div>
+      <div className="col-span-2 text-body-sm">{value}</div>
     </div>
   );
 }
@@ -24,7 +22,7 @@ export function StepReview({ draft }: Props) {
   return (
     <div className="space-y-6">
       <div className="rounded-lg border bg-card p-4">
-        <h3 className="font-serif text-lg mb-2">Title & authors</h3>
+        <h3 className="text-h4 mb-2">Title & authors</h3>
         <Row label="Title" value={draft.title || <em className="text-muted-foreground">Missing</em>} />
         <Row
           label="Authors"
@@ -52,7 +50,7 @@ export function StepReview({ draft }: Props) {
       </div>
 
       <div className="rounded-lg border bg-card p-4">
-        <h3 className="font-serif text-lg mb-2">Files</h3>
+        <h3 className="text-h4 mb-2">Files</h3>
         <Row
           label="Manuscript"
           value={
@@ -82,7 +80,7 @@ export function StepReview({ draft }: Props) {
       </div>
 
       <div className="rounded-lg border bg-card p-4">
-        <h3 className="font-serif text-lg mb-2">Metadata</h3>
+        <h3 className="text-h4 mb-2">Metadata</h3>
         <Row
           label="Category"
           value={draft.category || <em className="text-muted-foreground">Missing</em>}
@@ -101,7 +99,7 @@ export function StepReview({ draft }: Props) {
       </div>
 
       <div className="rounded-lg border bg-card p-4">
-        <h3 className="font-serif text-lg mb-2 flex items-center gap-2">
+        <h3 className="text-h4 mb-2 flex items-center gap-2">
           Declarations
           {allDeclared ? (
             <CheckCircle2 className="h-4 w-4 text-primary" />
@@ -109,7 +107,7 @@ export function StepReview({ draft }: Props) {
             <AlertCircle className="h-4 w-4 text-destructive" />
           )}
         </h3>
-        <p className="text-sm text-muted-foreground">
+        <p className="text-body-sm text-muted-foreground">
           {allDeclared
             ? "All required declarations have been confirmed."
             : "Please return to the Declarations step to confirm all items."}

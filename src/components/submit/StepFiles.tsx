@@ -70,7 +70,7 @@ export function StepFiles({ draft, update }: Props) {
       </Label>
       <div className="border-2 border-dashed rounded-lg p-6 text-center bg-card/50">
         {uploading ? (
-          <div className="flex items-center justify-center gap-2 text-muted-foreground">
+          <div className="flex items-center justify-center gap-2 text-body-sm text-muted-foreground">
             <Loader2 className="h-5 w-5 animate-spin" />
             Uploading...
           </div>
@@ -78,7 +78,7 @@ export function StepFiles({ draft, update }: Props) {
           <div className="flex items-center justify-center gap-2 flex-wrap">
             <CheckCircle2 className="h-5 w-5 text-primary" />
             <FileText className="h-4 w-4 text-muted-foreground" />
-            <span className="text-sm">{fileName}</span>
+            <span className="text-body-sm">{fileName}</span>
             <Button type="button" variant="ghost" size="sm" onClick={onClear}>
               Replace
             </Button>
@@ -87,10 +87,10 @@ export function StepFiles({ draft, update }: Props) {
           <label className="cursor-pointer">
             <div className="flex flex-col items-center gap-2">
               <Upload className="h-8 w-8 text-muted-foreground" />
-              <span className="text-sm text-muted-foreground">
+              <span className="text-body-sm text-muted-foreground">
                 Click to upload or drag and drop
               </span>
-              <span className="text-xs text-muted-foreground">{hint}</span>
+              <span className="text-caption text-muted-foreground">{hint}</span>
             </div>
             <input
               type="file"
@@ -129,7 +129,7 @@ export function StepFiles({ draft, update }: Props) {
         onFile={(f) => handleUpload(f, "supplementary")}
         onClear={() => update({ supplementary_url: null, supplementary_name: null })}
       />
-      <p className="text-xs text-muted-foreground">
+      <p className="text-caption text-muted-foreground">
         Files are uploaded immediately and attached to your draft. You can replace
         them at any time before submitting.
       </p>

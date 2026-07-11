@@ -187,7 +187,7 @@ export function SubmissionWizard() {
           maxReached={maxReached}
           onJump={(s) => goToStep(s)}
         />
-        <div className="flex items-center justify-between text-xs text-muted-foreground">
+        <div className="flex items-center justify-between text-caption text-muted-foreground">
           <span className="flex items-center gap-2">
             {saving ? (
               <>
@@ -205,15 +205,15 @@ export function SubmissionWizard() {
           {(draftId || lastSavedAt) && (
             <AlertDialog>
               <AlertDialogTrigger asChild>
-                <Button variant="ghost" size="sm" className="h-7 px-2 text-xs">
+                <Button variant="ghost" size="sm" className="h-7 px-2 text-caption">
                   <Trash2 className="h-3 w-3 mr-1" />
                   Discard draft
                 </Button>
               </AlertDialogTrigger>
               <AlertDialogContent>
                 <AlertDialogHeader>
-                  <AlertDialogTitle>Discard this draft?</AlertDialogTitle>
-                  <AlertDialogDescription>
+                  <AlertDialogTitle className="text-h4">Discard this draft?</AlertDialogTitle>
+                  <AlertDialogDescription className="text-body-sm">
                     Your draft and any uploaded files reference will be removed. This cannot be undone.
                   </AlertDialogDescription>
                 </AlertDialogHeader>

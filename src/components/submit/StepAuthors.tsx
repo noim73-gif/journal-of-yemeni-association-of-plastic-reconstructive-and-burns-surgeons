@@ -61,7 +61,7 @@ export function StepAuthors({ draft, update }: Props) {
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <Label>Authors *</Label>
-          <span className="text-xs text-muted-foreground">
+          <span className="text-caption text-muted-foreground">
             Order matters. Mark one as corresponding author.
           </span>
         </div>
@@ -72,7 +72,7 @@ export function StepAuthors({ draft, update }: Props) {
               className="rounded-lg border bg-card p-4 space-y-3"
             >
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 text-sm font-medium">
+                <div className="flex items-center gap-2 text-body-sm font-medium">
                   <GripVertical className="h-4 w-4 text-muted-foreground" />
                   Author {idx + 1}
                 </div>
@@ -89,7 +89,7 @@ export function StepAuthors({ draft, update }: Props) {
               </div>
               <div className="grid gap-3 md:grid-cols-2">
                 <div className="space-y-1">
-                  <Label className="text-xs">Full name *</Label>
+                  <Label className="text-overline">Full name *</Label>
                   <Input
                     value={author.name}
                     onChange={(e) => updateAuthor(idx, { name: e.target.value })}
@@ -97,7 +97,7 @@ export function StepAuthors({ draft, update }: Props) {
                   />
                 </div>
                 <div className="space-y-1">
-                  <Label className="text-xs">Affiliation</Label>
+                  <Label className="text-overline">Affiliation</Label>
                   <Input
                     value={author.affiliation ?? ""}
                     onChange={(e) => updateAuthor(idx, { affiliation: e.target.value })}
@@ -105,7 +105,7 @@ export function StepAuthors({ draft, update }: Props) {
                   />
                 </div>
                 <div className="space-y-1">
-                  <Label className="text-xs">Email</Label>
+                  <Label className="text-overline">Email</Label>
                   <Input
                     type="email"
                     value={author.email ?? ""}
@@ -114,7 +114,7 @@ export function StepAuthors({ draft, update }: Props) {
                   />
                 </div>
                 <div className="space-y-1">
-                  <Label className="text-xs">ORCID iD</Label>
+                  <Label className="text-overline">ORCID iD</Label>
                   <Input
                     value={author.orcid ?? ""}
                     onChange={(e) => updateAuthor(idx, { orcid: e.target.value })}
@@ -122,7 +122,7 @@ export function StepAuthors({ draft, update }: Props) {
                   />
                 </div>
               </div>
-              <label className="flex items-center gap-2 text-sm cursor-pointer">
+              <label className="flex items-center gap-2 text-body-sm cursor-pointer">
                 <Checkbox
                   checked={author.corresponding ?? false}
                   onCheckedChange={(v) => updateAuthor(idx, { corresponding: !!v })}
