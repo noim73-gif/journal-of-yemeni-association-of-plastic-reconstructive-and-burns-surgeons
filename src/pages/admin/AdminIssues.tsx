@@ -10,6 +10,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Plus, BookOpen, Trash2, Send, Edit, Loader2 } from "lucide-react";
+import { EditorialStatusBadge } from "@/components/EditorialStatusBadge";
 
 export default function AdminIssues() {
   const { issues, loading, createIssue, updateIssue, publishIssue, deleteIssue } = useJournalIssues();

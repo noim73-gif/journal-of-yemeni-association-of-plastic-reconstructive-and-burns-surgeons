@@ -374,21 +374,19 @@ export default function AdminReviews() {
             <div className="space-y-4 py-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-sm font-medium text-muted-foreground">Reviewer</label>
+                  <label className="text-overline">Reviewer</label>
                   <p className="font-medium">{selectedReview.reviewer_name}</p>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-muted-foreground">Status</label>
+                  <label className="text-overline">Status</label>
                   <div className="mt-1">
-                    <Badge variant="secondary" className={statusColors[selectedReview.status]}>
-                      {selectedReview.status.replace("_", " ")}
-                    </Badge>
+                    <EditorialStatusBadge status={selectedReview.status} size="md" />
                   </div>
                 </div>
               </div>
               {selectedReview.recommendation && (
                 <div>
-                  <label className="text-sm font-medium text-muted-foreground">Recommendation</label>
+                  <label className="text-overline">Recommendation</label>
                   <div className="mt-1">
                     <Badge variant="secondary" className={recommendationColors[selectedReview.recommendation]}>
                       {selectedReview.recommendation.replace("_", " ")}
@@ -398,7 +396,7 @@ export default function AdminReviews() {
               )}
               {selectedReview.feedback && (
                 <div>
-                  <label className="text-sm font-medium text-muted-foreground">Feedback to Author</label>
+                  <label className="text-overline">Feedback to Author</label>
                   <p className="mt-1 p-3 bg-muted rounded-lg text-sm whitespace-pre-wrap">
                     {selectedReview.feedback}
                   </p>
@@ -406,7 +404,7 @@ export default function AdminReviews() {
               )}
               {selectedReview.private_notes && (
                 <div>
-                  <label className="text-sm font-medium text-muted-foreground">Private Notes (Editor Only)</label>
+                  <label className="text-overline">Private Notes (Editor Only)</label>
                   <p className="mt-1 p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg text-sm whitespace-pre-wrap">
                     {selectedReview.private_notes}
                   </p>
@@ -414,7 +412,7 @@ export default function AdminReviews() {
               )}
               {selectedReview.completed_at && (
                 <div>
-                  <label className="text-sm font-medium text-muted-foreground">Completed</label>
+                  <label className="text-overline">Completed</label>
                   <p>{format(parseISO(selectedReview.completed_at), "MMMM d, yyyy 'at' h:mm a")}</p>
                 </div>
               )}
