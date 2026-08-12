@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Loader2, ArrowRight, FileText, Users, Eye, Pencil, Printer, BookOpen } from "lucide-react";
+import { DashboardHeader } from "@/components/DashboardHeader";
 
 const STAGES: { key: WorkflowStage; label: string; icon: React.ReactNode }[] = [
   { key: "submission", label: "Submission", icon: <FileText className="h-4 w-4" /> },
@@ -100,10 +101,11 @@ export default function AdminWorkflow() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold">Editorial Workflow</h1>
-        <p className="text-muted-foreground">OJS 5-stage editorial workflow: Submission → Review → Copyediting → Production → Publication</p>
-      </div>
+      <DashboardHeader
+        eyebrow="Workflow"
+        title="Editorial Workflow"
+        description="OJS 5-stage editorial workflow: Submission → Review → Copyediting → Production → Publication"
+      />
 
       {/* Summary cards */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4">

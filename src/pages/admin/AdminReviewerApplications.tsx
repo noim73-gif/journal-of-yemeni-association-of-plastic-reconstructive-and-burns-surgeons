@@ -52,12 +52,12 @@ export default function AdminReviewerApplications() {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col gap-4 border-b border-border pb-5 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="text-3xl font-serif font-bold text-foreground">
+          <h1 className="text-h1">
             Reviewer Applications
           </h1>
-          <p className="text-muted-foreground mt-1">
+          <p className="text-lead mt-2">
             Review and manage applications from researchers wanting to join the review panel
           </p>
         </div>
@@ -111,7 +111,7 @@ export default function AdminReviewerApplications() {
               <CardContent className="py-12 text-center">
                 <Users className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
                 <h3 className="text-lg font-medium mb-2">No applications found</h3>
-                <p className="text-muted-foreground">
+                <p className="text-lead mt-2">
                   {searchQuery
                     ? "Try adjusting your search query"
                     : "No reviewer applications yet"}

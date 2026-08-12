@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { Save, BookOpen, Globe, Hash } from "lucide-react";
+import { DashboardHeader } from "@/components/DashboardHeader";
 
 export default function AdminSettings() {
   const { toast } = useToast();
@@ -31,12 +32,11 @@ export default function AdminSettings() {
 
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="font-serif text-3xl font-bold mb-2">Journal Settings</h1>
-        <p className="text-muted-foreground">
-          Configure your journal's metadata for ISSN and Crossref submission
-        </p>
-      </div>
+      <DashboardHeader
+        eyebrow="Configuration"
+        title="Journal Settings"
+        description="Configure your journal's metadata for ISSN and Crossref submission"
+      />
 
       {/* Journal Information */}
       <div className="bg-card rounded-xl border border-border p-6">

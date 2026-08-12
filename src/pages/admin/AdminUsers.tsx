@@ -37,6 +37,7 @@ import {
 } from "@/components/ui/select";
 import { format, parseISO } from "date-fns";
 import {
+import { DashboardHeader } from "@/components/DashboardHeader";
   Loader2,
   Search,
   MoreHorizontal,
@@ -121,12 +122,11 @@ export default function AdminUsers() {
 
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="font-serif text-3xl font-bold mb-2">User Management</h1>
-        <p className="text-muted-foreground">
-          Manage users, assign roles, and configure reviewer accounts
-        </p>
-      </div>
+      <DashboardHeader
+        eyebrow="People"
+        title="User Management"
+        description="Manage users, assign roles, and configure reviewer accounts"
+      />
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">

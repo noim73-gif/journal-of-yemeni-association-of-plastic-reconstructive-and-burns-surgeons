@@ -145,10 +145,10 @@ export default function AdminReviews() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-4 border-b border-border pb-5 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="font-serif text-3xl font-bold mb-2">Peer Review Management</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-h1">Peer Review Management</h1>
+          <p className="text-lead mt-2">
             Assign reviewers and track single-blind peer review progress
           </p>
         </div>

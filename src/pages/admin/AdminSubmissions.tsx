@@ -33,6 +33,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Loader2, Eye, FileText, Download, UserPlus, Users, BookOpen } from "lucide-react";
 import { format } from "date-fns";
+import { DashboardHeader } from "@/components/DashboardHeader";
 
 const statusOptions = [
   { value: "pending", label: "Pending Review" },
@@ -176,12 +177,11 @@ export default function AdminSubmissions() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="font-serif text-3xl font-bold mb-2">Submissions</h1>
-        <p className="text-muted-foreground">
-          Manage manuscript submissions and assign reviewers
-        </p>
-      </div>
+      <DashboardHeader
+        eyebrow="Workflow"
+        title="Submissions"
+        description="Manage manuscript submissions and assign reviewers"
+      />
 
       <div className="rounded-md border">
         <Table>

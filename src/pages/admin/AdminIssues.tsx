@@ -67,10 +67,10 @@ export default function AdminIssues() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-4 border-b border-border pb-5 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Issue Management</h1>
-          <p className="text-muted-foreground">Manage journal volumes and issues (OJS-compliant)</p>
+          <h1 className="text-h1">Issue Management</h1>
+          <p className="text-lead mt-2">Manage journal volumes and issues (OJS-compliant)</p>
         </div>
         <Dialog open={dialogOpen} onOpenChange={(o) => { setDialogOpen(o); if (!o) resetForm(); }}>
           <DialogTrigger asChild>

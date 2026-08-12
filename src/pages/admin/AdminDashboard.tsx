@@ -5,6 +5,7 @@ import { FileText, CheckCircle, Clock, Star, Loader2, Users, Send, ClipboardChec
 import { format, subMonths, parseISO } from "date-fns";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
+import { DashboardHeader } from "@/components/DashboardHeader";
 
 export default function AdminDashboard() {
   const { articles, loading } = useArticles();
@@ -78,12 +79,11 @@ export default function AdminDashboard() {
 
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="font-serif text-3xl font-bold mb-2">Dashboard</h1>
-        <p className="text-muted-foreground">
-          Overview of your journal's performance and recent activity
-        </p>
-      </div>
+      <DashboardHeader
+        eyebrow="Editorial office"
+        title="Dashboard"
+        description="Overview of your journal's performance and recent activity"
+      />
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">

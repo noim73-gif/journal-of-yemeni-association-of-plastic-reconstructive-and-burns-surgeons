@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/chart";
 import { FileText, BookOpen, Layers, Award, Loader2 } from "lucide-react";
 import { parseISO, format } from "date-fns";
+import { DashboardHeader } from "@/components/DashboardHeader";
 
 const COLORS = [
   "hsl(215, 50%, 23%)",
@@ -90,12 +91,11 @@ export default function AdminAnalytics() {
 
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="font-serif text-3xl font-bold mb-2">Analytics</h1>
-        <p className="text-muted-foreground">
-          Detailed statistics and insights about your journal
-        </p>
-      </div>
+      <DashboardHeader
+        eyebrow="Reporting"
+        title="Analytics"
+        description="Detailed statistics and insights about your journal"
+      />
 
       {/* Overview Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
