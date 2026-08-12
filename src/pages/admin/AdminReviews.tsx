@@ -40,7 +40,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { format, parseISO } from "date-fns";
 import {
-import { EditorialStatusBadge } from "@/components/EditorialStatusBadge";
   Loader2,
   Search,
   Plus,
@@ -56,6 +55,7 @@ import { EditorialStatusBadge } from "@/components/EditorialStatusBadge";
   BarChart3,
   UserCheck,
 } from "lucide-react";
+import { EditorialStatusBadge } from "@/components/EditorialStatusBadge";
 
 const recommendationColors: Record<string, string> = {
   accept: "bg-[hsl(var(--status-success)/0.12)] text-[hsl(var(--status-success))]",
