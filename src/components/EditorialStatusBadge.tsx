@@ -34,6 +34,7 @@ const map: Record<string, { label: string; tone: Tone; icon: LucideIcon }> = {
   pending: { label: "Pending", tone: "warning", icon: Clock },
   pending_review: { label: "Pending Review", tone: "warning", icon: Clock },
   under_review: { label: "Under Review", tone: "info", icon: Eye },
+  in_progress: { label: "In Progress", tone: "info", icon: Eye },
   in_review: { label: "In Review", tone: "info", icon: Eye },
   revision_requested: { label: "Revision Requested", tone: "warning", icon: FileEdit },
   revisions_requested: { label: "Revisions Requested", tone: "warning", icon: FileEdit },
