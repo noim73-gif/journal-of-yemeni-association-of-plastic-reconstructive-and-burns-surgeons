@@ -10,6 +10,7 @@ import {
   ApplicationStatus,
 } from "@/hooks/useReviewerApplications";
 import { ReviewerApplicationCard } from "@/components/admin/ReviewerApplicationCard";
+import { EmptyState } from "@/components/EmptyState";
 
 const statusTabs: { value: ApplicationStatus | "all"; label: string }[] = [
   { value: "all", label: "All" },
