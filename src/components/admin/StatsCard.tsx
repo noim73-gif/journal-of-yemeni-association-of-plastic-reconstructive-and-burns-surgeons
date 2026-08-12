@@ -15,9 +15,9 @@ interface StatsCardProps {
 
 const variantStyles = {
   default: "bg-primary/10 text-primary",
-  success: "bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400",
-  warning: "bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400",
-  info: "bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400",
+  success: "bg-[hsl(var(--status-success)/0.12)] text-[hsl(var(--status-success))]",
+  warning: "bg-[hsl(var(--status-warning)/0.14)] text-[hsl(var(--status-warning))]",
+  info: "bg-[hsl(var(--status-info)/0.12)] text-[hsl(var(--status-info))]",
 };
 
 export function StatsCard({
@@ -32,16 +32,16 @@ export function StatsCard({
     <div className="bg-card p-6 rounded-xl border border-border shadow-soft hover:shadow-elegant transition-shadow">
       <div className="flex items-start justify-between">
         <div className="flex-1">
-          <p className="text-sm font-medium text-muted-foreground mb-1">{title}</p>
+          <p className="text-overline mb-1.5">{title}</p>
           <div className="flex items-baseline gap-2">
-            <p className="text-3xl font-bold tracking-tight">{value}</p>
+            <p className="text-stat">{value}</p>
             {trend && (
               <span
                 className={cn(
                   "text-xs font-medium px-1.5 py-0.5 rounded",
                   trend.isPositive
-                    ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
-                    : "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"
+                    ? "bg-[hsl(var(--status-success)/0.14)] text-[hsl(var(--status-success))]"
+                    : "bg-destructive/12 text-destructive"
                 )}
               >
                 {trend.isPositive ? "+" : ""}
@@ -50,7 +50,7 @@ export function StatsCard({
             )}
           </div>
           {description && (
-            <p className="text-xs text-muted-foreground mt-1">{description}</p>
+            <p className="text-caption mt-1.5">{description}</p>
           )}
         </div>
         <div className={cn("p-3 rounded-lg", variantStyles[variant])}>
