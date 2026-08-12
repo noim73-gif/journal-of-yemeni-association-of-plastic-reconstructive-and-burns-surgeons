@@ -145,8 +145,8 @@ export default function AdminIssues() {
                     <TableCell>
                       <EditorialStatusBadge status={issue.status} />
                       {issue.is_current && (
-                        <span className="ml-2 text-caption font-semibold text-accent">Current
-                      </Badge>
+                        <span className="ml-2 text-caption font-semibold text-accent">Current</span>
+                      )}
                     </TableCell>
                     <TableCell className="text-right space-x-1">
                       <Button variant="ghost" size="icon" onClick={() => openEdit(issue)}>
