@@ -141,12 +141,12 @@ export function ConvertToArticleDialog({
               </DialogDescription>
             </DialogHeader>
             <div className="space-y-4 py-4">
-              <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
-                <div className="flex items-center gap-2 text-green-700 dark:text-green-400 font-medium mb-2">
+              <div className="bg-[hsl(var(--status-success)/0.1)] border border-[hsl(var(--status-success)/0.3)] rounded-lg p-4">
+                <div className="flex items-center gap-2 text-[hsl(var(--status-success))] font-medium mb-2">
                   <CheckCircle2 className="h-5 w-5" />
                   Submission Accepted
                 </div>
-                <p className="text-sm text-green-600 dark:text-green-500">
+                <p className="text-sm text-[hsl(var(--status-success))]">
                   This submission has completed the review process and is ready to be converted.
                 </p>
               </div>

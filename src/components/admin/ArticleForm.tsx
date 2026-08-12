@@ -66,7 +66,7 @@ export function ArticleForm({ article, onSubmit, onCancel, isSubmitting }: Artic
     <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
       <div className="bg-card rounded-xl shadow-elegant max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between p-6 border-b border-border">
-          <h2 className="text-xl font-serif font-semibold">
+          <h2 className="text-h4">
             {article ? "Edit Article" : "New Article"}
           </h2>
           <Button variant="ghost" size="icon" onClick={onCancel}>
@@ -138,7 +138,7 @@ export function ArticleForm({ article, onSubmit, onCancel, isSubmitting }: Artic
 
           {/* Academic Sections */}
           <div className="space-y-6 border-t border-border pt-6">
-            <h3 className="font-serif text-lg font-semibold text-foreground">Article Sections</h3>
+            <h3 className="text-h4">Article Sections</h3>
 
             <div className="space-y-2">
               <Label htmlFor="abstract">Abstract</Label>

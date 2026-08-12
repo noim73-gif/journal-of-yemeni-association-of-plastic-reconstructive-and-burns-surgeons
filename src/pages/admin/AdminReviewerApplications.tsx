@@ -74,8 +74,8 @@ export default function AdminReviewerApplications() {
             onClick={() => setActiveTab(tab.value)}
           >
             <CardContent className="p-4">
-              <div className="text-2xl font-bold">{getStatusCount(tab.value)}</div>
-              <div className="text-sm text-muted-foreground">{tab.label}</div>
+              <div className="text-stat">{getStatusCount(tab.value)}</div>
+              <div className="text-overline mt-1">{tab.label}</div>
             </CardContent>
           </Card>
         ))}
@@ -107,17 +107,15 @@ export default function AdminReviewerApplications() {
 
         <TabsContent value={activeTab} className="mt-6">
           {!filteredApplications || filteredApplications.length === 0 ? (
-            <Card>
-              <CardContent className="py-12 text-center">
-                <Users className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                <h3 className="text-lg font-medium mb-2">No applications found</h3>
-                <p className="text-lead mt-2">
-                  {searchQuery
-                    ? "Try adjusting your search query"
-                    : "No reviewer applications yet"}
-                </p>
-              </CardContent>
-            </Card>
+            <EmptyState
+              icon={Users}
+              title="No applications found"
+              description={
+                searchQuery
+                  ? "Try adjusting your search query."
+                  : "Applications from researchers who want to join the review panel will appear here."
+              }
+            />
           ) : (
             <div className="space-y-4">
               {filteredApplications.map((application) => (

@@ -32,16 +32,16 @@ interface SubmissionReviewPanelProps {
 }
 
 const recommendationLabels: Record<string, { label: string; color: string }> = {
-  accept: { label: "Accept", color: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400" },
-  minor_revisions: { label: "Minor Revisions", color: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400" },
-  major_revisions: { label: "Major Revisions", color: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400" },
-  reject: { label: "Reject", color: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400" },
+  accept: { label: "Accept", color: "bg-[hsl(var(--status-success)/0.12)] text-[hsl(var(--status-success))]" },
+  minor_revisions: { label: "Minor Revisions", color: "bg-[hsl(var(--status-info)/0.12)] text-[hsl(var(--status-info))]" },
+  major_revisions: { label: "Major Revisions", color: "bg-[hsl(var(--status-warning)/0.14)] text-[hsl(var(--status-warning))]" },
+  reject: { label: "Reject", color: "bg-destructive/12 text-destructive" },
 };
 
 const statusIcons: Record<string, React.ReactNode> = {
-  pending: <Clock className="h-4 w-4 text-amber-500" />,
-  in_progress: <AlertCircle className="h-4 w-4 text-blue-500" />,
-  completed: <CheckCircle className="h-4 w-4 text-green-500" />,
+  pending: <Clock className="h-4 w-4 text-[hsl(var(--status-warning))]" />,
+  in_progress: <AlertCircle className="h-4 w-4 text-[hsl(var(--status-info))]" />,
+  completed: <CheckCircle className="h-4 w-4 text-[hsl(var(--status-success))]" />,
 };
 
 export function SubmissionReviewPanel({ submissionId }: SubmissionReviewPanelProps) {
@@ -106,7 +106,7 @@ export function SubmissionReviewPanel({ submissionId }: SubmissionReviewPanelPro
     return (
       <div className="space-y-2">
         <Label className="text-sm font-medium">Peer Reviews</Label>
-        <div className="text-sm text-muted-foreground bg-muted p-4 rounded-md text-center">
+        <div className="text-body-sm bg-muted p-4 rounded-md text-center">
           No reviewers assigned yet
         </div>
       </div>
@@ -120,7 +120,7 @@ export function SubmissionReviewPanel({ submissionId }: SubmissionReviewPanelPro
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <Label className="text-sm font-medium">Peer Reviews</Label>
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+        <div className="flex items-center gap-2 text-meta">
           <span>{completedReviews.length}/{reviews.length} completed</span>
         </div>
       </div>
@@ -141,7 +141,7 @@ export function SubmissionReviewPanel({ submissionId }: SubmissionReviewPanelPro
                 </Avatar>
                 <div>
                   <p className="font-medium text-sm">{review.reviewer_name}</p>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-caption">
                     Assigned: {format(parseISO(review.assigned_at), "MMM d, yyyy")}
                   </p>
                 </div>
@@ -151,10 +151,10 @@ export function SubmissionReviewPanel({ submissionId }: SubmissionReviewPanelPro
                 <Badge 
                   variant="secondary" 
                   className={review.status === "completed" 
-                    ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
+                    ? "bg-[hsl(var(--status-success)/0.12)] text-[hsl(var(--status-success))]"
                     : review.status === "in_progress"
-                    ? "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400"
-                    : "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400"
+                    ? "bg-[hsl(var(--status-info)/0.12)] text-[hsl(var(--status-info))]"
+                    : "bg-[hsl(var(--status-warning)/0.14)] text-[hsl(var(--status-warning))]"
                   }
                 >
                   {review.status.replace("_", " ")}
@@ -185,7 +185,7 @@ export function SubmissionReviewPanel({ submissionId }: SubmissionReviewPanelPro
                         <MessageSquare className="h-4 w-4 text-muted-foreground" />
                         <span className="text-sm font-medium">Feedback to Authors</span>
                       </div>
-                      <p className="text-sm text-muted-foreground bg-muted p-3 rounded-md whitespace-pre-wrap">
+                      <p className="text-body-sm bg-muted p-3 rounded-md whitespace-pre-wrap">
                         {review.feedback}
                       </p>
                     </div>
@@ -197,14 +197,14 @@ export function SubmissionReviewPanel({ submissionId }: SubmissionReviewPanelPro
                         <AlertCircle className="h-4 w-4 text-muted-foreground" />
                         <span className="text-sm font-medium">Private Notes (Editors Only)</span>
                       </div>
-                      <p className="text-sm text-muted-foreground bg-amber-50 dark:bg-amber-900/20 p-3 rounded-md whitespace-pre-wrap border border-amber-200 dark:border-amber-800">
+                      <p className="text-body-sm bg-[hsl(var(--status-warning)/0.1)] p-3 rounded-md whitespace-pre-wrap border border-[hsl(var(--status-warning)/0.3)]">
                         {review.private_notes}
                       </p>
                     </div>
                   )}
 
                   {review.completed_at && (
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-caption">
                       Completed: {format(parseISO(review.completed_at), "MMMM d, yyyy 'at' h:mm a")}
                     </p>
                   )}
