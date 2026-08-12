@@ -282,7 +282,7 @@ export function ConvertToArticleDialog({
 
         {step === "success" && (
           <div className="py-12 text-center">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-100 dark:bg-green-900/30 mb-4">
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[hsl(var(--status-success)/0.12)] mb-4">
               <CheckCircle2 className="h-8 w-8 text-green-600 dark:text-green-400" />
             </div>
             <h3 className="font-serif text-xl font-semibold mb-2">Article Created!</h3>
