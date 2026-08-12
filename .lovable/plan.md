@@ -1,65 +1,59 @@
+# Site-wide Design Review — and Phase 3: the Back Office
 
-# Phase 4 — Homepage Density & Visual Polish
+## Score: 8.4 / 10 (public site 9.0, signed-in surfaces 6.5)
 
-Transform the homepage from a sparse 3-section landing into a rich, editorial journal homepage that competes visually with NEJM, The Lancet, and JAMA. Focus is presentation-only — no schema changes, no new business logic beyond read-side queries.
+The public reading experience is now genuinely journal-grade: editorial band rhythm on the homepage, a real type scale, ORCID author chips, metrics, lightbox, related articles, DOI linkification, breadcrumbs and a mobile submit FAB. The gap has moved decisively behind the login wall.
 
-## Current state (why it scores 6.5/10)
+## What still drags the score down
 
-Homepage today = `Hero` → single `FeaturedSection` rail → `RecentIssues` → `QuickLinks`. Loading states are blank, backgrounds are uniform, there is no social-proof strip, no "Most Read", no "Editor's Pick", no indexer wall, and issue covers are placeholder-only. First-time visitors cannot gauge scientific weight or freshness at a glance.
+**1. The signed-in surfaces never got the design system.**
+`StatsCard` still hardcodes `bg-green-100 / text-blue-600 / bg-amber-100 / text-red-700` instead of the `--status-success / warning / info / neutral` tokens that already exist in `index.css`. Trend chips, status badges and dashboard tiles therefore drift from the navy/coral identity and look like a different product.
 
-## What ships in Phase 4
+**2. No type scale in admin, author dashboard, or reviewer dashboard.**
+The scale (`text-h1`–`h5`, `meta`, `caption`, `stat`, `overline`) is applied on public pages only. Admin pages and the two dashboards still use ad-hoc `text-3xl font-bold`, `text-sm text-muted-foreground`. Headings differ page to page.
 
-```text
-Hero
- ↓
-Impact Strip           (NEW — 4 KPIs: articles, authors, countries, avg. review days)
- ↓
-Featured Section       (existing — add skeleton loader)
- ↓
-Editor's Pick          (NEW — single large card, curated by is_main_featured fallback)
- ↓
-Most Read (30 days)    (NEW — 3-column grid, ordered by view_count desc, alt bg)
- ↓
-Recent Issues          (existing — add issue-cover thumbnails + skeleton)
- ↓
-Indexed In             (NEW — logo wall: Crossref, DOAJ, Google Scholar, ROAD, WorldCat)
- ↓
-QuickLinks             (existing — alt background)
-```
+**3. Status vocabulary is invented per file.**
+`pending / under_review / revision_requested / accepted / rejected` are mapped to shadcn badge variants locally in `Dashboard.tsx`, and again — differently — in AdminSubmissions, AdminReviews, ReviewerDashboard. `accepted` and `under_review` both render as `default` (navy), so an author cannot tell good news from neutral news at a glance. Editorial status is the single most meaning-dense element in an OJS system and it currently carries no consistent color meaning.
 
-Alternating section backgrounds (`bg-background` ↔ `bg-secondary/30`) create vertical rhythm so the page reads as distinct editorial bands instead of one flat scroll.
+**4. Dashboards have no page furniture.**
+Public pages get `PageHeader` + `Breadcrumbs`; `Dashboard`, `ReviewerDashboard` and every `/admin/*` page start cold with a bare heading. No empty-state design either — empty tabs show a bare sentence.
 
-## New / changed files
+**5. Remaining hardcoded colors.** `hover:bg-black/10` (AdminUsers), `text-white` in IssueCard/Article hero (acceptable over imagery but should be `text-primary-foreground`), ORCID `bg-[#A6CE39]` (brand color — legitimate, keep).
+
+**6. Loading states.** Public pages have shimmer skeletons; the dashboards still spin a centered `Loader2` for the whole page, which reads as "broken" on slow connections.
+
+---
+
+# Phase 3 — Back-office design parity
+
+Presentation-only. No schema, no query, no business-logic changes.
+
+## New shared pieces
+
+| File | Purpose |
+|---|---|
+| `src/components/EditorialStatusBadge.tsx` | NEW — single source of truth for every editorial status. Maps each status to a token-based color (`--status-success` accepted/published, `--status-info` under_review, `--status-warning` revision_requested/pending, `--destructive` rejected, `--status-neutral` draft/withdrawn) plus a human label and an optional icon. Replaces the local `getStatusBadge` helpers. |
+| `src/components/DashboardHeader.tsx` | NEW — signed-in equivalent of `PageHeader`: title in `text-h1`, optional `text-lead` subtitle, right-slot for primary action, thin bottom border. Used by Dashboard, ReviewerDashboard and admin pages. |
+| `src/components/EmptyState.tsx` | NEW — icon + `text-h4` title + `text-body-sm` copy + optional CTA. Used for empty saved-articles, history, submissions, reviews, issues. |
+| `src/components/skeletons/TableSkeleton.tsx` | NEW — shimmer rows matching table/list shape, replaces full-page spinners on dashboards. |
+
+## Changed files
 
 | File | Change |
 |---|---|
-| `src/components/home/ImpactStrip.tsx` | NEW — 4 stat tiles with count-up animation. Numbers pulled from a single Supabase RPC-less query batch (articles count, distinct authors from `articles.authors`, hard-coded country count, avg review days from `submissions` timestamps). Skeleton on load. |
-| `src/components/home/EditorsPick.tsx` | NEW — one hero-sized card: cover image left, title + abstract snippet + author + category badge right. Query: latest `is_main_featured=true` article, fallback to newest featured. |
-| `src/components/home/MostRead.tsx` | NEW — 3-column card grid (1-col mobile). Query: top 3 articles by `view_count` in last 30 days (or all-time if column missing). "Trending" flame icon on rank #1. |
-| `src/components/home/IndexedIn.tsx` | NEW — grayscale SVG/text logo wall of indexing bodies: Crossref, DOAJ, Google Scholar, ROAD, WorldCat, ORCID. Hover → color. Links open in new tab. |
-| `src/components/home/SectionBand.tsx` | NEW — wrapper that applies alternating background + consistent vertical padding + optional eyebrow heading (small caps serif label above the H2). Replaces ad-hoc `<section>` markup across new components. |
-| `src/components/skeletons/ArticleCardSkeleton.tsx` | NEW — shimmer skeleton matching FeaturedArticle card shape. |
-| `src/components/skeletons/IssueCardSkeleton.tsx` | NEW — shimmer skeleton matching IssueCard shape. |
-| `src/components/FeaturedSection.tsx` | Wrap in `SectionBand`, render 3 `ArticleCardSkeleton` while `loading`. |
-| `src/components/RecentIssues.tsx` | Wrap in `SectionBand` (alt bg), render skeletons while loading. Add cover thumbnail slot: use `issue.cover_image_url` if present, else programmatic gradient tile with volume/issue number in serif type. |
-| `src/pages/Index.tsx` | New section order (see diagram above). Add JSON-LD `WebSite` + `SearchAction` block for site-wide search box in Google results. |
-| `src/index.css` | Add `@keyframes shimmer` + `.animate-shimmer` utility for skeleton loaders. Add `--gradient-cover-1..4` tokens for programmatic issue covers. |
+| `src/components/admin/StatsCard.tsx` | Swap all green/amber/blue/red literals for `hsl(var(--status-*))` variants; value uses `text-stat`, title `text-overline`, description `text-caption`. |
+| `src/pages/Dashboard.tsx` | `DashboardHeader`, remove local `getStatusBadge` in favour of `EditorialStatusBadge`, type scale on tab content, `EmptyState` for the three empty tabs, `TableSkeleton` instead of the full-page spinner (keep the auth-gate spinner). |
+| `src/pages/ReviewerDashboard.tsx` | Same treatment: header, status badges, type scale, empty states, skeletons. Keep the existing urgency/deadline logic untouched. |
+| `src/pages/admin/AdminDashboard.tsx` | `DashboardHeader` + type scale on section headings and stat labels. |
+| `src/pages/admin/AdminSubmissions.tsx`, `AdminReviews.tsx`, `AdminArticles.tsx`, `AdminUsers.tsx`, `AdminIssues.tsx`, `AdminWorkflow.tsx`, `AdminReviewerApplications.tsx`, `AdminEditorialBoard.tsx`, `AdminAnalytics.tsx`, `AdminSettings.tsx` | `DashboardHeader` at the top, `EditorialStatusBadge` wherever a status is rendered, type-scale classes on headings/meta/captions, `EmptyState` for empty tables. |
+| `src/components/admin/ArticleTable.tsx`, `BoardMemberTable.tsx`, `ReviewProgressDashboard.tsx`, `ReviewerApplicationCard.tsx`, `SubmissionReviewPanel.tsx`, `ConvertToArticleDialog.tsx`, `AdminGalleyManager.tsx` | Type scale + shared status badge; no logic touched. |
+| `src/pages/admin/AdminUsers.tsx` | Replace `hover:bg-black/10` with `hover:bg-foreground/10`. |
+| `src/components/IssueCard.tsx`, `src/pages/Article.tsx` | `text-white` → `text-primary-foreground` on the image-overlay text so dark mode stays correct. |
+| `src/components/admin/AdminSidebar.tsx` | Active-item treatment via `--sidebar-*` tokens, `text-overline` group labels, tighter density. |
 
-## Data queries (read-only, no schema changes)
+## Out of scope (later phases)
 
-- `MostRead`: `select id,title,slug,authors,category,cover_image_url,view_count from articles where published_at is not null order by view_count desc nulls last limit 3`. If `view_count` column doesn't exist, fall back to newest 3 by `published_at`.
-- `EditorsPick`: `select ... from articles where is_main_featured = true order by published_at desc limit 1`.
-- `ImpactStrip`: parallel `head:true, count:'exact'` queries on `articles`, `profiles`, and a `submissions` derived stat.
-- All three wrapped in `useQuery` with 5-min `staleTime` (already global default).
-
-## Design tokens used
-
-Existing navy `--primary` + coral `--accent`. No new color tokens. `Playfair Display` for section eyebrows and stat numbers, `Source Sans 3` for body — already loaded.
-
-## Out of scope (deferred to later phases)
-
-- CrossRef "cited-by" API integration (Phase 6)
-- Framer-motion page transitions (Phase 4.2)
-- Dark-mode audit of new components (verified visually only, no separate audit pass)
-- Real ORCID/Crossref badges (Phase 6)
-- Issue cover uploads UI in admin (Phase 4.2) — covers use `cover_image_url` if already set, else programmatic gradient tile
+- Crossref deposit / ORCID login (Phase 6)
+- Framer-motion transitions
+- Any change to submission, review, or workflow business logic
+- New admin features (issue cover upload UI, bulk actions)
