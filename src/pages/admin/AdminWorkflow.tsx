@@ -10,6 +10,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Loader2, ArrowRight, FileText, Users, Eye, Pencil, Printer, BookOpen } from "lucide-react";
+import { DashboardHeader } from "@/components/DashboardHeader";
+import { EditorialStatusBadge } from "@/components/EditorialStatusBadge";
 
 const STAGES: { key: WorkflowStage; label: string; icon: React.ReactNode }[] = [
   { key: "submission", label: "Submission", icon: <FileText className="h-4 w-4" /> },
@@ -79,16 +81,7 @@ export default function AdminWorkflow() {
     setActionDialogOpen(true);
   };
 
-  const stageBadge = (stage: WorkflowStage) => {
-    const colors: Record<string, string> = {
-      submission: "outline",
-      review: "secondary",
-      copyediting: "default",
-      production: "default",
-      publication: "default",
-    };
-    return <Badge variant={colors[stage] as "outline" | "secondary" | "default"}>{stage}</Badge>;
-  };
+  const stageBadge = (stage: WorkflowStage) => <EditorialStatusBadge status={stage} />;
 
   if (loading) {
     return (
@@ -100,10 +93,11 @@ export default function AdminWorkflow() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold">Editorial Workflow</h1>
-        <p className="text-muted-foreground">OJS 5-stage editorial workflow: Submission → Review → Copyediting → Production → Publication</p>
-      </div>
+      <DashboardHeader
+        eyebrow="Workflow"
+        title="Editorial Workflow"
+        description="OJS 5-stage editorial workflow: Submission → Review → Copyediting → Production → Publication"
+      />
 
       {/* Summary cards */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
@@ -113,8 +107,8 @@ export default function AdminWorkflow() {
             <Card key={s.key} className="cursor-pointer hover:border-primary transition-colors" onClick={() => setActiveTab(s.key)}>
               <CardContent className="p-4 text-center">
                 <div className="flex justify-center mb-2">{s.icon}</div>
-                <p className="text-2xl font-bold">{count}</p>
-                <p className="text-xs text-muted-foreground">{s.label}</p>
+                <p className="text-stat">{count}</p>
+                <p className="text-overline mt-1">{s.label}</p>
               </CardContent>
             </Card>
           );

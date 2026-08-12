@@ -141,12 +141,12 @@ export function ConvertToArticleDialog({
               </DialogDescription>
             </DialogHeader>
             <div className="space-y-4 py-4">
-              <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
-                <div className="flex items-center gap-2 text-green-700 dark:text-green-400 font-medium mb-2">
+              <div className="bg-[hsl(var(--status-success)/0.1)] border border-[hsl(var(--status-success)/0.3)] rounded-lg p-4">
+                <div className="flex items-center gap-2 text-[hsl(var(--status-success))] font-medium mb-2">
                   <CheckCircle2 className="h-5 w-5" />
                   Submission Accepted
                 </div>
-                <p className="text-sm text-green-600 dark:text-green-500">
+                <p className="text-sm text-[hsl(var(--status-success))]">
                   This submission has completed the review process and is ready to be converted.
                 </p>
               </div>
@@ -282,7 +282,7 @@ export function ConvertToArticleDialog({
 
         {step === "success" && (
           <div className="py-12 text-center">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-100 dark:bg-green-900/30 mb-4">
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[hsl(var(--status-success)/0.12)] mb-4">
               <CheckCircle2 className="h-8 w-8 text-green-600 dark:text-green-400" />
             </div>
             <h3 className="font-serif text-xl font-semibold mb-2">Article Created!</h3>

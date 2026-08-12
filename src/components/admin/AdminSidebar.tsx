@@ -53,8 +53,8 @@ export function AdminSidebar() {
           </div>
           {!collapsed && (
             <div>
-              <h2 className="font-serif text-lg font-semibold">Admin Panel</h2>
-              <p className="text-xs text-muted-foreground">Journal Management</p>
+              <h2 className="text-h5 font-serif">Admin Panel</h2>
+              <p className="text-caption">Journal Management</p>
             </div>
           )}
         </div>
@@ -62,7 +62,7 @@ export function AdminSidebar() {
 
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Management</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-overline">Management</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {menuItems.map((item) => (
@@ -71,8 +71,8 @@ export function AdminSidebar() {
                     <NavLink
                       to={item.url}
                       end={item.url === "/admin"}
-                      className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-muted/50 transition-colors"
-                      activeClassName="bg-primary/10 text-primary font-medium"
+                      className="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-colors"
+                      activeClassName="bg-primary/10 text-primary font-semibold border-l-2 border-primary"
                     >
                       <item.icon className="h-4 w-4 shrink-0" />
                       {!collapsed && <span>{item.title}</span>}

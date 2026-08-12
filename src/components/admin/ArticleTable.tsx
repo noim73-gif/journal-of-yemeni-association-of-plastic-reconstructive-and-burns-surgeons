@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal, Pencil, Trash2, Eye, EyeOff, Star, FileText } from "lucide-react";
 import { format } from "date-fns";
+import { EditorialStatusBadge } from "@/components/EditorialStatusBadge";
 
 interface ArticleTableProps {
   articles: Article[];
@@ -80,11 +81,9 @@ export function ArticleTable({
                 </TableCell>
                 <TableCell>
                   {article.published_at ? (
-                    <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
-                      Published
-                    </Badge>
+                    <EditorialStatusBadge status="published" />
                   ) : (
-                    <Badge variant="outline">Draft</Badge>
+                    <EditorialStatusBadge status="draft" />
                   )}
                   {article.is_featured && (
                     <Badge variant="secondary" className="ml-2">

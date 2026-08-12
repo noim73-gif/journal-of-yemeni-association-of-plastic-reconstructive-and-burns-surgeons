@@ -43,13 +43,9 @@ import {
   Inbox,
 } from "lucide-react";
 import { toast } from "sonner";
-
-const statusColors: Record<string, string> = {
-  pending: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
-  in_progress: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
-  completed: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
-  declined: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
-};
+import { EditorialStatusBadge } from "@/components/EditorialStatusBadge";
+import { EmptyState } from "@/components/EmptyState";
+import { TableSkeleton } from "@/components/skeletons/TableSkeleton";
 
 export default function ReviewerDashboard() {
   const navigate = useNavigate();
@@ -187,10 +183,20 @@ export default function ReviewerDashboard() {
     setIsSubmitting(false);
   };
 
-  if (authLoading || roleLoading || articleReviewsLoading || submissionReviewsLoading) {
+  if (authLoading || roleLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (articleReviewsLoading || submissionReviewsLoading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <main className="container mx-auto px-4 py-10">
+          <TableSkeleton rows={5} />
+        </main>
       </div>
     );
   }
@@ -217,14 +223,14 @@ export default function ReviewerDashboard() {
               <ArrowLeft className="h-5 w-5" />
             </Button>
             <div>
-              <h1 className="font-serif text-xl font-bold">Reviewer Dashboard</h1>
-              <p className="text-sm text-muted-foreground">Single-blind peer review</p>
+              <h1 className="text-h4">Reviewer Dashboard</h1>
+              <p className="text-caption">Single-blind peer review</p>
             </div>
           </div>
-          <Badge variant="secondary" className="bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400">
-            <Eye className="h-3 w-3 mr-1" />
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-accent/30 bg-accent/10 px-2.5 py-1 text-xs font-semibold text-accent">
+            <Eye className="h-3 w-3" />
             Reviewer
-          </Badge>
+          </span>
         </div>
       </header>
 
@@ -232,11 +238,11 @@ export default function ReviewerDashboard() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           <Card>
             <CardHeader className="pb-2">
-              <CardDescription>Pending Reviews</CardDescription>
-              <CardTitle className="text-3xl">{totalPending}</CardTitle>
+              <CardDescription className="text-overline">Pending Reviews</CardDescription>
+              <CardTitle className="text-stat">{totalPending}</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <div className="flex items-center gap-2 text-meta">
                 <Clock className="h-4 w-4" />
                 Awaiting your feedback
               </div>
@@ -244,11 +250,11 @@ export default function ReviewerDashboard() {
           </Card>
           <Card>
             <CardHeader className="pb-2">
-              <CardDescription>Completed Reviews</CardDescription>
-              <CardTitle className="text-3xl">{totalCompleted}</CardTitle>
+              <CardDescription className="text-overline">Completed Reviews</CardDescription>
+              <CardTitle className="text-stat">{totalCompleted}</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <div className="flex items-center gap-2 text-meta">
                 <CheckCircle className="h-4 w-4" />
                 Reviews submitted
               </div>
@@ -256,11 +262,11 @@ export default function ReviewerDashboard() {
           </Card>
           <Card>
             <CardHeader className="pb-2">
-              <CardDescription>Total Assigned</CardDescription>
-              <CardTitle className="text-3xl">{totalAssigned}</CardTitle>
+              <CardDescription className="text-overline">Total Assigned</CardDescription>
+              <CardTitle className="text-stat">{totalAssigned}</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <div className="flex items-center gap-2 text-meta">
                 <FileText className="h-4 w-4" />
                 All time
               </div>
@@ -282,13 +288,13 @@ export default function ReviewerDashboard() {
 
           <TabsContent value="submissions" className="space-y-6">
             <div>
-              <h2 className="font-serif text-xl font-semibold mb-4">Pending Submission Reviews</h2>
+              <h2 className="text-h4 mb-4">Pending Submission Reviews</h2>
               {pendingSubmissionReviews.length === 0 ? (
-                <Card>
-                  <CardContent className="py-8 text-center text-muted-foreground">
-                    No pending submission reviews. Check back later!
-                  </CardContent>
-                </Card>
+                <EmptyState
+                  icon={Inbox}
+                  title="No pending submission reviews"
+                  description="When an editor assigns you a manuscript, it will appear here with its deadline."
+                />
               ) : (
                 <div className="grid gap-4">
                   {pendingSubmissionReviews.map((review) => (
@@ -296,20 +302,18 @@ export default function ReviewerDashboard() {
                       <CardHeader>
                         <div className="flex items-start justify-between">
                           <div>
-                            <CardTitle className="text-lg">{review.submission_title}</CardTitle>
+                            <CardTitle className="text-h4">{review.submission_title}</CardTitle>
                             <CardDescription className="mt-1">
                               {review.submission_abstract?.slice(0, 150)}
                               {(review.submission_abstract?.length || 0) > 150 ? "..." : ""}
                             </CardDescription>
                           </div>
-                          <Badge variant="secondary" className={statusColors[review.status]}>
-                            {review.status.replace("_", " ")}
-                          </Badge>
+                          <EditorialStatusBadge status={review.status} />
                         </div>
                       </CardHeader>
                       <CardContent>
                         <div className="flex items-center justify-between">
-                          <span className="text-sm text-muted-foreground">
+                          <span className="text-meta">
                             Assigned: {format(parseISO(review.assigned_at), "MMM d, yyyy")}
                           </span>
                           <div className="flex gap-2">
@@ -332,21 +336,19 @@ export default function ReviewerDashboard() {
 
             {completedSubmissionReviews.length > 0 && (
               <div>
-                <h2 className="font-serif text-xl font-semibold mb-4">Completed Submission Reviews</h2>
+                <h2 className="text-h4 mb-4">Completed Submission Reviews</h2>
                 <div className="grid gap-4">
                   {completedSubmissionReviews.map((review) => (
                     <Card key={review.id} className="opacity-75">
                       <CardHeader>
                         <div className="flex items-start justify-between">
                           <div>
-                            <CardTitle className="text-lg">{review.submission_title}</CardTitle>
+                            <CardTitle className="text-h4">{review.submission_title}</CardTitle>
                             <CardDescription>
                               Completed: {review.completed_at && format(parseISO(review.completed_at), "MMM d, yyyy")}
                             </CardDescription>
                           </div>
-                          <Badge variant="secondary" className={statusColors[review.status]}>
-                            {review.status}
-                          </Badge>
+                          <EditorialStatusBadge status={review.status} />
                         </div>
                       </CardHeader>
                     </Card>
@@ -358,13 +360,13 @@ export default function ReviewerDashboard() {
 
           <TabsContent value="articles" className="space-y-6">
             <div>
-              <h2 className="font-serif text-xl font-semibold mb-4">Pending Article Reviews</h2>
+              <h2 className="text-h4 mb-4">Pending Article Reviews</h2>
               {pendingArticleReviews.length === 0 ? (
-                <Card>
-                  <CardContent className="py-8 text-center text-muted-foreground">
-                    No pending article reviews. Check back later!
-                  </CardContent>
-                </Card>
+                <EmptyState
+                  icon={FileText}
+                  title="No pending article reviews"
+                  description="Article review assignments from the editorial office will be listed here."
+                />
               ) : (
                 <div className="grid gap-4">
                   {pendingArticleReviews.map((review) => (
@@ -372,20 +374,18 @@ export default function ReviewerDashboard() {
                       <CardHeader>
                         <div className="flex items-start justify-between">
                           <div>
-                            <CardTitle className="text-lg">{review.article_title}</CardTitle>
+                            <CardTitle className="text-h4">{review.article_title}</CardTitle>
                             <CardDescription className="mt-1">
                               {review.article_abstract?.slice(0, 150)}
                               {(review.article_abstract?.length || 0) > 150 ? "..." : ""}
                             </CardDescription>
                           </div>
-                          <Badge variant="secondary" className={statusColors[review.status]}>
-                            {review.status.replace("_", " ")}
-                          </Badge>
+                          <EditorialStatusBadge status={review.status} />
                         </div>
                       </CardHeader>
                       <CardContent>
                         <div className="flex items-center justify-between">
-                          <span className="text-sm text-muted-foreground">
+                          <span className="text-meta">
                             Assigned: {format(parseISO(review.assigned_at), "MMM d, yyyy")}
                           </span>
                           <div className="flex gap-2">
@@ -408,21 +408,19 @@ export default function ReviewerDashboard() {
 
             {completedArticleReviews.length > 0 && (
               <div>
-                <h2 className="font-serif text-xl font-semibold mb-4">Completed Article Reviews</h2>
+                <h2 className="text-h4 mb-4">Completed Article Reviews</h2>
                 <div className="grid gap-4">
                   {completedArticleReviews.map((review) => (
                     <Card key={review.id} className="opacity-75">
                       <CardHeader>
                         <div className="flex items-start justify-between">
                           <div>
-                            <CardTitle className="text-lg">{review.article_title}</CardTitle>
+                            <CardTitle className="text-h4">{review.article_title}</CardTitle>
                             <CardDescription>
                               Completed: {review.completed_at && format(parseISO(review.completed_at), "MMM d, yyyy")}
                             </CardDescription>
                           </div>
-                          <Badge variant="secondary" className={statusColors[review.status]}>
-                            {review.status}
-                          </Badge>
+                          <EditorialStatusBadge status={review.status} />
                         </div>
                       </CardHeader>
                     </Card>

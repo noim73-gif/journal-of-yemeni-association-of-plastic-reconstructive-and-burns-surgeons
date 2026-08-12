@@ -10,6 +10,7 @@ import {
   ApplicationStatus,
 } from "@/hooks/useReviewerApplications";
 import { ReviewerApplicationCard } from "@/components/admin/ReviewerApplicationCard";
+import { EmptyState } from "@/components/EmptyState";
 
 const statusTabs: { value: ApplicationStatus | "all"; label: string }[] = [
   { value: "all", label: "All" },
@@ -52,12 +53,12 @@ export default function AdminReviewerApplications() {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col gap-4 border-b border-border pb-5 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="text-3xl font-serif font-bold text-foreground">
+          <h1 className="text-h1">
             Reviewer Applications
           </h1>
-          <p className="text-muted-foreground mt-1">
+          <p className="text-lead mt-2">
             Review and manage applications from researchers wanting to join the review panel
           </p>
         </div>
@@ -74,8 +75,8 @@ export default function AdminReviewerApplications() {
             onClick={() => setActiveTab(tab.value)}
           >
             <CardContent className="p-4">
-              <div className="text-2xl font-bold">{getStatusCount(tab.value)}</div>
-              <div className="text-sm text-muted-foreground">{tab.label}</div>
+              <div className="text-stat">{getStatusCount(tab.value)}</div>
+              <div className="text-overline mt-1">{tab.label}</div>
             </CardContent>
           </Card>
         ))}
@@ -107,17 +108,15 @@ export default function AdminReviewerApplications() {
 
         <TabsContent value={activeTab} className="mt-6">
           {!filteredApplications || filteredApplications.length === 0 ? (
-            <Card>
-              <CardContent className="py-12 text-center">
-                <Users className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                <h3 className="text-lg font-medium mb-2">No applications found</h3>
-                <p className="text-muted-foreground">
-                  {searchQuery
-                    ? "Try adjusting your search query"
-                    : "No reviewer applications yet"}
-                </p>
-              </CardContent>
-            </Card>
+            <EmptyState
+              icon={Users}
+              title="No applications found"
+              description={
+                searchQuery
+                  ? "Try adjusting your search query."
+                  : "Applications from researchers who want to join the review panel will appear here."
+              }
+            />
           ) : (
             <div className="space-y-4">
               {filteredApplications.map((application) => (

@@ -33,11 +33,11 @@ import {
 } from "recharts";
 
 const statusColors: Record<string, string> = {
-  pending: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
-  under_review: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
-  accepted: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
-  rejected: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
-  revision_requested: "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400",
+  pending: "bg-[hsl(var(--status-warning)/0.14)] text-[hsl(var(--status-warning))]",
+  under_review: "bg-[hsl(var(--status-info)/0.12)] text-[hsl(var(--status-info))]",
+  accepted: "bg-[hsl(var(--status-success)/0.12)] text-[hsl(var(--status-success))]",
+  rejected: "bg-destructive/12 text-destructive",
+  revision_requested: "bg-accent/15 text-accent",
   submitted: "bg-slate-100 text-slate-700 dark:bg-slate-900/30 dark:text-slate-400",
 };
 
@@ -337,7 +337,7 @@ export function ReviewProgressDashboard() {
                           {item.submission.category && (
                             <Badge variant="outline">{item.submission.category}</Badge>
                           )}
-                          <span className="text-xs text-muted-foreground flex items-center gap-1">
+                          <span className="text-caption flex items-center gap-1">
                             <Calendar className="h-3 w-3" />
                             {format(parseISO(item.submission.created_at), "MMM d, yyyy")}
                           </span>
@@ -346,7 +346,7 @@ export function ReviewProgressDashboard() {
                       <div className="text-right shrink-0">
                         <p className="text-sm font-medium">{item.reviews.length} reviewers</p>
                         {item.avgReviewTime !== null && (
-                          <p className="text-xs text-muted-foreground">
+                          <p className="text-caption">
                             Avg: {item.avgReviewTime} days
                           </p>
                         )}
@@ -371,10 +371,10 @@ export function ReviewProgressDashboard() {
                             <span
                               className={`h-2 w-2 rounded-full ${
                                 review.status === "completed"
-                                  ? "bg-green-500"
+                                  ? "bg-[hsl(var(--status-success))]"
                                   : review.status === "in_progress"
-                                  ? "bg-blue-500"
-                                  : "bg-amber-500"
+                                  ? "bg-[hsl(var(--status-info))]"
+                                  : "bg-[hsl(var(--status-warning))]"
                               }`}
                             />
                             <span>{review.reviewer_name || "Reviewer"}</span>
@@ -402,12 +402,12 @@ export function ReviewProgressDashboard() {
         <Card>
           <CardContent className="pt-6">
             <div className="flex items-center gap-4">
-              <div className="p-3 bg-amber-100 dark:bg-amber-900/30 rounded-lg">
-                <Clock className="h-6 w-6 text-amber-600 dark:text-amber-400" />
+              <div className="p-3 rounded-lg bg-[hsl(var(--status-warning)/0.14)]">
+                <Clock className="h-6 w-6 text-[hsl(var(--status-warning))]" />
               </div>
               <div>
-                <p className="text-2xl font-bold">{stats.pendingReviews}</p>
-                <p className="text-sm text-muted-foreground">Pending Reviews</p>
+                <p className="text-stat">{stats.pendingReviews}</p>
+                <p className="text-overline mt-1">Pending Reviews</p>
               </div>
             </div>
           </CardContent>
@@ -415,12 +415,12 @@ export function ReviewProgressDashboard() {
         <Card>
           <CardContent className="pt-6">
             <div className="flex items-center gap-4">
-              <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
-                <FileText className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+              <div className="p-3 rounded-lg bg-[hsl(var(--status-info)/0.12)]">
+                <FileText className="h-6 w-6 text-[hsl(var(--status-info))]" />
               </div>
               <div>
-                <p className="text-2xl font-bold">{stats.inProgressReviews}</p>
-                <p className="text-sm text-muted-foreground">In Progress</p>
+                <p className="text-stat">{stats.inProgressReviews}</p>
+                <p className="text-overline mt-1">In Progress</p>
               </div>
             </div>
           </CardContent>
@@ -428,12 +428,12 @@ export function ReviewProgressDashboard() {
         <Card>
           <CardContent className="pt-6">
             <div className="flex items-center gap-4">
-              <div className="p-3 bg-green-100 dark:bg-green-900/30 rounded-lg">
-                <CheckCircle2 className="h-6 w-6 text-green-600 dark:text-green-400" />
+              <div className="p-3 rounded-lg bg-[hsl(var(--status-success)/0.12)]">
+                <CheckCircle2 className="h-6 w-6 text-[hsl(var(--status-success))]" />
               </div>
               <div>
-                <p className="text-2xl font-bold">{stats.completedReviews}</p>
-                <p className="text-sm text-muted-foreground">Completed Reviews</p>
+                <p className="text-stat">{stats.completedReviews}</p>
+                <p className="text-overline mt-1">Completed Reviews</p>
               </div>
             </div>
           </CardContent>

@@ -62,10 +62,10 @@ export default function AdminArticles() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-4 border-b border-border pb-5 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="font-serif text-3xl font-bold mb-2">Article Management</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-h1">Article Management</h1>
+          <p className="text-lead mt-2">
             Create, edit, and manage journal articles
           </p>
         </div>

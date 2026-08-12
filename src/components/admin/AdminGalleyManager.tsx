@@ -108,7 +108,7 @@ export function AdminGalleyManager({ articleId, articleTitle, open, onOpenChange
           <DialogTitle className="font-serif flex items-center gap-2">
             <FileText className="h-5 w-5" /> Manage Galleys
           </DialogTitle>
-          <p className="text-sm text-muted-foreground truncate">{articleTitle}</p>
+          <p className="text-body-sm truncate">{articleTitle}</p>
         </DialogHeader>
 
         <div className="space-y-6">
@@ -148,7 +148,7 @@ export function AdminGalleyManager({ articleId, articleTitle, open, onOpenChange
           {loading ? (
             <div className="flex justify-center py-4"><Loader2 className="h-6 w-6 animate-spin" /></div>
           ) : galleys.length === 0 ? (
-            <p className="text-sm text-muted-foreground text-center py-4">No galleys uploaded yet.</p>
+            <p className="text-body-sm text-center py-6">No galleys uploaded yet.</p>
           ) : (
             <Table>
               <TableHeader>

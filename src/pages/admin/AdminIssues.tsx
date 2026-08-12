@@ -10,6 +10,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Plus, BookOpen, Trash2, Send, Edit, Loader2 } from "lucide-react";
+import { EditorialStatusBadge } from "@/components/EditorialStatusBadge";
 
 export default function AdminIssues() {
   const { issues, loading, createIssue, updateIssue, publishIssue, deleteIssue } = useJournalIssues();
@@ -51,12 +52,6 @@ export default function AdminIssues() {
     setDialogOpen(true);
   };
 
-  const statusColor = (s: string) => {
-    if (s === "published") return "default";
-    if (s === "archived") return "secondary";
-    return "outline";
-  };
-
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -67,10 +62,10 @@ export default function AdminIssues() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-4 border-b border-border pb-5 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Issue Management</h1>
-          <p className="text-muted-foreground">Manage journal volumes and issues (OJS-compliant)</p>
+          <h1 className="text-h1">Issue Management</h1>
+          <p className="text-lead mt-2">Manage journal volumes and issues (OJS-compliant)</p>
         </div>
         <Dialog open={dialogOpen} onOpenChange={(o) => { setDialogOpen(o); if (!o) resetForm(); }}>
           <DialogTrigger asChild>
@@ -149,10 +144,10 @@ export default function AdminIssues() {
                     <TableCell>{issue.title || "—"}</TableCell>
                     <TableCell>{issue.article_count}</TableCell>
                     <TableCell>
-                      <Badge variant={statusColor(issue.status)}>
-                        {issue.status}
-                        {issue.is_current && " (Current)"}
-                      </Badge>
+                      <EditorialStatusBadge status={issue.status} />
+                      {issue.is_current && (
+                        <span className="ml-2 text-caption font-semibold text-accent">Current</span>
+                      )}
                     </TableCell>
                     <TableCell className="text-right space-x-1">
                       <Button variant="ghost" size="icon" onClick={() => openEdit(issue)}>

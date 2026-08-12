@@ -25,12 +25,12 @@ export default function AdminEditorialBoard() {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col gap-4 border-b border-border pb-5 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="text-3xl font-serif font-bold text-foreground">
+          <h1 className="text-h1">
             Editorial Board
           </h1>
-          <p className="text-muted-foreground mt-1">
+          <p className="text-lead mt-2">
             Manage editorial board members and advisors
           </p>
         </div>

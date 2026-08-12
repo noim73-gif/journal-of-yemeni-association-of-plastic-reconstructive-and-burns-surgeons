@@ -84,10 +84,10 @@ export function ReviewerApplicationCard({ application }: ReviewerApplicationCard
             <div className="flex items-start justify-between">
               <div className="flex-1">
                 <div className="flex items-center gap-3">
-                  <CardTitle className="text-lg">{application.full_name}</CardTitle>
+                  <CardTitle className="text-h4">{application.full_name}</CardTitle>
                   <Badge variant={status.variant}>{status.label}</Badge>
                 </div>
-                <div className="flex flex-wrap gap-4 mt-2 text-sm text-muted-foreground">
+                <div className="flex flex-wrap gap-4 mt-2 text-meta">
                   <span className="flex items-center gap-1">
                     <Mail className="h-4 w-4" />
                     {application.email}

@@ -398,10 +398,10 @@ export default function ArticlePage() {
             </div>
           )}
           <div className="relative container mx-auto px-4 pt-8 pb-16">
-            <Link to="/" className="inline-flex items-center text-sm text-white/80 hover:text-white mb-8">
+            <Link to="/" className="inline-flex items-center text-sm text-primary-foreground/80 hover:text-primary-foreground mb-8">
               <ArrowLeft className="mr-2 h-4 w-4" />Back to Articles
             </Link>
-            <div className={article.image_url ? "text-white" : ""}>
+            <div className={article.image_url ? "text-primary-foreground" : ""}>
               {article.category && <Badge variant="featured" className="mb-4">{article.category}</Badge>}
               <h1 className="text-h1 max-w-4xl mb-6">{article.title}</h1>
               <div className="flex flex-wrap items-center gap-4 text-meta !text-current opacity-80 mb-4">
