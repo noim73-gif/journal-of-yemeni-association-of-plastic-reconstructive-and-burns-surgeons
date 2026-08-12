@@ -132,10 +132,10 @@ export default function AdminAnalytics() {
         {/* Submission Timeline */}
         <div className="bg-card rounded-xl border border-border p-6">
           <div className="mb-6">
-            <h2 className="font-serif text-xl font-semibold mb-1">
+            <h2 className="text-h4 mb-1">
               Submission Timeline
             </h2>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-body-sm">
               Monthly submission trends
             </p>
           </div>
@@ -145,10 +145,10 @@ export default function AdminAnalytics() {
         {/* Category Distribution */}
         <div className="bg-card rounded-xl border border-border p-6">
           <div className="mb-6">
-            <h2 className="font-serif text-xl font-semibold mb-1">
+            <h2 className="text-h4 mb-1">
               Category Distribution
             </h2>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-body-sm">
               Articles by research area
             </p>
           </div>
@@ -190,10 +190,10 @@ export default function AdminAnalytics() {
       {/* Volume Breakdown */}
       <div className="bg-card rounded-xl border border-border p-6">
         <div className="mb-6">
-          <h2 className="font-serif text-xl font-semibold mb-1">
+          <h2 className="text-h4 mb-1">
             Volume Breakdown
           </h2>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-body-sm">
             Articles organized by volume
           </p>
         </div>
@@ -201,19 +201,19 @@ export default function AdminAnalytics() {
           <table className="w-full">
             <thead>
               <tr className="border-b border-border">
-                <th className="text-left py-3 px-4 font-medium text-muted-foreground">
+                <th className="text-left py-3 px-4 text-overline">
                   Volume
                 </th>
-                <th className="text-center py-3 px-4 font-medium text-muted-foreground">
+                <th className="text-center py-3 px-4 text-overline">
                   Published
                 </th>
-                <th className="text-center py-3 px-4 font-medium text-muted-foreground">
+                <th className="text-center py-3 px-4 text-overline">
                   Drafts
                 </th>
-                <th className="text-center py-3 px-4 font-medium text-muted-foreground">
+                <th className="text-center py-3 px-4 text-overline">
                   Total
                 </th>
-                <th className="text-right py-3 px-4 font-medium text-muted-foreground">
+                <th className="text-right py-3 px-4 text-overline">
                   Completion
                 </th>
               </tr>
@@ -236,12 +236,12 @@ export default function AdminAnalytics() {
                   >
                     <td className="py-3 px-4 font-medium">{vol.volume}</td>
                     <td className="py-3 px-4 text-center">
-                      <span className="inline-flex items-center justify-center min-w-[2rem] px-2 py-0.5 bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 rounded text-sm">
+                      <span className="inline-flex items-center justify-center min-w-[2rem] px-2 py-0.5 bg-[hsl(var(--status-success)/0.12)] text-[hsl(var(--status-success))] rounded text-sm">
                         {vol.published}
                       </span>
                     </td>
                     <td className="py-3 px-4 text-center">
-                      <span className="inline-flex items-center justify-center min-w-[2rem] px-2 py-0.5 bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 rounded text-sm">
+                      <span className="inline-flex items-center justify-center min-w-[2rem] px-2 py-0.5 bg-[hsl(var(--status-warning)/0.14)] text-[hsl(var(--status-warning))] rounded text-sm">
                         {vol.drafts}
                       </span>
                     </td>

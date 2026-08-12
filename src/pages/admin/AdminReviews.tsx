@@ -40,6 +40,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { format, parseISO } from "date-fns";
 import {
+import { EditorialStatusBadge } from "@/components/EditorialStatusBadge";
   Loader2,
   Search,
   Plus,
@@ -56,18 +57,11 @@ import {
   UserCheck,
 } from "lucide-react";
 
-const statusColors: Record<string, string> = {
-  pending: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
-  in_progress: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
-  completed: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
-  declined: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
-};
-
 const recommendationColors: Record<string, string> = {
-  accept: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
-  minor_revisions: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
-  major_revisions: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
-  reject: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
+  accept: "bg-[hsl(var(--status-success)/0.12)] text-[hsl(var(--status-success))]",
+  minor_revisions: "bg-[hsl(var(--status-info)/0.12)] text-[hsl(var(--status-info))]",
+  major_revisions: "bg-[hsl(var(--status-warning)/0.14)] text-[hsl(var(--status-warning))]",
+  reject: "bg-destructive/12 text-destructive",
 };
 
 // Define Review type locally since we're using submission_reviews
@@ -179,30 +173,30 @@ export default function AdminReviews() {
       {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="bg-card rounded-xl border border-border p-6 flex items-center gap-4">
-          <div className="p-3 bg-amber-100 dark:bg-amber-900/30 rounded-lg">
+          <div className="p-3 rounded-lg bg-[hsl(var(--status-warning)/0.14)]">
             <Clock className="h-6 w-6 text-amber-600 dark:text-amber-400" />
           </div>
           <div>
-            <p className="text-2xl font-bold">{pendingCount}</p>
-            <p className="text-sm text-muted-foreground">Pending Reviews</p>
+            <p className="text-stat">{pendingCount}</p>
+            <p className="text-overline mt-1">Pending Reviews</p>
           </div>
         </div>
         <div className="bg-card rounded-xl border border-border p-6 flex items-center gap-4">
-          <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
+          <div className="p-3 rounded-lg bg-[hsl(var(--status-info)/0.12)]">
             <FileText className="h-6 w-6 text-blue-600 dark:text-blue-400" />
           </div>
           <div>
-            <p className="text-2xl font-bold">{activeCount}</p>
-            <p className="text-sm text-muted-foreground">In Progress</p>
+            <p className="text-stat">{activeCount}</p>
+            <p className="text-overline mt-1">In Progress</p>
           </div>
         </div>
         <div className="bg-card rounded-xl border border-border p-6 flex items-center gap-4">
-          <div className="p-3 bg-green-100 dark:bg-green-900/30 rounded-lg">
+          <div className="p-3 rounded-lg bg-[hsl(var(--status-success)/0.12)]">
             <ClipboardCheck className="h-6 w-6 text-green-600 dark:text-green-400" />
           </div>
           <div>
-            <p className="text-2xl font-bold">{completedCount}</p>
-            <p className="text-sm text-muted-foreground">Completed</p>
+            <p className="text-stat">{completedCount}</p>
+            <p className="text-overline mt-1">Completed</p>
           </div>
         </div>
       </div>
@@ -236,7 +230,7 @@ export default function AdminReviews() {
             <TableBody>
               {filteredReviews.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
+                  <TableCell colSpan={6} className="py-10 text-center text-body-sm">
                     No reviews found. Assign a reviewer to get started.
                   </TableCell>
                 </TableRow>
@@ -252,9 +246,7 @@ export default function AdminReviews() {
                       <span className="text-sm">{review.reviewer_name}</span>
                     </TableCell>
                     <TableCell>
-                      <Badge variant="secondary" className={statusColors[review.status]}>
-                        {review.status.replace("_", " ")}
-                      </Badge>
+                      <EditorialStatusBadge status={review.status} />
                     </TableCell>
                     <TableCell>
                       {review.recommendation ? (

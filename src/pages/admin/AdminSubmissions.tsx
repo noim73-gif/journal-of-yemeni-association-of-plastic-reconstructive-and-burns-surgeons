@@ -34,6 +34,8 @@ import { Label } from "@/components/ui/label";
 import { Loader2, Eye, FileText, Download, UserPlus, Users, BookOpen } from "lucide-react";
 import { format } from "date-fns";
 import { DashboardHeader } from "@/components/DashboardHeader";
+import { EditorialStatusBadge } from "@/components/EditorialStatusBadge";
+import { EmptyState } from "@/components/EmptyState";
 
 const statusOptions = [
   { value: "pending", label: "Pending Review" },
@@ -42,44 +44,6 @@ const statusOptions = [
   { value: "accepted", label: "Accepted" },
   { value: "rejected", label: "Rejected" },
 ];
-
-const getStatusBadge = (status: string) => {
-  const variants: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
-    pending: "secondary",
-    under_review: "default",
-    revision_requested: "outline",
-    accepted: "default",
-    rejected: "destructive",
-  };
-
-  const labels: Record<string, string> = {
-    pending: "Pending",
-    under_review: "Under Review",
-    revision_requested: "Revision Requested",
-    accepted: "Accepted",
-    rejected: "Rejected",
-  };
-
-  return (
-    <Badge variant={variants[status] || "secondary"}>
-      {labels[status] || status}
-    </Badge>
-  );
-};
-
-const getReviewStatusBadge = (status: string) => {
-  const colors: Record<string, string> = {
-    pending: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
-    in_progress: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
-    completed: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
-  };
-
-  return (
-    <Badge variant="secondary" className={colors[status] || ""}>
-      {status.replace("_", " ")}
-    </Badge>
-  );
-};
 
 export default function AdminSubmissions() {
   const { submissions, loading, updateSubmissionStatus, getManuscriptUrl } = useSubmissions();
@@ -199,7 +163,7 @@ export default function AdminSubmissions() {
           <TableBody>
             {submissions.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
+                <TableCell colSpan={7} className="py-10 text-center text-body-sm">
                   No submissions yet
                 </TableCell>
               </TableRow>
@@ -213,7 +177,7 @@ export default function AdminSubmissions() {
                     {submission.authors}
                   </TableCell>
                   <TableCell>{submission.category || "-"}</TableCell>
-                  <TableCell>{getStatusBadge(submission.status)}</TableCell>
+                  <TableCell><EditorialStatusBadge status={submission.status} /></TableCell>
                   <TableCell>
                     <Button
                       variant="ghost"
@@ -286,7 +250,7 @@ export default function AdminSubmissions() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label className="text-sm font-medium">Status</Label>
-                  <div className="mt-1">{getStatusBadge(selectedSubmission.status)}</div>
+                  <div className="mt-1"><EditorialStatusBadge status={selectedSubmission.status} /></div>
                 </div>
                 <div>
                   <Label className="text-sm font-medium">Category</Label>
@@ -489,7 +453,7 @@ export default function AdminSubmissions() {
                     <div>
                       <p className="font-medium">{review.reviewer_name}</p>
                       <div className="flex items-center gap-2 mt-1">
-                        {getReviewStatusBadge(review.status)}
+                        <EditorialStatusBadge status={review.status} />
                         {review.recommendation && (
                           <Badge variant="outline" className="text-xs">
                             {review.recommendation.replace("_", " ")}

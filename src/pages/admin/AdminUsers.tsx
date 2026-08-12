@@ -54,10 +54,10 @@ import { DashboardHeader } from "@/components/DashboardHeader";
 } from "lucide-react";
 
 const roleColors: Record<string, string> = {
-  admin: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
-  moderator: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
-  reviewer: "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400",
-  user: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
+  admin: "bg-destructive/12 text-destructive",
+  moderator: "bg-[hsl(var(--status-info)/0.12)] text-[hsl(var(--status-info))]",
+  reviewer: "bg-accent/15 text-accent",
+  user: "bg-[hsl(var(--status-success)/0.12)] text-[hsl(var(--status-success))]",
 };
 
 const roleIcons: Record<string, React.ReactNode> = {
@@ -135,26 +135,26 @@ export default function AdminUsers() {
             <Users className="h-6 w-6 text-primary" />
           </div>
           <div>
-            <p className="text-2xl font-bold">{totalUsers}</p>
-            <p className="text-sm text-muted-foreground">Total Users</p>
+            <p className="text-stat">{totalUsers}</p>
+            <p className="text-overline mt-1">Total Users</p>
           </div>
         </div>
         <div className="bg-card rounded-xl border border-border p-6 flex items-center gap-4">
-          <div className="p-3 bg-red-100 dark:bg-red-900/30 rounded-lg">
-            <ShieldCheck className="h-6 w-6 text-red-600 dark:text-red-400" />
+          <div className="p-3 rounded-lg bg-destructive/12">
+            <ShieldCheck className="h-6 w-6 text-destructive" />
           </div>
           <div>
-            <p className="text-2xl font-bold">{adminCount}</p>
-            <p className="text-sm text-muted-foreground">Administrators</p>
+            <p className="text-stat">{adminCount}</p>
+            <p className="text-overline mt-1">Administrators</p>
           </div>
         </div>
         <div className="bg-card rounded-xl border border-border p-6 flex items-center gap-4">
-          <div className="p-3 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
-            <UserCheck className="h-6 w-6 text-purple-600 dark:text-purple-400" />
+          <div className="p-3 rounded-lg bg-accent/15">
+            <UserCheck className="h-6 w-6 text-accent" />
           </div>
           <div>
-            <p className="text-2xl font-bold">{reviewerCount}</p>
-            <p className="text-sm text-muted-foreground">Reviewers</p>
+            <p className="text-stat">{reviewerCount}</p>
+            <p className="text-overline mt-1">Reviewers</p>
           </div>
         </div>
       </div>
@@ -189,7 +189,7 @@ export default function AdminUsers() {
             <TableBody>
               {filteredUsers.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
+                  <TableCell colSpan={6} className="py-10 text-center text-body-sm">
                     No users found
                   </TableCell>
                 </TableRow>
@@ -206,7 +206,7 @@ export default function AdminUsers() {
                         </Avatar>
                         <div>
                           <p className="font-medium">{user.full_name || "Unnamed User"}</p>
-                          <p className="text-xs text-muted-foreground truncate max-w-[200px]">
+                          <p className="text-caption truncate max-w-[200px]">
                             {user.user_id}
                           </p>
                         </div>
@@ -214,17 +214,17 @@ export default function AdminUsers() {
                     </TableCell>
                     <TableCell>
                       {user.account_status === "verified" ? (
-                        <Badge variant="secondary" className="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 gap-1">
+                        <Badge variant="secondary" className="bg-[hsl(var(--status-success)/0.12)] text-[hsl(var(--status-success))] gap-1">
                           <CheckCircle className="h-3 w-3" />
                           Verified
                         </Badge>
                       ) : user.account_status === "suspended" ? (
-                        <Badge variant="secondary" className="bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 gap-1">
+                        <Badge variant="secondary" className="bg-destructive/12 text-destructive gap-1">
                           <XCircle className="h-3 w-3" />
                           Suspended
                         </Badge>
                       ) : (
-                        <Badge variant="secondary" className="bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400 gap-1">
+                        <Badge variant="secondary" className="bg-[hsl(var(--status-warning)/0.14)] text-[hsl(var(--status-warning))] gap-1">
                           <AlertCircle className="h-3 w-3" />
                           Unverified
                         </Badge>
@@ -239,7 +239,7 @@ export default function AdminUsers() {
                     <TableCell>
                       <div className="flex flex-wrap gap-1">
                         {user.roles.length === 0 ? (
-                          <span className="text-sm text-muted-foreground">No roles</span>
+                          <span className="text-meta">No roles</span>
                         ) : (
                           user.roles.map((role) => (
                             <Badge
@@ -251,7 +251,7 @@ export default function AdminUsers() {
                               {role}
                               <button
                                 onClick={() => handleRemoveRole(user, role)}
-                                className="ml-1 hover:bg-black/10 rounded-full p-0.5"
+                                className="ml-1 hover:bg-foreground/10 rounded-full p-0.5"
                               >
                                 <X className="h-3 w-3" />
                               </button>
@@ -261,7 +261,7 @@ export default function AdminUsers() {
                       </div>
                     </TableCell>
                     <TableCell>
-                      <span className="text-sm text-muted-foreground">
+                      <span className="text-meta">
                         {format(parseISO(user.created_at), "MMM d, yyyy")}
                       </span>
                     </TableCell>

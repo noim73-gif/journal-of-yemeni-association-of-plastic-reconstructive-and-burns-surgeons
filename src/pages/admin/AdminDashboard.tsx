@@ -150,8 +150,8 @@ export default function AdminDashboard() {
       {/* Submission Chart */}
       <div className="bg-card rounded-xl border border-border p-6">
         <div className="mb-6">
-          <h2 className="font-serif text-xl font-semibold mb-1">Submission Statistics</h2>
-          <p className="text-sm text-muted-foreground">
+          <h2 className="text-h4 mb-1">Submission Statistics</h2>
+          <p className="text-body-sm">
             Articles submitted, published, and in drafts over the last 12 months
           </p>
         </div>
@@ -161,14 +161,14 @@ export default function AdminDashboard() {
       {/* Recent Articles */}
       <div className="bg-card rounded-xl border border-border p-6">
         <div className="mb-6">
-          <h2 className="font-serif text-xl font-semibold mb-1">Recent Submissions</h2>
-          <p className="text-sm text-muted-foreground">
+          <h2 className="text-h4 mb-1">Recent Submissions</h2>
+          <p className="text-body-sm">
             Latest articles added to the journal
           </p>
         </div>
         <div className="space-y-4">
           {recentArticles.length === 0 ? (
-            <p className="text-center text-muted-foreground py-8">
+            <p className="text-center text-body-sm py-10">
               No articles yet. Create your first article!
             </p>
           ) : (
@@ -178,8 +178,8 @@ export default function AdminDashboard() {
                 className="flex items-center justify-between p-4 rounded-lg border border-border hover:bg-muted/50 transition-colors"
               >
                 <div className="flex-1 min-w-0">
-                  <h3 className="font-medium truncate">{article.title}</h3>
-                  <div className="flex items-center gap-3 mt-1 text-sm text-muted-foreground">
+                  <h3 className="text-h5 truncate">{article.title}</h3>
+                  <div className="flex items-center gap-3 mt-1 text-meta">
                     <span>{article.authors || "Unknown author"}</span>
                     <span>•</span>
                     <span>{format(parseISO(article.created_at), "MMM d, yyyy")}</span>
@@ -187,16 +187,16 @@ export default function AdminDashboard() {
                 </div>
                 <div className="flex items-center gap-2 ml-4">
                   {article.published_at ? (
-                    <span className="px-2 py-1 text-xs font-medium bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 rounded">
+                    <span className="px-2 py-1 text-xs font-medium bg-[hsl(var(--status-success)/0.12)] text-[hsl(var(--status-success))] rounded">
                       Published
                     </span>
                   ) : (
-                    <span className="px-2 py-1 text-xs font-medium bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 rounded">
+                    <span className="px-2 py-1 text-xs font-medium bg-[hsl(var(--status-warning)/0.14)] text-[hsl(var(--status-warning))] rounded">
                       Draft
                     </span>
                   )}
                   {article.is_featured && (
-                    <Star className="h-4 w-4 text-amber-500 fill-amber-500" />
+                    <Star className="h-4 w-4 text-accent fill-accent" />
                   )}
                 </div>
               </div>

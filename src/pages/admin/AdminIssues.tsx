@@ -51,12 +51,6 @@ export default function AdminIssues() {
     setDialogOpen(true);
   };
 
-  const statusColor = (s: string) => {
-    if (s === "published") return "default";
-    if (s === "archived") return "secondary";
-    return "outline";
-  };
-
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -149,9 +143,9 @@ export default function AdminIssues() {
                     <TableCell>{issue.title || "—"}</TableCell>
                     <TableCell>{issue.article_count}</TableCell>
                     <TableCell>
-                      <Badge variant={statusColor(issue.status)}>
-                        {issue.status}
-                        {issue.is_current && " (Current)"}
+                      <EditorialStatusBadge status={issue.status} />
+                      {issue.is_current && (
+                        <span className="ml-2 text-caption font-semibold text-accent">Current
                       </Badge>
                     </TableCell>
                     <TableCell className="text-right space-x-1">
