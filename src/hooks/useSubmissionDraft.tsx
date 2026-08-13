@@ -2,68 +2,200 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { logger } from "@/lib/logger";
+import { recommendGuideline } from "@/lib/reportingGuidelines";
 
 export interface AuthorRow {
   name: string;
-  affiliation?: string;
-  email?: string;
+  degree?: string;
   orcid?: string;
+  department?: string;
+  institution?: string;
+  affiliation?: string;
+  country?: string;
+  email?: string;
+  role?: string;
+  creditRoles?: string[];
   corresponding?: boolean;
 }
 
 export interface Declarations {
-  conflictOfInterest: boolean;
   ethicsApproval: boolean;
-  patientConsent: boolean;
-  authorshipContributions: boolean;
+  ethicsNotApplicable: boolean;
+  informedConsent: boolean;
+  consentNotApplicable: boolean;
+  conflictOfInterest: boolean;
+  fundingDisclosed: boolean;
+  dataAvailability: boolean;
+  authorContributions: boolean;
+  acknowledgmentsConfirmed: boolean;
+  aiAssistanceUsed: boolean;
+  aiAssistanceDeclared: boolean;
+  trialRegistrationConfirmed: boolean;
   notPublishedElsewhere: boolean;
+  noPlagiarism: boolean;
 }
 
+export interface FileRef {
+  path: string;
+  name: string;
+  size?: number;
+}
+
+export type FileSlot =
+  | "main_manuscript"
+  | "title_page"
+  | "figures"
+  | "tables"
+  | "supplementary"
+  | "ethics_approval"
+  | "reporting_checklist"
+  | "cover_letter";
+
+export type FileMap = Partial<Record<FileSlot, FileRef[]>>;
+
 export interface DraftState {
+  // Step 1
+  articleTypeId: string | null;
+  articleTypeCode: string | null;
+  studyDesign: string | null;
+  // Step 2
   title: string;
-  authors: AuthorRow[];
-  category: string;
-  keywords: string;
   abstract: string;
+  keywords: string;
+  wordCount: string;
+  language: string;
+  category: string;
+  fundingStatement: string;
+  conflictOfInterestStatement: string;
+  dataAvailabilityStatement: string;
+  ethicsApprovalNumber: string;
+  ethicsCommittee: string;
+  trialRegistry: string;
+  trialRegistrationId: string;
+  patientConsentObtained: boolean | null;
+  // Step 3
+  authors: AuthorRow[];
+  // Step 4
+  files: FileMap;
   cover_letter: string;
+  // Step 5
+  declarations: Declarations;
+  aiDisclosure: string;
+  acknowledgments: string;
+  // Step 6
+  reportingGuideline: string | null;
+  guidelineAcknowledged: boolean;
+  // Step 7
+  finalConfirmations: Record<string, boolean>;
+  step: number;
+  // legacy compatibility
   manuscript_url: string | null;
   manuscript_name: string | null;
   supplementary_url: string | null;
   supplementary_name: string | null;
-  declarations: Declarations;
-  step: number;
 }
 
+export const EMPTY_DECLARATIONS: Declarations = {
+  ethicsApproval: false,
+  ethicsNotApplicable: false,
+  informedConsent: false,
+  consentNotApplicable: false,
+  conflictOfInterest: false,
+  fundingDisclosed: false,
+  dataAvailability: false,
+  authorContributions: false,
+  acknowledgmentsConfirmed: false,
+  aiAssistanceUsed: false,
+  aiAssistanceDeclared: false,
+  trialRegistrationConfirmed: false,
+  notPublishedElsewhere: false,
+  noPlagiarism: false,
+};
+
 export const EMPTY_DRAFT: DraftState = {
+  articleTypeId: null,
+  articleTypeCode: null,
+  studyDesign: null,
   title: "",
-  authors: [{ name: "", affiliation: "", email: "", orcid: "", corresponding: true }],
-  category: "",
-  keywords: "",
   abstract: "",
+  keywords: "",
+  wordCount: "",
+  language: "en",
+  category: "",
+  fundingStatement: "",
+  conflictOfInterestStatement: "",
+  dataAvailabilityStatement: "",
+  ethicsApprovalNumber: "",
+  ethicsCommittee: "",
+  trialRegistry: "",
+  trialRegistrationId: "",
+  patientConsentObtained: null,
+  authors: [
+    {
+      name: "",
+      degree: "",
+      orcid: "",
+      department: "",
+      institution: "",
+      country: "",
+      email: "",
+      role: "Author",
+      creditRoles: [],
+      corresponding: true,
+    },
+  ],
+  files: {},
   cover_letter: "",
+  declarations: { ...EMPTY_DECLARATIONS },
+  aiDisclosure: "",
+  acknowledgments: "",
+  reportingGuideline: null,
+  guidelineAcknowledged: false,
+  finalConfirmations: {},
+  step: 1,
   manuscript_url: null,
   manuscript_name: null,
   supplementary_url: null,
   supplementary_name: null,
-  declarations: {
-    conflictOfInterest: false,
-    ethicsApproval: false,
-    patientConsent: false,
-    authorshipContributions: false,
-    notPublishedElsewhere: false,
-  },
-  step: 1,
 };
 
 const LS_PREFIX = "yjprbs:submission-draft:";
 const LS_DEBOUNCE = 800;
 const DB_DEBOUNCE = 8000;
 
-function authorsToText(rows: AuthorRow[]): string {
+export function authorsToText(rows: AuthorRow[]): string {
   return rows
     .map((a) => a.name?.trim())
     .filter(Boolean)
     .join("; ");
+}
+
+/** Merge a persisted (possibly older) draft shape onto the current schema. */
+function hydrate(raw: unknown): DraftState {
+  const p = (raw ?? {}) as Partial<DraftState> & { declarations?: Partial<Declarations> };
+  const authors = Array.isArray(p.authors) && p.authors.length
+    ? p.authors.map((a) => ({
+        ...a,
+        institution: a.institution ?? a.affiliation ?? "",
+        creditRoles: Array.isArray(a.creditRoles) ? a.creditRoles : [],
+      }))
+    : EMPTY_DRAFT.authors;
+  const files: FileMap = { ...(p.files ?? {}) };
+  // Legacy single-file drafts
+  if (!files.main_manuscript && p.manuscript_url) {
+    files.main_manuscript = [{ path: p.manuscript_url, name: p.manuscript_name ?? "Manuscript" }];
+  }
+  if (!files.supplementary && p.supplementary_url) {
+    files.supplementary = [{ path: p.supplementary_url, name: p.supplementary_name ?? "Supplementary" }];
+  }
+  return {
+    ...EMPTY_DRAFT,
+    ...p,
+    authors,
+    files,
+    declarations: { ...EMPTY_DECLARATIONS, ...(p.declarations ?? {}) },
+    finalConfirmations: p.finalConfirmations ?? {},
+  };
 }
 
 export function useSubmissionDraft() {
@@ -97,7 +229,7 @@ export function useSubmissionDraft() {
         const raw = localStorage.getItem(lsKey);
         if (raw) {
           const parsed = JSON.parse(raw);
-          lsState = parsed.draft;
+          lsState = hydrate(parsed.draft);
           lsTime = parsed.savedAt ?? 0;
         }
       } catch (e) {
@@ -106,7 +238,7 @@ export function useSubmissionDraft() {
 
       const { data, error } = await supabase
         .from("submissions")
-        .select("id, title, authors, abstract, keywords, category, cover_letter, manuscript_url, supplementary_url, metadata, updated_at")
+        .select("id, metadata, updated_at")
         .eq("user_id", user.id)
         .eq("status", "draft")
         .order("updated_at", { ascending: false })
@@ -120,30 +252,13 @@ export function useSubmissionDraft() {
 
       if (data && dbTime >= lsTime) {
         const md = (data.metadata as Record<string, unknown> | null) ?? {};
-        const authors = Array.isArray((md as { authors?: AuthorRow[] }).authors)
-          ? ((md as { authors: AuthorRow[] }).authors)
-          : EMPTY_DRAFT.authors;
-        const declarations = ((md as { declarations?: Declarations }).declarations) ?? EMPTY_DRAFT.declarations;
-        const step = typeof (md as { step?: number }).step === "number" ? (md as { step: number }).step : 1;
-        setDraft({
-          title: data.title ?? "",
-          authors,
-          category: data.category ?? "",
-          keywords: data.keywords ?? "",
-          abstract: data.abstract ?? "",
-          cover_letter: data.cover_letter ?? "",
-          manuscript_url: data.manuscript_url ?? null,
-          manuscript_name: (md as { manuscript_name?: string }).manuscript_name ?? null,
-          supplementary_url: data.supplementary_url ?? null,
-          supplementary_name: (md as { supplementary_name?: string }).supplementary_name ?? null,
-          declarations,
-          step,
-        });
+        setDraft(hydrate(md.draft ?? md));
         setDraftId(data.id);
         setLastSavedAt(new Date(data.updated_at));
       } else if (lsState) {
         setDraft(lsState);
         setLastSavedAt(lsTime ? new Date(lsTime) : null);
+        if (data) setDraftId(data.id);
       }
       setLoading(false);
     }
@@ -165,31 +280,44 @@ export function useSubmissionDraft() {
     [lsKey]
   );
 
+  const buildPayload = useCallback((next: DraftState) => {
+    const mainFile = next.files.main_manuscript?.[0] ?? null;
+    const suppFile = next.files.supplementary?.[0] ?? null;
+    return {
+      user_id: user?.id as string,
+      title: next.title || "Untitled draft",
+      abstract: next.abstract || "",
+      authors: authorsToText(next.authors) || "",
+      keywords: next.keywords || null,
+      category: next.category || null,
+      cover_letter: next.cover_letter || null,
+      manuscript_url: mainFile?.path ?? null,
+      supplementary_url: suppFile?.path ?? null,
+      status: "draft",
+      article_type_id: next.articleTypeId,
+      word_count: next.wordCount ? Number(next.wordCount) || null : null,
+      manuscript_language: next.language || "en",
+      funding_statement: next.fundingStatement || null,
+      conflict_of_interest_statement: next.conflictOfInterestStatement || null,
+      data_availability_statement: next.dataAvailabilityStatement || null,
+      ethics_approval_number: next.ethicsApprovalNumber || null,
+      ethics_committee: next.ethicsCommittee || null,
+      trial_registry: next.trialRegistry || null,
+      trial_registration_id: next.trialRegistrationId || null,
+      patient_consent_obtained: next.patientConsentObtained,
+      reporting_guideline:
+        next.reportingGuideline ??
+        recommendGuideline(next.articleTypeCode, next.studyDesign).code,
+      ai_disclosure: next.aiDisclosure || null,
+      acknowledgments: next.acknowledgments || null,
+      metadata: JSON.parse(JSON.stringify({ draft: next })),
+    };
+  }, [user]);
+
   const persistToDb = useCallback(
     async (next: DraftState, createIfMissing: boolean): Promise<string | null> => {
       if (!user) return null;
-      const payload = {
-        user_id: user.id,
-        title: next.title || "Untitled draft",
-        abstract: next.abstract || "",
-        authors: authorsToText(next.authors) || "",
-        keywords: next.keywords || null,
-        category: next.category || null,
-        cover_letter: next.cover_letter || null,
-        manuscript_url: next.manuscript_url,
-        supplementary_url: next.supplementary_url,
-        status: "draft",
-        metadata: JSON.parse(
-          JSON.stringify({
-            authors: next.authors,
-            declarations: next.declarations,
-            step: next.step,
-            manuscript_name: next.manuscript_name,
-            supplementary_name: next.supplementary_name,
-          })
-        ),
-      };
-
+      const payload = buildPayload(next);
       setSaving(true);
       try {
         const currentId = draftIdRef.current;
@@ -219,19 +347,16 @@ export function useSubmissionDraft() {
         setSaving(false);
       }
     },
-    [user]
+    [user, buildPayload]
   );
 
-  // Schedule debounced saves
   const scheduleSaves = useCallback(
     (next: DraftState) => {
       if (lsTimer.current) clearTimeout(lsTimer.current);
       if (dbTimer.current) clearTimeout(dbTimer.current);
       lsTimer.current = setTimeout(() => writeLocal(next), LS_DEBOUNCE);
       dbTimer.current = setTimeout(() => {
-        // Only auto-create the DB row once the user has moved past step 1
-        const createIfMissing = next.step >= 2;
-        void persistToDb(next, createIfMissing);
+        void persistToDb(next, next.step >= 2);
       }, DB_DEBOUNCE);
     },
     [persistToDb, writeLocal]
@@ -276,7 +401,6 @@ export function useSubmissionDraft() {
     if (lsKey) localStorage.removeItem(lsKey);
   }, [lsKey]);
 
-  // Save on tab close
   useEffect(() => {
     const onBeforeUnload = () => {
       if (lsKey) {

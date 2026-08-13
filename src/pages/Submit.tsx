@@ -47,8 +47,10 @@ export default function Submit() {
           <div className="mb-6">
             <h1 className="text-h1 mb-2">Submit Manuscript</h1>
             <p className="text-body-sm text-muted-foreground">
-              A guided five-step submission. Your progress is saved automatically — you
-              can pause and return at any time.
+              A guided seven-step submission covering article type, manuscript details,
+              authors and CRediT roles, files, declarations, reporting guidelines and a
+              final compliance check. Your progress is saved automatically — you can pause
+              and return at any time.
             </p>
           </div>
           <SubmissionWizard />
