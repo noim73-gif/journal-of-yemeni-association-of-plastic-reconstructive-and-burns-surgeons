@@ -18,44 +18,27 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
-import { useSubmissionDraft, type DraftState } from "@/hooks/useSubmissionDraft";
+import { useSubmissionDraft } from "@/hooks/useSubmissionDraft";
+import { validateStep, checklistBlockers } from "@/lib/submissionValidation";
+import { normalizeSubmission, logAudit } from "@/lib/submissionFinalize";
 import { Stepper, type StepDef } from "./Stepper";
+import { StepArticleType } from "./StepArticleType";
+import { StepManuscriptInfo } from "./StepManuscriptInfo";
 import { StepAuthors } from "./StepAuthors";
 import { StepFiles } from "./StepFiles";
-import { StepMetadata } from "./StepMetadata";
 import { StepDeclarations } from "./StepDeclarations";
-import { StepReview } from "./StepReview";
+import { StepGuideline } from "./StepGuideline";
+import { StepCompliance } from "./StepCompliance";
 
 const STEPS: StepDef[] = [
-  { id: 1, label: "Authors & Title" },
-  { id: 2, label: "Files" },
-  { id: 3, label: "Metadata" },
-  { id: 4, label: "Declarations" },
-  { id: 5, label: "Review & Submit" },
+  { id: 1, label: "Article type" },
+  { id: 2, label: "Manuscript info" },
+  { id: 3, label: "Authors" },
+  { id: 4, label: "Files" },
+  { id: 5, label: "Declarations" },
+  { id: 6, label: "Reporting guideline" },
+  { id: 7, label: "Compliance check" },
 ];
-
-function validateStep(step: number, d: DraftState): string | null {
-  switch (step) {
-    case 1:
-      if (!d.title.trim()) return "Please enter a title.";
-      if (!d.authors.some((a) => a.name.trim()))
-        return "Add at least one author with a name.";
-      return null;
-    case 2:
-      if (!d.manuscript_url) return "Upload a manuscript file to continue.";
-      return null;
-    case 3:
-      if (!d.category) return "Choose a category.";
-      if (!d.abstract.trim()) return "Please enter an abstract.";
-      return null;
-    case 4:
-      if (!Object.values(d.declarations).every(Boolean))
-        return "Confirm all author declarations to continue.";
-      return null;
-    default:
-      return null;
-  }
-}
 
 function formatTimeAgo(date: Date | null): string {
   if (!date) return "Not saved yet";
@@ -116,41 +99,51 @@ export function SubmissionWizard() {
   };
 
   const handleSubmit = async () => {
-    for (let i = 1; i <= 4; i++) {
-      const err = validateStep(i, draft);
-      if (err) {
-        update({ step: i });
-        toast({ title: `Step ${i} is incomplete`, description: err, variant: "destructive" });
-        return;
-      }
-    }
     if (!user) return;
-    setSubmitting(true);
-    // Ensure a row exists, then flip to pending
-    const id = await saveNow();
-    if (!id) {
-      setSubmitting(false);
+    const blockers = checklistBlockers(draft);
+    if (blockers.length) {
+      update({ step: blockers[0].step });
       toast({
-        title: "Could not save draft",
-        description: "Please try again.",
+        title: "Submission incomplete",
+        description: blockers[0].label,
         variant: "destructive",
       });
       return;
     }
+    setSubmitting(true);
+    const id = await saveNow();
+    if (!id) {
+      setSubmitting(false);
+      toast({ title: "Could not save draft", description: "Please try again.", variant: "destructive" });
+      return;
+    }
+
+    await normalizeSubmission(id, draft, user.id);
+
     const { error } = await supabase
       .from("submissions")
-      .update({ status: "pending" })
+      .update({
+        status: "pending",
+        workflow_stage: "technical_check",
+        submitted_at: new Date().toISOString(),
+      })
       .eq("id", id);
 
     if (error) {
       setSubmitting(false);
-      toast({
-        title: "Submission failed",
-        description: error.message,
-        variant: "destructive",
-      });
+      toast({ title: "Submission failed", description: error.message, variant: "destructive" });
       return;
     }
+
+    await logAudit({
+      submissionId: id,
+      actorId: user.id,
+      actorRole: "author",
+      action: "submission_submitted",
+      from: "draft",
+      to: "technical_check",
+      details: { article_type: draft.articleTypeCode, reporting_guideline: draft.reportingGuideline },
+    });
 
     try {
       await supabase.functions.invoke("send-submission-notification", {
@@ -234,11 +227,15 @@ export function SubmissionWizard() {
         </div>
       </CardHeader>
       <CardContent className="space-y-6">
-        {draft.step === 1 && <StepAuthors draft={draft} update={update} />}
-        {draft.step === 2 && <StepFiles draft={draft} update={update} />}
-        {draft.step === 3 && <StepMetadata draft={draft} update={update} />}
-        {draft.step === 4 && <StepDeclarations draft={draft} update={update} />}
-        {draft.step === 5 && <StepReview draft={draft} />}
+        {draft.step === 1 && <StepArticleType draft={draft} update={update} />}
+        {draft.step === 2 && <StepManuscriptInfo draft={draft} update={update} />}
+        {draft.step === 3 && <StepAuthors draft={draft} update={update} />}
+        {draft.step === 4 && <StepFiles draft={draft} update={update} />}
+        {draft.step === 5 && <StepDeclarations draft={draft} update={update} />}
+        {draft.step === 6 && <StepGuideline draft={draft} update={update} />}
+        {draft.step === 7 && (
+          <StepCompliance draft={draft} update={update} onJump={(s) => void goToStep(s)} />
+        )}
 
         <div className="flex flex-col sm:flex-row gap-2 sm:justify-between pt-4 border-t">
           <Button
