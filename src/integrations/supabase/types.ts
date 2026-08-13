@@ -172,6 +172,54 @@ export type Database = {
           },
         ]
       }
+      article_types: {
+        Row: {
+          code: string
+          created_at: string
+          description: string | null
+          display_order: number
+          id: string
+          is_active: boolean
+          label: string
+          max_abstract_words: number | null
+          max_word_count: number | null
+          reporting_guideline: string | null
+          requires_ethics_approval: boolean
+          requires_trial_registration: boolean
+          updated_at: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          description?: string | null
+          display_order?: number
+          id?: string
+          is_active?: boolean
+          label: string
+          max_abstract_words?: number | null
+          max_word_count?: number | null
+          reporting_guideline?: string | null
+          requires_ethics_approval?: boolean
+          requires_trial_registration?: boolean
+          updated_at?: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          description?: string | null
+          display_order?: number
+          id?: string
+          is_active?: boolean
+          label?: string
+          max_abstract_words?: number | null
+          max_word_count?: number | null
+          reporting_guideline?: string | null
+          requires_ethics_approval?: boolean
+          requires_trial_registration?: boolean
+          updated_at?: string
+        }
+        Relationships: []
+      }
       articles: {
         Row: {
           abstract: string | null
@@ -729,6 +777,227 @@ export type Database = {
         }
         Relationships: []
       }
+      submission_audit_log: {
+        Row: {
+          action: string
+          actor_id: string | null
+          actor_role: string | null
+          created_at: string
+          details: Json | null
+          from_value: string | null
+          id: string
+          submission_id: string
+          to_value: string | null
+        }
+        Insert: {
+          action: string
+          actor_id?: string | null
+          actor_role?: string | null
+          created_at?: string
+          details?: Json | null
+          from_value?: string | null
+          id?: string
+          submission_id: string
+          to_value?: string | null
+        }
+        Update: {
+          action?: string
+          actor_id?: string | null
+          actor_role?: string | null
+          created_at?: string
+          details?: Json | null
+          from_value?: string | null
+          id?: string
+          submission_id?: string
+          to_value?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "submission_audit_log_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: false
+            referencedRelation: "submissions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      submission_authors: {
+        Row: {
+          author_role: string | null
+          country: string | null
+          created_at: string
+          credit_roles: string[]
+          degree: string | null
+          department: string | null
+          display_order: number
+          email: string | null
+          full_name: string
+          id: string
+          institution: string | null
+          is_corresponding: boolean
+          orcid_id: string | null
+          submission_id: string
+          updated_at: string
+        }
+        Insert: {
+          author_role?: string | null
+          country?: string | null
+          created_at?: string
+          credit_roles?: string[]
+          degree?: string | null
+          department?: string | null
+          display_order?: number
+          email?: string | null
+          full_name: string
+          id?: string
+          institution?: string | null
+          is_corresponding?: boolean
+          orcid_id?: string | null
+          submission_id: string
+          updated_at?: string
+        }
+        Update: {
+          author_role?: string | null
+          country?: string | null
+          created_at?: string
+          credit_roles?: string[]
+          degree?: string | null
+          department?: string | null
+          display_order?: number
+          email?: string | null
+          full_name?: string
+          id?: string
+          institution?: string | null
+          is_corresponding?: boolean
+          orcid_id?: string | null
+          submission_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "submission_authors_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: false
+            referencedRelation: "submissions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      submission_checklist_items: {
+        Row: {
+          confirmed_at: string | null
+          created_at: string
+          id: string
+          is_required: boolean
+          item_key: string
+          label: string
+          passed: boolean
+          submission_id: string
+          updated_at: string
+        }
+        Insert: {
+          confirmed_at?: string | null
+          created_at?: string
+          id?: string
+          is_required?: boolean
+          item_key: string
+          label: string
+          passed?: boolean
+          submission_id: string
+          updated_at?: string
+        }
+        Update: {
+          confirmed_at?: string | null
+          created_at?: string
+          id?: string
+          is_required?: boolean
+          item_key?: string
+          label?: string
+          passed?: boolean
+          submission_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "submission_checklist_items_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: false
+            referencedRelation: "submissions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      submission_declarations: {
+        Row: {
+          acknowledgments_confirmed: boolean
+          ai_assistance_declared: boolean
+          ai_assistance_used: boolean
+          author_contributions: boolean
+          conflict_of_interest: boolean
+          consent_not_applicable: boolean
+          created_at: string
+          data_availability: boolean
+          ethics_approval: boolean
+          ethics_not_applicable: boolean
+          funding_disclosed: boolean
+          id: string
+          informed_consent: boolean
+          no_plagiarism: boolean
+          not_published_elsewhere: boolean
+          submission_id: string
+          trial_registration_confirmed: boolean
+          updated_at: string
+        }
+        Insert: {
+          acknowledgments_confirmed?: boolean
+          ai_assistance_declared?: boolean
+          ai_assistance_used?: boolean
+          author_contributions?: boolean
+          conflict_of_interest?: boolean
+          consent_not_applicable?: boolean
+          created_at?: string
+          data_availability?: boolean
+          ethics_approval?: boolean
+          ethics_not_applicable?: boolean
+          funding_disclosed?: boolean
+          id?: string
+          informed_consent?: boolean
+          no_plagiarism?: boolean
+          not_published_elsewhere?: boolean
+          submission_id: string
+          trial_registration_confirmed?: boolean
+          updated_at?: string
+        }
+        Update: {
+          acknowledgments_confirmed?: boolean
+          ai_assistance_declared?: boolean
+          ai_assistance_used?: boolean
+          author_contributions?: boolean
+          conflict_of_interest?: boolean
+          consent_not_applicable?: boolean
+          created_at?: string
+          data_availability?: boolean
+          ethics_approval?: boolean
+          ethics_not_applicable?: boolean
+          funding_disclosed?: boolean
+          id?: string
+          informed_consent?: boolean
+          no_plagiarism?: boolean
+          not_published_elsewhere?: boolean
+          submission_id?: string
+          trial_registration_confirmed?: boolean
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "submission_declarations_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: true
+            referencedRelation: "submissions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       submission_files: {
         Row: {
           created_at: string
@@ -829,86 +1098,138 @@ export type Database = {
       submissions: {
         Row: {
           abstract: string
+          acknowledgments: string | null
           admin_notes: string | null
+          ai_disclosure: string | null
+          article_type_id: string | null
           authors: string
           category: string | null
+          conflict_of_interest_statement: string | null
           copyeditor_id: string | null
           cover_letter: string | null
           created_at: string
+          data_availability_statement: string | null
           decision: string | null
           decision_date: string | null
           editor_id: string | null
+          ethics_approval_number: string | null
+          ethics_committee: string | null
+          funding_statement: string | null
           id: string
           journal_issue_id: string | null
           keywords: string | null
           layout_editor_id: string | null
+          manuscript_language: string | null
           manuscript_url: string | null
           metadata: Json | null
+          patient_consent_obtained: boolean | null
+          reporting_guideline: string | null
           review_type: string | null
           revision_number: number | null
           section_editor_id: string | null
           status: string
+          submitted_at: string | null
           supplementary_url: string | null
           title: string
+          trial_registration_id: string | null
+          trial_registry: string | null
           updated_at: string
           user_id: string
+          word_count: number | null
           workflow_stage: string
         }
         Insert: {
           abstract: string
+          acknowledgments?: string | null
           admin_notes?: string | null
+          ai_disclosure?: string | null
+          article_type_id?: string | null
           authors: string
           category?: string | null
+          conflict_of_interest_statement?: string | null
           copyeditor_id?: string | null
           cover_letter?: string | null
           created_at?: string
+          data_availability_statement?: string | null
           decision?: string | null
           decision_date?: string | null
           editor_id?: string | null
+          ethics_approval_number?: string | null
+          ethics_committee?: string | null
+          funding_statement?: string | null
           id?: string
           journal_issue_id?: string | null
           keywords?: string | null
           layout_editor_id?: string | null
+          manuscript_language?: string | null
           manuscript_url?: string | null
           metadata?: Json | null
+          patient_consent_obtained?: boolean | null
+          reporting_guideline?: string | null
           review_type?: string | null
           revision_number?: number | null
           section_editor_id?: string | null
           status?: string
+          submitted_at?: string | null
           supplementary_url?: string | null
           title: string
+          trial_registration_id?: string | null
+          trial_registry?: string | null
           updated_at?: string
           user_id: string
+          word_count?: number | null
           workflow_stage?: string
         }
         Update: {
           abstract?: string
+          acknowledgments?: string | null
           admin_notes?: string | null
+          ai_disclosure?: string | null
+          article_type_id?: string | null
           authors?: string
           category?: string | null
+          conflict_of_interest_statement?: string | null
           copyeditor_id?: string | null
           cover_letter?: string | null
           created_at?: string
+          data_availability_statement?: string | null
           decision?: string | null
           decision_date?: string | null
           editor_id?: string | null
+          ethics_approval_number?: string | null
+          ethics_committee?: string | null
+          funding_statement?: string | null
           id?: string
           journal_issue_id?: string | null
           keywords?: string | null
           layout_editor_id?: string | null
+          manuscript_language?: string | null
           manuscript_url?: string | null
           metadata?: Json | null
+          patient_consent_obtained?: boolean | null
+          reporting_guideline?: string | null
           review_type?: string | null
           revision_number?: number | null
           section_editor_id?: string | null
           status?: string
+          submitted_at?: string | null
           supplementary_url?: string | null
           title?: string
+          trial_registration_id?: string | null
+          trial_registry?: string | null
           updated_at?: string
           user_id?: string
+          word_count?: number | null
           workflow_stage?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "submissions_article_type_id_fkey"
+            columns: ["article_type_id"]
+            isOneToOne: false
+            referencedRelation: "article_types"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "submissions_journal_issue_id_fkey"
             columns: ["journal_issue_id"]
