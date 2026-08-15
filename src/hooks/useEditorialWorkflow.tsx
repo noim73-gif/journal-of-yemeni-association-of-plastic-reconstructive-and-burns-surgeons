@@ -264,7 +264,7 @@ export function useEditorialWorkflow() {
     return true;
   }
 
-  async function fetchAuditLog(submissionId: string): Promise<AuditEntry[]> {
+  const fetchAuditLog = useCallback(async (submissionId: string): Promise<AuditEntry[]> => {
     const { data, error } = await supabase
       .from("submission_audit_log")
       .select("*")
@@ -289,7 +289,7 @@ export function useEditorialWorkflow() {
       }));
     }
     return entries;
-  }
+  }, []);
 
   async function assignEditor(submissionId: string, editorId: string, role: "editor" | "section_editor" | "copyeditor" | "layout_editor") {
     const columnMap = {
