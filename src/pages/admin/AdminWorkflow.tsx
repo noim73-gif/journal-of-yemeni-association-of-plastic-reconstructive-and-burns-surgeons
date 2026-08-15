@@ -9,9 +9,11 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Loader2, ArrowRight, FileText, Users, Eye, Pencil, Printer, BookOpen } from "lucide-react";
+import { Loader2, ArrowRight, FileText, Users, Eye, Pencil, Printer, BookOpen, History } from "lucide-react";
 import { DashboardHeader } from "@/components/DashboardHeader";
 import { EditorialStatusBadge } from "@/components/EditorialStatusBadge";
+import { SubmissionAuditTrail } from "@/components/admin/SubmissionAuditTrail";
+import { nextStates, getStateDef, type EditorialState } from "@/lib/editorialStages";
 
 const STAGES: { key: WorkflowStage; label: string; icon: React.ReactNode }[] = [
   { key: "submission", label: "Submission", icon: <FileText className="h-4 w-4" /> },
@@ -43,12 +45,14 @@ function WorkflowProgress({ current }: { current: WorkflowStage }) {
 }
 
 export default function AdminWorkflow() {
-  const { submissions, loading, advanceStage, makeDecision, setReviewType, fetchSubmissions } = useEditorialWorkflow();
+  const { submissions, loading, advanceStage, makeDecision, setReviewType, transitionState, fetchAuditLog } = useEditorialWorkflow();
   const [selectedSubmission, setSelectedSubmission] = useState<WorkflowSubmission | null>(null);
   const [actionDialogOpen, setActionDialogOpen] = useState(false);
-  const [actionType, setActionType] = useState<"advance" | "decide">("advance");
+  const [actionType, setActionType] = useState<"advance" | "decide" | "transition">("advance");
   const [decision, setDecision] = useState<Decision>("accept");
+  const [targetState, setTargetState] = useState<EditorialState | "">("");
   const [comments, setComments] = useState("");
+  const [auditFor, setAuditFor] = useState<WorkflowSubmission | null>(null);
   const [activeTab, setActiveTab] = useState<WorkflowStage | "all">("all");
 
   const filtered = activeTab === "all" ? submissions : submissions.filter((s) => s.workflow_stage === activeTab);
@@ -75,9 +79,18 @@ export default function AdminWorkflow() {
     setComments("");
   };
 
-  const openAction = (sub: WorkflowSubmission, type: "advance" | "decide") => {
+  const handleTransition = async () => {
+    if (!selectedSubmission || !targetState) return;
+    await transitionState(selectedSubmission, targetState, comments || undefined);
+    setActionDialogOpen(false);
+    setComments("");
+    setTargetState("");
+  };
+
+  const openAction = (sub: WorkflowSubmission, type: "advance" | "decide" | "transition") => {
     setSelectedSubmission(sub);
     setActionType(type);
+    if (type === "transition") setTargetState(nextStates(sub.status)[0]?.key ?? "");
     setActionDialogOpen(true);
   };
 
@@ -136,6 +149,7 @@ export default function AdminWorkflow() {
                   <TableHead>Title</TableHead>
                   <TableHead>Author</TableHead>
                   <TableHead>Stage</TableHead>
+                  <TableHead>Editorial State</TableHead>
                   <TableHead>Review Type</TableHead>
                   <TableHead>Decision</TableHead>
                   <TableHead>Reviews</TableHead>
@@ -145,13 +159,16 @@ export default function AdminWorkflow() {
               <TableBody>
                 {filtered.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={7} className="text-center text-muted-foreground py-8">No submissions in this stage</TableCell>
+                    <TableCell colSpan={8} className="text-center text-muted-foreground py-8">No submissions in this stage</TableCell>
                   </TableRow>
                 ) : filtered.map((sub) => (
                   <TableRow key={sub.id}>
                     <TableCell className="font-medium max-w-[200px] truncate">{sub.title}</TableCell>
                     <TableCell>{sub.author_name}</TableCell>
                     <TableCell><WorkflowProgress current={sub.workflow_stage} /></TableCell>
+                    <TableCell>
+                      <EditorialStatusBadge status={getStateDef(sub.status).key} />
+                    </TableCell>
                     <TableCell>
                       <Select value={sub.review_type} onValueChange={(v) => setReviewType(sub.id, v as "single_blind" | "double_blind" | "open")}>
                         <SelectTrigger className="w-[140px] h-8"><SelectValue /></SelectTrigger>
@@ -171,6 +188,14 @@ export default function AdminWorkflow() {
                     </TableCell>
                     <TableCell>{sub.review_count}</TableCell>
                     <TableCell className="text-right space-x-1">
+                      <Button variant="ghost" size="sm" onClick={() => setAuditFor(sub)}>
+                        <History className="h-4 w-4" />
+                      </Button>
+                      {nextStates(sub.status).length > 0 && (
+                        <Button variant="outline" size="sm" onClick={() => openAction(sub, "transition")}>
+                          Move
+                        </Button>
+                      )}
                       {sub.workflow_stage === "review" && (
                         <Button variant="outline" size="sm" onClick={() => openAction(sub, "decide")}>Decision</Button>
                       )}
@@ -194,13 +219,31 @@ export default function AdminWorkflow() {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>
-              {actionType === "advance"
+              {actionType === "transition"
+                ? "Move Editorial State"
+                : actionType === "advance"
                 ? `Advance to ${selectedSubmission ? getNextStage(selectedSubmission.workflow_stage) : ""}`
                 : "Record Editorial Decision"}
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
             <p className="text-sm text-muted-foreground font-medium">{selectedSubmission?.title}</p>
+            {actionType === "transition" ? (
+              <div>
+                <Label>Next state</Label>
+                <Select value={targetState} onValueChange={(v) => setTargetState(v as EditorialState)}>
+                  <SelectTrigger><SelectValue placeholder="Select next state" /></SelectTrigger>
+                  <SelectContent>
+                    {(selectedSubmission ? nextStates(selectedSubmission.status) : []).map((s) => (
+                      <SelectItem key={s.key} value={s.key}>{s.label}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {targetState && (
+                  <p className="text-caption mt-2">{getStateDef(targetState).description}</p>
+                )}
+              </div>
+            ) : (
             <div>
               <Label>Decision</Label>
               <Select value={decision} onValueChange={(v) => setDecision(v as Decision)}>
@@ -214,14 +257,35 @@ export default function AdminWorkflow() {
                 </SelectContent>
               </Select>
             </div>
+            )}
             <div>
               <Label>Comments</Label>
               <Textarea value={comments} onChange={(e) => setComments(e.target.value)} placeholder="Add editorial comments..." />
             </div>
-            <Button className="w-full" onClick={actionType === "advance" ? handleAdvance : handleDecision}>
-              {actionType === "advance" ? "Advance Stage" : "Submit Decision"}
+            <Button
+              className="w-full"
+              onClick={actionType === "transition" ? handleTransition : actionType === "advance" ? handleAdvance : handleDecision}
+            >
+              {actionType === "transition" ? "Move Submission" : actionType === "advance" ? "Advance Stage" : "Submit Decision"}
             </Button>
           </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Audit trail */}
+      <Dialog open={!!auditFor} onOpenChange={(o) => !o && setAuditFor(null)}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Audit Trail</DialogTitle>
+          </DialogHeader>
+          {auditFor && (
+            <>
+              <p className="text-body-sm font-semibold">{auditFor.title}</p>
+              <div className="max-h-[60vh] overflow-y-auto pr-2">
+                <SubmissionAuditTrail submissionId={auditFor.id} fetchAuditLog={fetchAuditLog} />
+              </div>
+            </>
+          )}
         </DialogContent>
       </Dialog>
     </div>

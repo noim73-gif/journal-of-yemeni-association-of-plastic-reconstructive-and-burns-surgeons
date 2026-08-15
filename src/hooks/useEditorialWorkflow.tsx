@@ -3,6 +3,13 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "./useAuth";
 import { toast } from "sonner";
 import { logger } from "@/lib/logger";
+import { logAudit } from "@/lib/submissionFinalize";
+import {
+  type EditorialState,
+  canTransition,
+  getStateDef,
+  resolveState,
+} from "@/lib/editorialStages";
 
 export type WorkflowStage = "submission" | "review" | "copyediting" | "production" | "publication";
 export type ReviewType = "single_blind" | "double_blind" | "open";
@@ -61,6 +68,19 @@ export interface SubmissionFile {
   uploaded_by: string;
   notes: string | null;
   created_at: string;
+}
+
+export interface AuditEntry {
+  id: string;
+  submission_id: string;
+  actor_id: string | null;
+  actor_role: string | null;
+  action: string;
+  from_value: string | null;
+  to_value: string | null;
+  details: Record<string, unknown> | null;
+  created_at: string;
+  actor_name?: string;
 }
 
 export function useEditorialWorkflow() {
@@ -168,9 +188,108 @@ export function useEditorialWorkflow() {
     }
 
     toast.success(`Submission moved to ${newStage} stage`);
+    await logAudit({
+      submissionId,
+      actorId: user.id,
+      actorRole: "editor",
+      action: "stage_changed",
+      to: newStage,
+      details: comments ? { comments } : undefined,
+    });
     await fetchSubmissions();
     return true;
   }
+
+  /**
+   * Move a submission through the fine-grained editorial state machine.
+   * Keeps `workflow_stage` in sync and writes an immutable audit entry.
+   */
+  async function transitionState(
+    submission: WorkflowSubmission,
+    to: EditorialState,
+    comments?: string
+  ) {
+    if (!user) return false;
+    const from = resolveState(submission.status);
+    if (!canTransition(from, to)) {
+      toast.error("That transition is not allowed from the current state");
+      return false;
+    }
+
+    const def = getStateDef(to);
+    const updates: Record<string, unknown> = {
+      status: to,
+      workflow_stage: def.stage,
+    };
+    if (to === "accepted" || to === "rejected") {
+      updates.decision = to === "accepted" ? "accept" : "reject";
+      updates.decision_date = new Date().toISOString();
+    }
+    if (to === "re_review") {
+      updates.revision_number = (submission.revision_number || 1) + 1;
+    }
+
+    const { error } = await supabase.from("submissions").update(updates).eq("id", submission.id);
+    if (error) {
+      logger.error("Error transitioning editorial state:", error);
+      toast.error("Failed to update editorial state");
+      return false;
+    }
+
+    await logAudit({
+      submissionId: submission.id,
+      actorId: user.id,
+      actorRole: "editor",
+      action: "state_changed",
+      from,
+      to,
+      details: comments ? { comments } : undefined,
+    });
+
+    if (comments) {
+      await supabase.from("editorial_decisions").insert([
+        {
+          submission_id: submission.id,
+          editor_id: user.id,
+          decision: to,
+          stage: def.stage,
+          comments,
+          notify_author: true,
+        },
+      ]);
+    }
+
+    toast.success(`Moved to ${def.label}`);
+    await fetchSubmissions();
+    return true;
+  }
+
+  const fetchAuditLog = useCallback(async (submissionId: string): Promise<AuditEntry[]> => {
+    const { data, error } = await supabase
+      .from("submission_audit_log")
+      .select("*")
+      .eq("submission_id", submissionId)
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      logger.error("Error fetching audit log:", error);
+      return [];
+    }
+
+    const entries = (data || []) as AuditEntry[];
+    const actorIds = [...new Set(entries.map((e) => e.actor_id).filter(Boolean))] as string[];
+    if (actorIds.length) {
+      const { data: profiles } = await supabase
+        .from("profiles")
+        .select("user_id, full_name")
+        .in("user_id", actorIds);
+      return entries.map((e) => ({
+        ...e,
+        actor_name: profiles?.find((p) => p.user_id === e.actor_id)?.full_name || "System",
+      }));
+    }
+    return entries;
+  }, []);
 
   async function assignEditor(submissionId: string, editorId: string, role: "editor" | "section_editor" | "copyeditor" | "layout_editor") {
     const columnMap = {
@@ -192,6 +311,16 @@ export function useEditorialWorkflow() {
     }
 
     toast.success(`${role.replace("_", " ")} assigned`);
+    if (user) {
+      await logAudit({
+        submissionId,
+        actorId: user.id,
+        actorRole: "editor",
+        action: "editor_assigned",
+        to: editorId,
+        details: { role },
+      });
+    }
     await fetchSubmissions();
     return true;
   }
@@ -224,6 +353,14 @@ export function useEditorialWorkflow() {
     ]);
 
     toast.success("Decision recorded");
+    await logAudit({
+      submissionId,
+      actorId: user.id,
+      actorRole: "editor",
+      action: "decision_recorded",
+      to: decision,
+      details: comments ? { comments } : undefined,
+    });
     await fetchSubmissions();
     return true;
   }
@@ -271,6 +408,15 @@ export function useEditorialWorkflow() {
     }
 
     toast.success(`Review type set to ${reviewType.replace("_", " ")}`);
+    if (user) {
+      await logAudit({
+        submissionId,
+        actorId: user.id,
+        actorRole: "editor",
+        action: "review_type_changed",
+        to: reviewType,
+      });
+    }
     await fetchSubmissions();
     return true;
   }
@@ -284,6 +430,8 @@ export function useEditorialWorkflow() {
     loading,
     fetchSubmissions,
     advanceStage,
+    transitionState,
+    fetchAuditLog,
     assignEditor,
     makeDecision,
     fetchDecisionLog,
