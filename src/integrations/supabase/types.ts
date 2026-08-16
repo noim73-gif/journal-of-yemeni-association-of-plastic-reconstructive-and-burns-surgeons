@@ -1048,39 +1048,75 @@ export type Database = {
       submission_reviews: {
         Row: {
           assigned_at: string
+          comments_to_editor: string | null
+          competing_interests: string | null
           completed_at: string | null
+          confidence: number | null
           created_at: string
+          decline_reason: string | null
+          due_at: string | null
           feedback: string | null
           id: string
           private_notes: string | null
+          rating_clarity: number | null
+          rating_ethics: number | null
+          rating_methodology: number | null
+          rating_originality: number | null
+          rating_significance: number | null
           recommendation: string | null
           reviewer_id: string
+          round: number
+          stage: string
           status: string
           submission_id: string
           updated_at: string
         }
         Insert: {
           assigned_at?: string
+          comments_to_editor?: string | null
+          competing_interests?: string | null
           completed_at?: string | null
+          confidence?: number | null
           created_at?: string
+          decline_reason?: string | null
+          due_at?: string | null
           feedback?: string | null
           id?: string
           private_notes?: string | null
+          rating_clarity?: number | null
+          rating_ethics?: number | null
+          rating_methodology?: number | null
+          rating_originality?: number | null
+          rating_significance?: number | null
           recommendation?: string | null
           reviewer_id: string
+          round?: number
+          stage?: string
           status?: string
           submission_id: string
           updated_at?: string
         }
         Update: {
           assigned_at?: string
+          comments_to_editor?: string | null
+          competing_interests?: string | null
           completed_at?: string | null
+          confidence?: number | null
           created_at?: string
+          decline_reason?: string | null
+          due_at?: string | null
           feedback?: string | null
           id?: string
           private_notes?: string | null
+          rating_clarity?: number | null
+          rating_ethics?: number | null
+          rating_methodology?: number | null
+          rating_originality?: number | null
+          rating_significance?: number | null
           recommendation?: string | null
           reviewer_id?: string
+          round?: number
+          stage?: string
           status?: string
           submission_id?: string
           updated_at?: string
