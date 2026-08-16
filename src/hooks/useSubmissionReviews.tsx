@@ -200,7 +200,7 @@ export function useSubmissionReviews() {
         status: "completed",
         completed_at: new Date().toISOString(),
       })
-      .eq("id", reviewId);
+      .eq("id", reviewId)
       .select("submission_id, round, stage, recommendation")
       .maybeSingle();
 
