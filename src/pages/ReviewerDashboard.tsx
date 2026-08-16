@@ -353,9 +353,18 @@ export default function ReviewerDashboard() {
                             </Button>
                             <Button size="sm" onClick={() => handleStartSubmissionReview(review)}>
                               <Send className="h-4 w-4 mr-2" />
-                              Submit Review
+                              {review.status === "in_progress" ? "Continue Report" : "Review Form"}
                             </Button>
                           </div>
+                        </div>
+                        <div className="mt-3 flex flex-wrap items-center gap-2">
+                          <Badge variant="secondary">{reviewStageLabel(review.stage)}</Badge>
+                          <Badge variant="outline">Round {review.round ?? 1}</Badge>
+                          {review.due_at && (
+                            <span className="text-meta">
+                              Due {format(parseISO(review.due_at), "MMM d, yyyy")}
+                            </span>
+                          )}
                         </div>
                       </CardContent>
                     </Card>
@@ -369,7 +378,7 @@ export default function ReviewerDashboard() {
                 <h2 className="text-h4 mb-4">Completed Submission Reviews</h2>
                 <div className="grid gap-4">
                   {completedSubmissionReviews.map((review) => (
-                    <Card key={review.id} className="opacity-75">
+                    <Card key={review.id}>
                       <CardHeader>
                         <div className="flex items-start justify-between">
                           <div>
@@ -381,6 +390,25 @@ export default function ReviewerDashboard() {
                           <EditorialStatusBadge status={review.status} />
                         </div>
                       </CardHeader>
+                      <CardContent className="flex flex-wrap items-center gap-2">
+                        <Badge variant="secondary">{reviewStageLabel(review.stage)}</Badge>
+                        <Badge variant="outline">Round {review.round ?? 1}</Badge>
+                        <Badge variant="outline">{recommendationLabel(review.recommendation)}</Badge>
+                        {averageRating(review) !== null && (
+                          <span className="text-meta">
+                            Mean rating {averageRating(review)!.toFixed(1)}/5
+                          </span>
+                        )}
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="ml-auto"
+                          onClick={() => handleStartSubmissionReview(review)}
+                        >
+                          <Eye className="h-4 w-4 mr-2" />
+                          View report
+                        </Button>
+                      </CardContent>
                     </Card>
                   ))}
                 </div>
