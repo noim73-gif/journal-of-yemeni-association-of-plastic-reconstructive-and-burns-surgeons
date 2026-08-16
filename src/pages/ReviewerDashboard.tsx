@@ -497,7 +497,7 @@ export default function ReviewerDashboard() {
       </Dialog>
 
       {/* View Submission Dialog */}
-      <Dialog open={!!selectedSubmissionReview && !isReviewDialogOpen} onOpenChange={() => setSelectedSubmissionReview(null)}>
+      <Dialog open={!!selectedSubmissionReview && !isReportOpen} onOpenChange={() => setSelectedSubmissionReview(null)}>
         <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>{selectedSubmissionReview?.submission_title}</DialogTitle>
@@ -552,9 +552,45 @@ export default function ReviewerDashboard() {
               Close
             </Button>
             <Button onClick={() => selectedSubmissionReview && handleStartSubmissionReview(selectedSubmissionReview)}>
-              Submit Review
+              Open Review Form
             </Button>
           </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Structured peer review report */}
+      <Dialog
+        open={isReportOpen}
+        onOpenChange={(open) => {
+          setIsReportOpen(open);
+          if (!open) setSelectedSubmissionReview(null);
+        }}
+      >
+        <DialogContent className="max-w-3xl max-h-[85vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>
+              {selectedSubmissionReview?.status === "completed" ? "Your filed review" : "Peer review report"}
+            </DialogTitle>
+            <DialogDescription>
+              {selectedSubmissionReview?.submission_title} ·{" "}
+              {reviewStageLabel(selectedSubmissionReview?.stage)}
+            </DialogDescription>
+          </DialogHeader>
+          {selectedSubmissionReview && (
+            <ReviewReportForm
+              key={selectedSubmissionReview.id}
+              initial={reportFromReview(selectedSubmissionReview)}
+              round={selectedSubmissionReview.round ?? 1}
+              stage={selectedSubmissionReview.stage}
+              readOnly={selectedSubmissionReview.status === "completed"}
+              onSubmit={handleFileReport}
+              onSaveDraft={handleSaveReportDraft}
+              onCancel={() => {
+                setIsReportOpen(false);
+                setSelectedSubmissionReview(null);
+              }}
+            />
+          )}
         </DialogContent>
       </Dialog>
 
