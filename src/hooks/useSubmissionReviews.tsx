@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "./useAuth";
 import { toast } from "sonner";
 import { logger } from "@/lib/logger";
+import type { ReviewReport } from "@/lib/reviewForm";
 
 export interface SubmissionReview {
   id: string;
@@ -16,10 +17,38 @@ export interface SubmissionReview {
   completed_at: string | null;
   created_at: string;
   updated_at: string;
+  round: number;
+  stage: string;
+  due_at: string | null;
+  rating_originality: number | null;
+  rating_methodology: number | null;
+  rating_clarity: number | null;
+  rating_significance: number | null;
+  rating_ethics: number | null;
+  confidence: number | null;
+  competing_interests: string | null;
+  comments_to_editor: string | null;
+  decline_reason: string | null;
   // Joined data
   submission_title?: string;
   submission_abstract?: string;
   reviewer_name?: string;
+}
+
+function reportToRow(report: ReviewReport) {
+  return {
+    recommendation: report.recommendation || null,
+    feedback: report.feedback || null,
+    private_notes: report.private_notes || null,
+    comments_to_editor: report.comments_to_editor || null,
+    competing_interests: report.competing_interests || null,
+    confidence: report.confidence,
+    rating_originality: report.rating_originality,
+    rating_methodology: report.rating_methodology,
+    rating_clarity: report.rating_clarity,
+    rating_significance: report.rating_significance,
+    rating_ethics: report.rating_ethics,
+  };
 }
 
 export function useSubmissionReviews() {
@@ -108,13 +137,25 @@ export function useSubmissionReviews() {
     setLoading(false);
   }
 
-  async function assignReviewer(submissionId: string, reviewerId: string) {
+  async function assignReviewer(
+    submissionId: string,
+    reviewerId: string,
+    options?: { round?: number; stage?: string; dueAt?: string | null }
+  ) {
     const { error } = await supabase
       .from("submission_reviews")
-      .insert([{ submission_id: submissionId, reviewer_id: reviewerId }]);
+      .insert([
+        {
+          submission_id: submissionId,
+          reviewer_id: reviewerId,
+          round: options?.round ?? 1,
+          stage: options?.stage ?? "peer_review",
+          due_at: options?.dueAt ?? null,
+        },
+      ]);
 
     if (error) {
-      if (error.code === "23505") {
+      if (error.code === "23505" || error.code === "23514" || error.code === "23P01") {
         toast.error("Reviewer is already assigned to this submission");
       } else {
         logger.error("Error assigning reviewer:", error);
@@ -134,22 +175,34 @@ export function useSubmissionReviews() {
     return true;
   }
 
-  async function submitReview(
-    reviewId: string,
-    recommendation: string,
-    feedback: string,
-    privateNotes: string
-  ) {
+  /** Save an in-progress report without filing it. */
+  async function saveReviewDraft(reviewId: string, report: ReviewReport) {
     const { error } = await supabase
       .from("submission_reviews")
+      .update({ ...reportToRow(report), status: "in_progress" })
+      .eq("id", reviewId);
+
+    if (error) {
+      logger.error("Error saving review draft:", error);
+      toast.error("Failed to save your progress");
+      return false;
+    }
+
+    toast.success("Progress saved");
+    return true;
+  }
+
+  async function submitReview(reviewId: string, report: ReviewReport) {
+    const { data, error } = await supabase
+      .from("submission_reviews")
       .update({
+        ...reportToRow(report),
         status: "completed",
-        recommendation,
-        feedback,
-        private_notes: privateNotes,
         completed_at: new Date().toISOString(),
       })
       .eq("id", reviewId);
+      .select("submission_id, round, stage, recommendation")
+      .maybeSingle();
 
     if (error) {
       logger.error("Error submitting review:", error);
@@ -157,7 +210,34 @@ export function useSubmissionReviews() {
       return false;
     }
 
+    if (data) {
+      await supabase.from("submission_audit_log").insert({
+        submission_id: data.submission_id,
+        actor_id: user?.id ?? null,
+        actor_role: "reviewer",
+        action: "review_submitted",
+        to_value: data.recommendation,
+        details: { round: data.round, stage: data.stage },
+      });
+    }
+
     toast.success("Review submitted successfully");
+    return true;
+  }
+
+  async function declineReview(reviewId: string, reason: string) {
+    const { error } = await supabase
+      .from("submission_reviews")
+      .update({ status: "declined", decline_reason: reason || null })
+      .eq("id", reviewId);
+
+    if (error) {
+      logger.error("Error declining review invitation:", error);
+      toast.error("Failed to decline the invitation");
+      return false;
+    }
+
+    toast.success("Invitation declined");
     return true;
   }
 
@@ -234,6 +314,8 @@ export function useSubmissionReviews() {
     fetchMyReviews,
     assignReviewer,
     submitReview,
+    saveReviewDraft,
+    declineReview,
     updateReviewStatus,
     removeReviewer,
     getReviewsForSubmission,
