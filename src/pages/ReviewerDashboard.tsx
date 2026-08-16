@@ -46,13 +46,21 @@ import { toast } from "sonner";
 import { EditorialStatusBadge } from "@/components/EditorialStatusBadge";
 import { EmptyState } from "@/components/EmptyState";
 import { TableSkeleton } from "@/components/skeletons/TableSkeleton";
+import { ReviewReportForm } from "@/components/review/ReviewReportForm";
+import { reviewStageLabel, averageRating, recommendationLabel, ReviewReport } from "@/lib/reviewForm";
 
 export default function ReviewerDashboard() {
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
   const { isReviewer, loading: roleLoading } = useIsReviewer();
   const { reviews: articleReviews, loading: articleReviewsLoading, fetchMyReviews: fetchMyArticleReviews, submitReview: submitArticleReview } = useReviews();
-  const { reviews: submissionReviews, loading: submissionReviewsLoading, fetchMyReviews: fetchMySubmissionReviews, submitReview: submitSubmissionReview } = useSubmissionReviews();
+  const {
+    reviews: submissionReviews,
+    loading: submissionReviewsLoading,
+    fetchMyReviews: fetchMySubmissionReviews,
+    submitReview: submitSubmissionReview,
+    saveReviewDraft,
+  } = useSubmissionReviews();
   
   const [selectedArticleReview, setSelectedArticleReview] = useState<Review | null>(null);
   const [selectedSubmissionReview, setSelectedSubmissionReview] = useState<SubmissionReview | null>(null);
@@ -60,6 +68,7 @@ export default function ReviewerDashboard() {
   const [submissionContent, setSubmissionContent] = useState<{ abstract: string; keywords: string; category: string; manuscript_url: string | null }>({ abstract: "", keywords: "", category: "", manuscript_url: null });
   const [isReviewDialogOpen, setIsReviewDialogOpen] = useState(false);
   const [reviewType, setReviewType] = useState<"article" | "submission">("article");
+  const [isReportOpen, setIsReportOpen] = useState(false);
   const [recommendation, setRecommendation] = useState<string>("");
   const [feedback, setFeedback] = useState("");
   const [privateNotes, setPrivateNotes] = useState("");
@@ -142,10 +151,39 @@ export default function ReviewerDashboard() {
   const handleStartSubmissionReview = (review: SubmissionReview) => {
     setSelectedSubmissionReview(review);
     setReviewType("submission");
-    setIsReviewDialogOpen(true);
-    setRecommendation("");
-    setFeedback("");
-    setPrivateNotes("");
+    setIsReportOpen(true);
+  };
+
+  const reportFromReview = (review: SubmissionReview): Partial<ReviewReport> => ({
+    recommendation: review.recommendation ?? "",
+    feedback: review.feedback ?? "",
+    comments_to_editor: review.comments_to_editor ?? "",
+    private_notes: review.private_notes ?? "",
+    competing_interests: review.competing_interests ?? "",
+    confidence: review.confidence ?? null,
+    rating_originality: review.rating_originality ?? null,
+    rating_methodology: review.rating_methodology ?? null,
+    rating_clarity: review.rating_clarity ?? null,
+    rating_significance: review.rating_significance ?? null,
+    rating_ethics: review.rating_ethics ?? null,
+  });
+
+  const handleFileReport = async (report: ReviewReport) => {
+    if (!selectedSubmissionReview) return false;
+    const ok = await submitSubmissionReview(selectedSubmissionReview.id, report);
+    if (ok) {
+      setIsReportOpen(false);
+      setSelectedSubmissionReview(null);
+      await fetchMySubmissionReviews();
+    }
+    return ok;
+  };
+
+  const handleSaveReportDraft = async (report: ReviewReport) => {
+    if (!selectedSubmissionReview) return false;
+    const ok = await saveReviewDraft(selectedSubmissionReview.id, report);
+    if (ok) await fetchMySubmissionReviews();
+    return ok;
   };
 
   const handleSubmitReview = async () => {
@@ -165,14 +203,6 @@ export default function ReviewerDashboard() {
         privateNotes
       );
       if (success) fetchMyArticleReviews();
-    } else if (reviewType === "submission" && selectedSubmissionReview) {
-      success = await submitSubmissionReview(
-        selectedSubmissionReview.id,
-        recommendation,
-        feedback,
-        privateNotes
-      );
-      if (success) fetchMySubmissionReviews();
     }
 
     if (success) {
