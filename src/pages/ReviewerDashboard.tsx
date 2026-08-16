@@ -46,13 +46,21 @@ import { toast } from "sonner";
 import { EditorialStatusBadge } from "@/components/EditorialStatusBadge";
 import { EmptyState } from "@/components/EmptyState";
 import { TableSkeleton } from "@/components/skeletons/TableSkeleton";
+import { ReviewReportForm } from "@/components/review/ReviewReportForm";
+import { reviewStageLabel, averageRating, recommendationLabel, ReviewReport } from "@/lib/reviewForm";
 
 export default function ReviewerDashboard() {
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
   const { isReviewer, loading: roleLoading } = useIsReviewer();
   const { reviews: articleReviews, loading: articleReviewsLoading, fetchMyReviews: fetchMyArticleReviews, submitReview: submitArticleReview } = useReviews();
-  const { reviews: submissionReviews, loading: submissionReviewsLoading, fetchMyReviews: fetchMySubmissionReviews, submitReview: submitSubmissionReview } = useSubmissionReviews();
+  const {
+    reviews: submissionReviews,
+    loading: submissionReviewsLoading,
+    fetchMyReviews: fetchMySubmissionReviews,
+    submitReview: submitSubmissionReview,
+    saveReviewDraft,
+  } = useSubmissionReviews();
   
   const [selectedArticleReview, setSelectedArticleReview] = useState<Review | null>(null);
   const [selectedSubmissionReview, setSelectedSubmissionReview] = useState<SubmissionReview | null>(null);
@@ -60,6 +68,7 @@ export default function ReviewerDashboard() {
   const [submissionContent, setSubmissionContent] = useState<{ abstract: string; keywords: string; category: string; manuscript_url: string | null }>({ abstract: "", keywords: "", category: "", manuscript_url: null });
   const [isReviewDialogOpen, setIsReviewDialogOpen] = useState(false);
   const [reviewType, setReviewType] = useState<"article" | "submission">("article");
+  const [isReportOpen, setIsReportOpen] = useState(false);
   const [recommendation, setRecommendation] = useState<string>("");
   const [feedback, setFeedback] = useState("");
   const [privateNotes, setPrivateNotes] = useState("");
@@ -142,10 +151,39 @@ export default function ReviewerDashboard() {
   const handleStartSubmissionReview = (review: SubmissionReview) => {
     setSelectedSubmissionReview(review);
     setReviewType("submission");
-    setIsReviewDialogOpen(true);
-    setRecommendation("");
-    setFeedback("");
-    setPrivateNotes("");
+    setIsReportOpen(true);
+  };
+
+  const reportFromReview = (review: SubmissionReview): Partial<ReviewReport> => ({
+    recommendation: review.recommendation ?? "",
+    feedback: review.feedback ?? "",
+    comments_to_editor: review.comments_to_editor ?? "",
+    private_notes: review.private_notes ?? "",
+    competing_interests: review.competing_interests ?? "",
+    confidence: review.confidence ?? null,
+    rating_originality: review.rating_originality ?? null,
+    rating_methodology: review.rating_methodology ?? null,
+    rating_clarity: review.rating_clarity ?? null,
+    rating_significance: review.rating_significance ?? null,
+    rating_ethics: review.rating_ethics ?? null,
+  });
+
+  const handleFileReport = async (report: ReviewReport) => {
+    if (!selectedSubmissionReview) return false;
+    const ok = await submitSubmissionReview(selectedSubmissionReview.id, report);
+    if (ok) {
+      setIsReportOpen(false);
+      setSelectedSubmissionReview(null);
+      await fetchMySubmissionReviews();
+    }
+    return ok;
+  };
+
+  const handleSaveReportDraft = async (report: ReviewReport) => {
+    if (!selectedSubmissionReview) return false;
+    const ok = await saveReviewDraft(selectedSubmissionReview.id, report);
+    if (ok) await fetchMySubmissionReviews();
+    return ok;
   };
 
   const handleSubmitReview = async () => {
@@ -165,14 +203,6 @@ export default function ReviewerDashboard() {
         privateNotes
       );
       if (success) fetchMyArticleReviews();
-    } else if (reviewType === "submission" && selectedSubmissionReview) {
-      success = await submitSubmissionReview(
-        selectedSubmissionReview.id,
-        recommendation,
-        feedback,
-        privateNotes
-      );
-      if (success) fetchMySubmissionReviews();
     }
 
     if (success) {
@@ -323,9 +353,18 @@ export default function ReviewerDashboard() {
                             </Button>
                             <Button size="sm" onClick={() => handleStartSubmissionReview(review)}>
                               <Send className="h-4 w-4 mr-2" />
-                              Submit Review
+                              {review.status === "in_progress" ? "Continue Report" : "Review Form"}
                             </Button>
                           </div>
+                        </div>
+                        <div className="mt-3 flex flex-wrap items-center gap-2">
+                          <Badge variant="secondary">{reviewStageLabel(review.stage)}</Badge>
+                          <Badge variant="outline">Round {review.round ?? 1}</Badge>
+                          {review.due_at && (
+                            <span className="text-meta">
+                              Due {format(parseISO(review.due_at), "MMM d, yyyy")}
+                            </span>
+                          )}
                         </div>
                       </CardContent>
                     </Card>
@@ -339,7 +378,7 @@ export default function ReviewerDashboard() {
                 <h2 className="text-h4 mb-4">Completed Submission Reviews</h2>
                 <div className="grid gap-4">
                   {completedSubmissionReviews.map((review) => (
-                    <Card key={review.id} className="opacity-75">
+                    <Card key={review.id}>
                       <CardHeader>
                         <div className="flex items-start justify-between">
                           <div>
@@ -351,6 +390,25 @@ export default function ReviewerDashboard() {
                           <EditorialStatusBadge status={review.status} />
                         </div>
                       </CardHeader>
+                      <CardContent className="flex flex-wrap items-center gap-2">
+                        <Badge variant="secondary">{reviewStageLabel(review.stage)}</Badge>
+                        <Badge variant="outline">Round {review.round ?? 1}</Badge>
+                        <Badge variant="outline">{recommendationLabel(review.recommendation)}</Badge>
+                        {averageRating(review) !== null && (
+                          <span className="text-meta">
+                            Mean rating {averageRating(review)!.toFixed(1)}/5
+                          </span>
+                        )}
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="ml-auto"
+                          onClick={() => handleStartSubmissionReview(review)}
+                        >
+                          <Eye className="h-4 w-4 mr-2" />
+                          View report
+                        </Button>
+                      </CardContent>
                     </Card>
                   ))}
                 </div>
@@ -467,7 +525,7 @@ export default function ReviewerDashboard() {
       </Dialog>
 
       {/* View Submission Dialog */}
-      <Dialog open={!!selectedSubmissionReview && !isReviewDialogOpen} onOpenChange={() => setSelectedSubmissionReview(null)}>
+      <Dialog open={!!selectedSubmissionReview && !isReportOpen} onOpenChange={() => setSelectedSubmissionReview(null)}>
         <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>{selectedSubmissionReview?.submission_title}</DialogTitle>
@@ -522,9 +580,45 @@ export default function ReviewerDashboard() {
               Close
             </Button>
             <Button onClick={() => selectedSubmissionReview && handleStartSubmissionReview(selectedSubmissionReview)}>
-              Submit Review
+              Open Review Form
             </Button>
           </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Structured peer review report */}
+      <Dialog
+        open={isReportOpen}
+        onOpenChange={(open) => {
+          setIsReportOpen(open);
+          if (!open) setSelectedSubmissionReview(null);
+        }}
+      >
+        <DialogContent className="max-w-3xl max-h-[85vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>
+              {selectedSubmissionReview?.status === "completed" ? "Your filed review" : "Peer review report"}
+            </DialogTitle>
+            <DialogDescription>
+              {selectedSubmissionReview?.submission_title} ·{" "}
+              {reviewStageLabel(selectedSubmissionReview?.stage)}
+            </DialogDescription>
+          </DialogHeader>
+          {selectedSubmissionReview && (
+            <ReviewReportForm
+              key={selectedSubmissionReview.id}
+              initial={reportFromReview(selectedSubmissionReview)}
+              round={selectedSubmissionReview.round ?? 1}
+              stage={selectedSubmissionReview.stage}
+              readOnly={selectedSubmissionReview.status === "completed"}
+              onSubmit={handleFileReport}
+              onSaveDraft={handleSaveReportDraft}
+              onCancel={() => {
+                setIsReportOpen(false);
+                setSelectedSubmissionReview(null);
+              }}
+            />
+          )}
         </DialogContent>
       </Dialog>
 

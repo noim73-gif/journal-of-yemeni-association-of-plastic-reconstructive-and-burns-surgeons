@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { format, parseISO } from "date-fns";
+import { RATING_CRITERIA, averageRating, reviewStageLabel } from "@/lib/reviewForm";
 import { 
   CheckCircle, 
   Clock, 
@@ -23,6 +24,16 @@ interface ReviewData {
   private_notes: string | null;
   assigned_at: string;
   completed_at: string | null;
+  round?: number | null;
+  stage?: string | null;
+  confidence?: number | null;
+  competing_interests?: string | null;
+  comments_to_editor?: string | null;
+  rating_originality?: number | null;
+  rating_methodology?: number | null;
+  rating_clarity?: number | null;
+  rating_significance?: number | null;
+  rating_ethics?: number | null;
   reviewer_name?: string;
   reviewer_avatar?: string;
 }
@@ -167,6 +178,36 @@ export function SubmissionReviewPanel({ submissionId }: SubmissionReviewPanelPro
                 <Separator />
                 
                 <div className="space-y-3">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <Badge variant="secondary">{reviewStageLabel(review.stage)}</Badge>
+                    <Badge variant="outline">Round {review.round ?? 1}</Badge>
+                    {averageRating(review) !== null && (
+                      <Badge variant="outline">
+                        Mean rating {averageRating(review)!.toFixed(1)}/5
+                      </Badge>
+                    )}
+                    {review.confidence && (
+                      <Badge variant="outline">Confidence {review.confidence}/5</Badge>
+                    )}
+                  </div>
+
+                  {averageRating(review) !== null && (
+                    <div className="grid gap-1.5 sm:grid-cols-2">
+                      {RATING_CRITERIA.map((criterion) => (
+                        <div
+                          key={criterion.key}
+                          className="flex items-center justify-between rounded-md bg-muted px-3 py-1.5"
+                        >
+                          <span className="text-body-sm">{criterion.label}</span>
+                          <span className="text-sm font-semibold">
+                            {review[criterion.key] ?? "—"}
+                            <span className="text-muted-foreground font-normal">/5</span>
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
                   {review.recommendation && (
                     <div className="flex items-center gap-2">
                       <span className="text-sm font-medium">Recommendation:</span>
@@ -191,6 +232,18 @@ export function SubmissionReviewPanel({ submissionId }: SubmissionReviewPanelPro
                     </div>
                   )}
 
+                  {review.comments_to_editor && (
+                    <div>
+                      <div className="flex items-center gap-2 mb-1">
+                        <MessageSquare className="h-4 w-4 text-muted-foreground" />
+                        <span className="text-sm font-medium">Confidential Comments to Editor</span>
+                      </div>
+                      <p className="text-body-sm bg-muted p-3 rounded-md whitespace-pre-wrap">
+                        {review.comments_to_editor}
+                      </p>
+                    </div>
+                  )}
+
                   {review.private_notes && (
                     <div>
                       <div className="flex items-center gap-2 mb-1">
@@ -206,6 +259,12 @@ export function SubmissionReviewPanel({ submissionId }: SubmissionReviewPanelPro
                   {review.completed_at && (
                     <p className="text-caption">
                       Completed: {format(parseISO(review.completed_at), "MMMM d, yyyy 'at' h:mm a")}
+                    </p>
+                  )}
+
+                  {review.competing_interests && (
+                    <p className="text-caption">
+                      Competing interests: {review.competing_interests}
                     </p>
                   )}
                 </div>
