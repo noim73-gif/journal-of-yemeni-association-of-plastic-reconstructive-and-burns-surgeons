@@ -1140,6 +1140,7 @@ export type Database = {
           article_type_id: string | null
           authors: string
           category: string | null
+          citation_public: boolean
           conflict_of_interest_statement: string | null
           copyeditor_id: string | null
           cover_letter: string | null
@@ -1147,6 +1148,7 @@ export type Database = {
           data_availability_statement: string | null
           decision: string | null
           decision_date: string | null
+          doi_assigned_at: string | null
           editor_id: string | null
           ethics_approval_number: string | null
           ethics_committee: string | null
@@ -1159,11 +1161,13 @@ export type Database = {
           manuscript_url: string | null
           metadata: Json | null
           patient_consent_obtained: boolean | null
+          permalink_slug: string | null
           reporting_guideline: string | null
           review_type: string | null
           revision_number: number | null
           section_editor_id: string | null
           status: string
+          submission_doi: string | null
           submitted_at: string | null
           supplementary_url: string | null
           title: string
@@ -1182,6 +1186,7 @@ export type Database = {
           article_type_id?: string | null
           authors: string
           category?: string | null
+          citation_public?: boolean
           conflict_of_interest_statement?: string | null
           copyeditor_id?: string | null
           cover_letter?: string | null
@@ -1189,6 +1194,7 @@ export type Database = {
           data_availability_statement?: string | null
           decision?: string | null
           decision_date?: string | null
+          doi_assigned_at?: string | null
           editor_id?: string | null
           ethics_approval_number?: string | null
           ethics_committee?: string | null
@@ -1201,11 +1207,13 @@ export type Database = {
           manuscript_url?: string | null
           metadata?: Json | null
           patient_consent_obtained?: boolean | null
+          permalink_slug?: string | null
           reporting_guideline?: string | null
           review_type?: string | null
           revision_number?: number | null
           section_editor_id?: string | null
           status?: string
+          submission_doi?: string | null
           submitted_at?: string | null
           supplementary_url?: string | null
           title: string
@@ -1224,6 +1232,7 @@ export type Database = {
           article_type_id?: string | null
           authors?: string
           category?: string | null
+          citation_public?: boolean
           conflict_of_interest_statement?: string | null
           copyeditor_id?: string | null
           cover_letter?: string | null
@@ -1231,6 +1240,7 @@ export type Database = {
           data_availability_statement?: string | null
           decision?: string | null
           decision_date?: string | null
+          doi_assigned_at?: string | null
           editor_id?: string | null
           ethics_approval_number?: string | null
           ethics_committee?: string | null
@@ -1243,11 +1253,13 @@ export type Database = {
           manuscript_url?: string | null
           metadata?: Json | null
           patient_consent_obtained?: boolean | null
+          permalink_slug?: string | null
           reporting_guideline?: string | null
           review_type?: string | null
           revision_number?: number | null
           section_editor_id?: string | null
           status?: string
+          submission_doi?: string | null
           submitted_at?: string | null
           supplementary_url?: string | null
           title?: string
@@ -1345,6 +1357,25 @@ export type Database = {
       }
     }
     Functions: {
+      get_public_manuscript_record: {
+        Args: { p_slug: string }
+        Returns: {
+          abstract: string
+          article_type: string
+          authors: string
+          category: string
+          doi_assigned_at: string
+          keywords: string
+          manuscript_language: string
+          permalink_slug: string
+          published_article_id: string
+          status: string
+          submission_doi: string
+          submitted_at: string
+          title: string
+          workflow_stage: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
