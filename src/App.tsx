@@ -45,6 +45,7 @@ const AdminEditorialBoard = lazy(() => import("./pages/admin/AdminEditorialBoard
 const AdminReviewerApplications = lazy(() => import("./pages/admin/AdminReviewerApplications"));
 const AdminWorkflow = lazy(() => import("./pages/admin/AdminWorkflow"));
 const AdminIssues = lazy(() => import("./pages/admin/AdminIssues"));
+const Manuscript = lazy(() => import("./pages/Manuscript"));
 
 const LazyFallback = () => (
   <div className="min-h-screen flex items-center justify-center">
@@ -103,6 +104,7 @@ function AppContent() {
             <Route path="/articles" element={<Articles />} />
             <Route path="/archive" element={<Archive />} />
             <Route path="/article/:id" element={<Article />} />
+            <Route path="/ms/:slug" element={<Manuscript />} />
             <Route path="/u/:username" element={<PublicProfile />} />
             <Route path="/author-guidelines" element={<AuthorGuidelines />} />
             <Route path="/about" element={<About />} />
