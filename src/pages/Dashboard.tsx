@@ -15,6 +15,7 @@ import { DashboardHeader } from "@/components/DashboardHeader";
 import { EmptyState } from "@/components/EmptyState";
 import { EditorialStatusBadge } from "@/components/EditorialStatusBadge";
 import { TableSkeleton } from "@/components/skeletons/TableSkeleton";
+import { ManuscriptCitation } from "@/components/manuscript/ManuscriptCitation";
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -200,6 +201,7 @@ export default function Dashboard() {
                       <p className="text-caption">
                         Submitted {formatDistanceToNow(new Date(submission.created_at), { addSuffix: true })}
                       </p>
+                      <ManuscriptCitation compact manuscript={submission} />
                       {submission.admin_notes && (
                         <div className="mt-3 p-3 bg-muted rounded-md">
                           <p className="text-overline mb-1">Editorial feedback</p>
