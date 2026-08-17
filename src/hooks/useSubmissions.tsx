@@ -17,6 +17,10 @@ export interface Submission {
   supplementary_url: string | null;
   status: string;
   admin_notes: string | null;
+  submission_doi: string | null;
+  permalink_slug: string | null;
+  doi_assigned_at: string | null;
+  submitted_at: string | null;
   created_at: string;
   updated_at: string;
 }
