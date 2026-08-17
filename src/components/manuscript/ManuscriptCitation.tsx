@@ -1,4 +1,3 @@
-<<<<<<<
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -143,4 +142,3 @@ export function ManuscriptCitation({ manuscript, compact = false }: Props) {
     </div>
   );
 }
->>>>>>>
