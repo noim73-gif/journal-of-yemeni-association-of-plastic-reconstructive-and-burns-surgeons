@@ -555,6 +555,30 @@ export type Database = {
         }
         Relationships: []
       }
+      journal_settings: {
+        Row: {
+          created_at: string
+          id: string
+          mint_draft_identifiers: boolean
+          singleton: boolean
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          mint_draft_identifiers?: boolean
+          singleton?: boolean
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          mint_draft_identifiers?: boolean
+          singleton?: boolean
+          updated_at?: string
+        }
+        Relationships: []
+      }
       login_activity: {
         Row: {
           id: string
