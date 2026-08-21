@@ -292,6 +292,49 @@ export default function AdminSettings() {
         </div>
       </div>
 
+      {/* Manuscript Identifiers */}
+      <div className="bg-card rounded-xl border border-border p-6">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="p-2 bg-primary/10 rounded-lg">
+            <Fingerprint className="h-5 w-5 text-primary" />
+          </div>
+          <div>
+            <h2 className="font-serif text-xl font-semibold">
+              Manuscript Identifiers
+            </h2>
+            <p className="text-sm text-muted-foreground">
+              When manuscripts receive a DOI and persistent URL
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-start justify-between gap-6">
+          <div className="space-y-1">
+            <Label htmlFor="mintDraftIdentifiers" className="text-base">
+              Mint identifiers on draft creation
+            </Label>
+            <p className="text-sm text-muted-foreground max-w-2xl">
+              By default a DOI and permanent link are assigned when a manuscript
+              leaves draft (on submission). Enable this to assign them the moment a
+              draft is created — note that identifiers will then exist for
+              manuscripts that may never be submitted, and draft records stay
+              private until submitted.
+            </p>
+          </div>
+          <div className="flex items-center gap-2 pt-1">
+            {(loadingIdentifiers || savingIdentifiers) && (
+              <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+            )}
+            <Switch
+              id="mintDraftIdentifiers"
+              checked={mintDraftIdentifiers}
+              onCheckedChange={handleMintToggle}
+              disabled={loadingIdentifiers || savingIdentifiers}
+            />
+          </div>
+        </div>
+      </div>
+
       {/* Save Button */}
       <div className="flex justify-end">
         <Button onClick={handleSave} size="lg">
