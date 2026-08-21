@@ -1,14 +1,60 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { Save, BookOpen, Globe, Hash } from "lucide-react";
+import { Save, BookOpen, Globe, Hash, Fingerprint, Loader2 } from "lucide-react";
 import { DashboardHeader } from "@/components/DashboardHeader";
+import { supabase } from "@/integrations/supabase/client";
+import { logger } from "@/lib/logger";
 
 export default function AdminSettings() {
   const { toast } = useToast();
+  const [mintDraftIdentifiers, setMintDraftIdentifiers] = useState(false);
+  const [loadingIdentifiers, setLoadingIdentifiers] = useState(true);
+  const [savingIdentifiers, setSavingIdentifiers] = useState(false);
+
+  useEffect(() => {
+    const load = async () => {
+      const { data, error } = await supabase
+        .from("journal_settings")
+        .select("mint_draft_identifiers")
+        .maybeSingle();
+      if (error) logger.error("Error loading journal settings:", error);
+      else if (data) setMintDraftIdentifiers(data.mint_draft_identifiers);
+      setLoadingIdentifiers(false);
+    };
+    load();
+  }, []);
+
+  const handleMintToggle = async (checked: boolean) => {
+    setMintDraftIdentifiers(checked);
+    setSavingIdentifiers(true);
+    const { error } = await supabase
+      .from("journal_settings")
+      .update({ mint_draft_identifiers: checked })
+      .eq("singleton", true);
+    setSavingIdentifiers(false);
+    if (error) {
+      logger.error("Error updating identifier setting:", error);
+      setMintDraftIdentifiers(!checked);
+      toast({
+        title: "Could not save setting",
+        description: error.message,
+        variant: "destructive",
+      });
+      return;
+    }
+    toast({
+      title: checked ? "Draft identifiers enabled" : "Draft identifiers disabled",
+      description: checked
+        ? "New drafts now receive a DOI and permanent link on creation."
+        : "Identifiers are minted when a manuscript is submitted.",
+    });
+  };
+
   const [settings, setSettings] = useState({
     journalName: "Journal of Plastic and Reconstructive Surgery",
     abbreviation: "JPRS",
